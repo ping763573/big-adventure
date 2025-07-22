@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <script src="https://d3js.org/d3.v7.min.js"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Rajdhani:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <style>
+      .slide-container {
+        width: 1280px; 
+        min-height: 720px; 
+        background: linear-gradient(135deg, #0f0f23 0%, #1a1a2e 50%, #16213e 100%);
+        position: relative;
+        overflow: hidden;
+      }
+      .hero-text {
+        font-family: 'Orbitron', monospace;
+        text-shadow: 0 0 20px rgba(34, 197, 94, 0.8);
+      }
+      .subtitle-text {
+        font-family: 'Rajdhani', sans-serif;
+      }
+      .everest-bg {
+        background-image: url("https://private-us-east-1.manuscdn.com/sessionFile/saHuV6GNS2dQqEy9fXFHZO/sandbox/slides_resource_ih3uwdhces5yu3tf1m8zy-b21845c5-e2b-prod-aws_1749571267506_na1fn_L2hvbWUvdWJ1bnR1L2FkdmVudHVyZV9zbGlkZXMvaW1hZ2VzL2V2ZXJlc3RfYmFzZV9jYW1w.jpg?x-oss-process=image/resize,w_1560,h_1560/format,webp&Expires=1767225600&Policy=eyJTdGF0ZW1lbnQiOlt7IlJlc291cmNlIjoiaHR0cHM6Ly9wcml2YXRlLXVzLWVhc3QtMS5tYW51c2Nkbi5jb20vc2Vzc2lvbkZpbGUvc2FIdVY2R05TMmRRcUV5OWZYRkhaTy9zYW5kYm94L3NsaWRlc19yZXNvdXJjZV9paDN1d2RoY2VzNXl1M3RmMW04enktYjIxODQ1YzUtZTJiLXByb2QtYXdzXzE3NDk1NzEyNjc1MDZfbmExZm5fTDJodmJXVXZkV0oxYm5SMUwyRmtkbVZ1ZEhWeVpWOXpiR2xrWlhNdmFXMWhaMlZ6TDJWMlpYSmxjM1JmWW1GelpWOWpZVzF3LmpwZz94LW9zcy1wcm9jZXNzPWltYWdlL3Jlc2l6ZSx3XzE1NjAsaF8xNTYwL2Zvcm1hdCx3ZWJwIiwiQ29uZGl0aW9uIjp7IkRhdGVMZXNzVGhhbiI6eyJBV1M6RXBvY2hUaW1lIjoxNzY3MjI1NjAwfX19XX0_&Key-Pair-Id=K2HSFNDJXOU9YS&Signature=IwjYMmadJDgJ88wUTijvnGGPuZTMOipmyLLTeqfLtwV3XVNF7ph3QrcgVL9~9VQE-berrqmumY00xAfuawpb7mmekBWiZnJFUmuOVtp9npTi37NI7Hh-v4bzLMHWGRUKu5eXfc5ZGF8hkAA-nY1W1P42zDWWqRtyWWJaRn6mgH6zQHsHIAleaOGC-NgwgzFyOe9W3Ogc~coQA9B7dKQr-NtLZ~ygjNKt6tShL-qd4RO7jynqwQfcLRc5WOUbQ2ZwJc1RLv9~q35dM8j4QiLtmlLrERQT8-3G8jdeOZuHhjrkKtcxovsj3M5QqgF7SRkl30FhZw7XE~cidqMujlrpIQ__");
+        background-size: cover;
+        background-position: center;
+        filter: brightness(0.4);
+      }
+    </style>
+  </head>
+  <body>
+    <div class="slide-container flex relative">
+      <!-- Background image -->
+      <div class="absolute inset-0 everest-bg"></div>
+      
+      <!-- Dark overlay -->
+      <div class="absolute inset-0 bg-gradient-to-r from-black/80 via-black/40 to-transparent"></div>
+      
+      <!-- Content -->
+      <div class="relative z-10 flex items-center w-full px-16">
+        <div class="w-1/2">
+          <!-- Adventure number -->
+          <div class="text-green-400 text-2xl font-bold mb-4 subtitle-text tracking-widest">
+            ADVENTURE #03
+          </div>
+          
+          <!-- Main title -->
+          <h1 class="hero-text text-6xl font-black text-white mb-6 leading-tight">
+            SKY-HIGH<br>
+            <span class="text-transparent bg-clip-text bg-gradient-to-r from-green-400 to-yellow-400">
+              IN THE
+            </span><br>
+            <span class="text-green-300 text-5xl">HIMALAYAS</span>
+          </h1>
+          
+          <!-- Location -->
+          <div class="flex items-center mb-6">
+            <i class="fas fa-map-marker-alt text-green-400 text-xl mr-3"></i>
+            <span class="subtitle-text text-xl text-gray-300 font-semibold">
+              Everest Base Camp, Nepal
+            </span>
+          </div>
+          
+          <!-- Key stats -->
+          <div class="space-y-3 mb-8">
+            <div class="flex items-center">
+              <i class="fas fa-mountain text-yellow-400 text-lg mr-4 w-6"></i>
+              <span class="subtitle-text text-lg text-white">Altitude: 5,644m</span>
+            </div>
+            <div class="flex items-center">
+              <i class="fas fa-hiking text-yellow-400 text-lg mr-4 w-6"></i>
+              <span class="subtitle-text text-lg text-white">Duration: 14 days</span>
+            </div>
+            <div class="flex items-center">
+              <i class="fas fa-calendar text-yellow-400 text-lg mr-4 w-6"></i>
+              <span class="subtitle-text text-lg text-white">Best: Mar-May, Sep-Nov</span>
+            </div>
+          </div>
+          
+          <!-- Call to action -->
+          <div class="bg-gradient-to-r from-green-500 to-yellow-500 rounded-lg px-8 py-3 inline-block">
+            <span class="subtitle-text text-lg font-bold text-white tracking-wide">
+              CONQUER THE ROOF OF THE WORLD
+            </span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </body>
+</html>
+

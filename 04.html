@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <script src="https://d3js.org/d3.v7.min.js"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Rajdhani:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <style>
+      .slide-container {
+        width: 1280px; 
+        min-height: 720px; 
+        background: linear-gradient(135deg, #0f0f23 0%, #1a1a2e 50%, #16213e 100%);
+        position: relative;
+        overflow: hidden;
+      }
+      .hero-text {
+        font-family: 'Orbitron', monospace;
+        text-shadow: 0 0 20px rgba(251, 146, 60, 0.8);
+      }
+      .subtitle-text {
+        font-family: 'Rajdhani', sans-serif;
+      }
+      .desert-bg {
+        background-image: url("https://private-us-east-1.manuscdn.com/sessionFile/saHuV6GNS2dQqEy9fXFHZO/sandbox/slides_resource_ih3uwdhces5yu3tf1m8zy-b21845c5-e2b-prod-aws_1749571295947_na1fn_L2hvbWUvdWJ1bnR1L2FkdmVudHVyZV9zbGlkZXMvaW1hZ2VzL2Rlc2VydF9yYWNpbmc.jpg?x-oss-process=image/resize,w_1560,h_1560/format,webp&Expires=1767225600&Policy=eyJTdGF0ZW1lbnQiOlt7IlJlc291cmNlIjoiaHR0cHM6Ly9wcml2YXRlLXVzLWVhc3QtMS5tYW51c2Nkbi5jb20vc2Vzc2lvbkZpbGUvc2FIdVY2R05TMmRRcUV5OWZYRkhaTy9zYW5kYm94L3NsaWRlc19yZXNvdXJjZV9paDN1d2RoY2VzNXl1M3RmMW04enktYjIxODQ1YzUtZTJiLXByb2QtYXdzXzE3NDk1NzEyOTU5NDdfbmExZm5fTDJodmJXVXZkV0oxYm5SMUwyRmtkbVZ1ZEhWeVpWOXpiR2xrWlhNdmFXMWhaMlZ6TDJSbGMyVnlkRjl5WVdOcGJtYy5qcGc~eC1vc3MtcHJvY2Vzcz1pbWFnZS9yZXNpemUsd18xNTYwLGhfMTU2MC9mb3JtYXQsd2VicCIsIkNvbmRpdGlvbiI6eyJEYXRlTGVzc1RoYW4iOnsiQVdTOkVwb2NoVGltZSI6MTc2NzIyNTYwMH19fV19&Key-Pair-Id=K2HSFNDJXOU9YS&Signature=OJl22~8HBK0SPnAVygwDfG0PJd2qb4FBTw3LfI8JQNXtXkYj39PS4tYyDf8l2F1r9-q9Ir57T97e6zfIAR7XfhTLwKRGvNyH5sZ4yM7Bs24-9EIdP2Frgdl5E1sV45I2em88QrhadJBgdQQjTzs1ELRYo1QCqmmELfu-loi72fHUl4Vm77fMINX77qGNhtx-YY4vHbf6GyPEmlKY1Nrhf4uXGHNP3eZg8IQQFHdsqaROSkVR4M~xhM2u0ehid5TkH~E1lULTIMu6q0B5MDZAtF4n6JnM1tvjvANNSFhmeejTetJGyI3OWftD-cI-oAKIFME4jvfvkCfWurhjw9szoQ__");
+        background-size: cover;
+        background-position: center;
+        filter: brightness(0.4);
+      }
+    </style>
+  </head>
+  <body>
+    <div class="slide-container flex relative">
+      <!-- Background image -->
+      <div class="absolute inset-0 desert-bg"></div>
+      
+      <!-- Dark overlay -->
+      <div class="absolute inset-0 bg-gradient-to-l from-black/80 via-black/40 to-transparent"></div>
+      
+      <!-- Content -->
+      <div class="relative z-10 flex items-center justify-end w-full px-16">
+        <div class="w-1/2 text-right">
+          <!-- Adventure number -->
+          <div class="text-orange-400 text-2xl font-bold mb-4 subtitle-text tracking-widest">
+            ADVENTURE #04
+          </div>
+          
+          <!-- Main title -->
+          <h1 class="hero-text text-6xl font-black text-white mb-6 leading-tight">
+            DESERT<br>
+            <span class="text-transparent bg-clip-text bg-gradient-to-r from-orange-400 to-yellow-400">
+              RACING
+            </span><br>
+            <span class="text-orange-300 text-4xl">INFERNO</span>
+          </h1>
+          
+          <!-- Location -->
+          <div class="flex items-center justify-end mb-6">
+            <span class="subtitle-text text-xl text-gray-300 font-semibold mr-3">
+              Sahara Desert, Morocco
+            </span>
+            <i class="fas fa-map-marker-alt text-orange-400 text-xl"></i>
+          </div>
+          
+          <!-- Key stats -->
+          <div class="space-y-3 mb-8">
+            <div class="flex items-center justify-end">
+              <span class="subtitle-text text-lg text-white mr-4">Distance: 250km</span>
+              <i class="fas fa-route text-yellow-400 text-lg w-6"></i>
+            </div>
+            <div class="flex items-center justify-end">
+              <span class="subtitle-text text-lg text-white mr-4">Toughest footrace on Earth</span>
+              <i class="fas fa-trophy text-yellow-400 text-lg w-6"></i>
+            </div>
+            <div class="flex items-center justify-end">
+              <span class="subtitle-text text-lg text-white mr-4">Best: April</span>
+              <i class="fas fa-calendar text-yellow-400 text-lg w-6"></i>
+            </div>
+          </div>
+          
+          <!-- Call to action -->
+          <div class="bg-gradient-to-r from-orange-500 to-yellow-500 rounded-lg px-8 py-3 inline-block">
+            <span class="subtitle-text text-lg font-bold text-white tracking-wide">
+              CONQUER THE SAHARA
+            </span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </body>
+</html>
+
