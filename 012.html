@@ -1,0 +1,1075 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>羅浮宮博物館：歷史與藝術之旅</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background-color: #1a1a1a;
+            color: #e0e0e0; /* 將基礎文字顏色改為柔和的米白，讓高亮更突出 */
+            overflow: hidden;
+            height: 100vh;
+        }
+
+        .slide-container {
+            position: relative;
+            width: 100%;
+            height: 100%;
+        }
+
+        .slide {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            padding: 40px;
+            opacity: 0;
+            transition: opacity 1s ease;
+            overflow-y: auto;
+        }
+
+        .slide.active {
+            opacity: 1;
+            z-index: 10;
+        }
+
+        .background-pattern {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23d4af37' fill-opacity='0.05'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+            opacity: 0.1;
+            z-index: 1;
+        }
+        
+        /* === 字體與顏色強化 === */
+        :root {
+            --accent-color-blue: #a9d1e8; /* 輔助色：典雅淺藍 */
+            --accent-color-gold: #D4AF37; /* 主色：尊貴金 */
+        }
+
+        /* 新增：高亮文字樣式 */
+        .highlight-gold {
+            color: var(--accent-color-gold);
+            font-weight: bold;
+        }
+        .highlight-blue {
+            color: var(--accent-color-blue);
+            font-weight: 500;
+        }
+
+        .title {
+            color: var(--accent-color-gold);
+            font-size: 38px;
+            margin-bottom: 30px;
+            text-align: center;
+            position: relative;
+            z-index: 2;
+            text-shadow: 0 0 10px rgba(212, 175, 55, 0.3);
+        }
+
+        .intro-text {
+            font-size: 22px;
+            margin-bottom: 30px;
+            line-height: 1.7;
+            max-width: 1000px;
+            margin-left: auto;
+            margin-right: auto;
+            position: relative;
+            z-index: 2;
+        }
+
+        .timeline-text, .feature-text, .department-text, .masterpiece-info, .gallery-description, .legacy-text {
+            font-size: 18px;
+            line-height: 1.7;
+        }
+        
+        .feature-title span, .department-title span, .gallery-title span, .legacy-title, .stat-label {
+            color: var(--accent-color-blue);
+            font-weight: bold;
+        }
+        
+        .content-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 30px;
+            justify-content: center;
+            align-items: center;
+            position: relative;
+            z-index: 2;
+        }
+
+        .text-content {
+            flex: 1;
+            min-width: 300px;
+            max-width: 600px;
+        }
+
+        .image-container {
+            flex: 1;
+            min-width: 300px;
+            max-width: 600px;
+            text-align: center;
+            position: relative;
+        }
+
+        .image-frame, .gallery-image {
+            max-width: 100%;
+            border-radius: 8px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+            transition: transform 0.3s ease;
+        }
+
+        .masterpiece-image {
+            max-width: 100%; 
+            max-height: 45vh; 
+            width: auto;      
+            height: auto;     
+            border-radius: 8px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+            transition: transform 0.3s ease;
+        }
+        
+        .image-frame:hover, .gallery-image:hover, .masterpiece-image:hover {
+            transform: scale(1.02);
+        }
+
+        .key-point, .architecture-feature, .department, .artifact, .gallery-feature, .legacy-feature {
+            background-color: rgba(255, 255, 255, 0.05);
+            padding: 15px;
+            margin-bottom: 15px;
+            border-radius: 6px;
+            display: flex;
+            align-items: flex-start;
+            transition: background-color 0.3s ease;
+        }
+        
+        .key-point:hover, .architecture-feature:hover, .department:hover, 
+        .artifact:hover, .gallery-feature:hover, .legacy-feature:hover {
+            background-color: rgba(255, 255, 255, 0.08);
+        }
+
+        .key-point i, .department-title i, .gallery-title i, .artifact-icon, .legacy-icon, .feature-title i {
+            color: var(--accent-color-gold);
+            margin-right: 15px;
+            font-size: 24px;
+        }
+        .key-point span {
+             font-size: 18px;
+             color: #f0f0f0; /* 關鍵點使用較亮的白色 */
+        }
+
+        .timeline-container {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .timeline {
+            position: relative;
+            padding-left: 30px;
+        }
+
+        .timeline::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 0;
+            height: 100%;
+            width: 4px;
+            background-color: var(--accent-color-gold);
+        }
+
+        .timeline-item {
+            margin-bottom: 30px;
+            position: relative;
+            transition: transform 0.3s ease;
+        }
+        
+        .timeline-item:hover {
+            transform: translateX(5px);
+        }
+
+        .timeline-date {
+            font-weight: bold;
+            color: var(--accent-color-gold);
+            margin-bottom: 5px;
+            font-size: 18px;
+        }
+
+        .stats-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px;
+            justify-content: center;
+            margin-top: 30px;
+        }
+
+        .stat-card, .stat {
+            background-color: rgba(255, 255, 255, 0.05);
+            padding: 20px;
+            border-radius: 8px;
+            text-align: center;
+            min-width: 200px;
+            transition: all 0.3s ease;
+        }
+        
+        .stat-card:hover, .stat:hover {
+            background-color: rgba(255, 255, 255, 0.08);
+            transform: translateY(-5px);
+        }
+
+        .stat-value, .stat-number {
+            font-size: 36px;
+            color: var(--accent-color-gold);
+            font-weight: bold;
+            margin: 10px 0;
+        }
+
+        .stat-description {
+            color: var(--accent-color-blue);
+            font-size: 16px;
+        }
+
+        .masterpiece {
+            margin: 20px 0;
+            text-align: center;
+        }
+
+        .masterpiece-title {
+            color: var(--accent-color-gold);
+            margin: 15px 0;
+        }
+
+        .masterpiece-fact {
+            font-style: italic;
+            color: var(--accent-color-blue);
+            margin-top: 10px;
+            font-size: 17px;
+        }
+        
+        .gallery-fact {
+            font-style: italic;
+            color: var(--accent-color-blue);
+            font-size: 16px;
+            margin-top: 5px;
+        }
+
+        .quote-text {
+            font-family: 'EB Garamond', serif;
+            font-style: italic;
+            font-size: 24px;
+            color: var(--accent-color-gold);
+            text-align: center;
+            max-width: 800px;
+            margin: 40px auto;
+            padding: 0 20px;
+        }
+
+        .quote-author {
+            text-align: right;
+            margin-top: 10px;
+            color: #bbb;
+        }
+
+        .nav-buttons {
+            position: fixed;
+            bottom: 30px;
+            left: 0;
+            right: 0;
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            z-index: 100;
+        }
+
+        .nav-btn {
+            background-color: var(--accent-color-gold);
+            color: #1a1a1a;
+            border: none;
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            font-size: 20px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .nav-btn:hover {
+            background-color: #fff;
+            transform: scale(1.1);
+        }
+
+        .slide-indicators {
+            position: fixed;
+            bottom: 100px;
+            left: 0;
+            right: 0;
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            z-index: 100;
+        }
+
+        .indicator {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background-color: rgba(255, 255, 255, 0.3);
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .indicator.active {
+            background-color: var(--accent-color-gold);
+            transform: scale(1.3);
+        }
+        
+        .indicator:hover:not(.active) {
+            background-color: rgba(255, 255, 255, 0.6);
+        }
+        
+        .fullscreen-btn {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background-color: rgba(212, 175, 55, 0.8);
+            color: #1a1a1a;
+            border: none;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            font-size: 16px;
+            cursor: pointer;
+            z-index: 100;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .fullscreen-btn:hover {
+            background-color: #fff;
+            transform: scale(1.1);
+        }
+        
+        .autoplay-control {
+            display: none; 
+            position: fixed;
+            bottom: 30px; 
+            left: 30px;   
+            background-color: rgba(26, 26, 26, 0.8);
+            color: var(--accent-color-gold);
+            border: 1px solid var(--accent-color-gold);
+            padding: 8px 15px;
+            border-radius: 20px;
+            cursor: pointer;
+            z-index: 100;
+            transition: all 0.3s ease;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .autoplay-control:hover {
+            background-color: rgba(212, 175, 55, 0.8);
+            color: #1a1a1a;
+        }
+        
+        .image-loader {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            border: 3px solid rgba(212, 175, 55, 0.3);
+            border-radius: 50%;
+            border-top: 3px solid var(--accent-color-gold);
+            width: 30px;
+            height: 30px;
+            animation: spin 1s linear infinite;
+        }
+        
+        @keyframes spin {
+            0% { transform: translate(-50%, -50%) rotate(0deg); }
+            100% { transform: translate(-50%, -50%) rotate(360deg); }
+        }
+
+        /* 新增：免責聲明樣式 */
+        .disclaimer {
+            position: absolute;
+            bottom: 15px;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 14px;
+            color: rgba(255, 255, 255, 0.5);
+            text-align: center;
+            width: 100%;
+            z-index: 20;
+        }
+
+    </style>
+</head>
+<body>
+    <!-- 背景音樂播放器 -->
+    <audio id="background-music" loop src="https://ping763573.github.io/big-adventure/01.mp3"></audio>
+
+    <!-- 全螢幕切換按鈕 -->
+    <button class="fullscreen-btn" title="切換全螢幕">
+        <i class="fas fa-expand"></i>
+    </button>
+    
+    <!-- 自動播放控制按鈕 (This is now hidden via CSS) -->
+    <div class="autoplay-control">
+        <i class="fas fa-play" id="autoplay-icon"></i>
+        <span id="autoplay-text">自動播放: 開啟</span>
+    </div>
+
+    <div class="slide-container">
+        <!-- 幻燈片 1: 歡迎頁 -->
+        <div class="slide active">
+            <div class="background-pattern"></div>
+            <h1 class="title">羅浮宮博物館：歷史與藝術之旅</h1>
+            <p class="intro-text">
+                羅浮宮博物館作為世界上參觀人數最多的博物館，見證了人類數千年的創造力與藝術成就。
+                從中世紀的堡壘到現代的藝術殿堂，羅浮宮的故事本身就是一部濃縮的人類文明史。
+            </p>
+            <div class="content-container">
+                <div class="text-content">
+                    <div class="key-point">
+                        <i class="fas fa-map-marker-alt"></i>
+                        <span>位於法國巴黎市中心，塞納河畔</span>
+                    </div>
+                    <div class="key-point">
+                        <i class="fas fa-users"></i>
+                        <span>2024年參觀人數達 <span class="highlight-gold">870萬</span> 人次</span>
+                    </div>
+                    <div class="key-point">
+                        <i class="fas fa-trophy"></i>
+                        <span>全球參觀人數最多的博物館</span>
+                    </div>
+                    <div class="key-point">
+                        <i class="fas fa-paint-brush"></i>
+                        <span>展出超過 <span class="highlight-gold">35,000</span> 件珍貴藏品</span>
+                    </div>
+                </div>
+                <div class="image-container">
+                    <div class="image-loader"></div>
+                    <img src="https://private-us-east-1.manuscdn.com/sessionFile/ZOBoN7mygyvHx7GpNEELw6/sandbox/slides_resource_iywi1ry5zgbghrtk1cwxd-14d39162-e2b-prod-aws_1750918093511_na1fn_L2hvbWUvdWJ1bnR1L3ByZXNlbnRhdGlvbl9hc3NldHMvbG91dnJlX3B5cmFtaWRfZGF5.jpg?x-oss-process=image/resize,w_1560,h_1560/format,webp&Expires=1767225600&Policy=eyJTdGF0ZW1lbnQiOlt7IlJlc291cmNlIjoiaHR0cHM6Ly9wcml2YXRlLXVzLWVhc3QtMS5tYW51c2Nkbi5jb20vc2Vzc2lvbkZpbGUvWk9Cb043bXlneXZIeDdHcE5FRUx3Ni9zYW5kYm94L3NsaWRlc19yZXNvdXJjZV9peXdpMXJ5NXpnYmdocnRrMWN3eGQtMTRkMzkxNjItZTJiLXByb2QtYXdzXzE3NTA5MTgwOTM1MTFfbmExZm5fTDJodmJXVXZkV0oxYm5SMUwzQnlaWE5sYm5SaGRHbHZibDloYzNObGRITXZiRzkxZG5KbFgzQjVjbUZ0YVdSZlpHRjUuanBnP3gtb3NzLXByb2Nlc3M9aW1hZ2UvcmVzaXplLHdfMTU2MCxoXzE1NjAvZm9ybWF0LHdlYnAiLCJDb25kaXRpb24iOnsiRGF0ZUxlc3NUaGFuIjp7IkFXUzpFcG9jaFRpbWUiOjE3NjcyMjU2MDB9fX1dfQ__&Key-Pair-Id=K2HSFNDJXOU9YS&Signature=IScKBykXHEYkYHTTJvpefpPjEcMNHWtSQvTOAs07UowrnsWsg5IqLPi3T4KSbZRF6-YFQ~c8fpZtHTHR56M7XpIdn~094HmzzkNrwUDZPXkFFdFADPDIve0jZX1HUYZUakqP49TTFTdGIwXmlpx65pxkslH~Ou9LjQeENZk83VvewZKNn~aMcMxEpS5VOT4ogrJ1RI5T3IPmG-KmTQkl6Xb1tJxpW48H~oxFUPW2cWaO3eOBZsyC58~V4obL4pvxWjHuStzQWlqIGOZldUIICqqbx6p43MVtCOuDcCfHR-BGJ8swIfCUzbD5stCPjSmCOhJkjWtrE6~GaS84oKqjog__" 
+                         alt="羅浮宮金字塔" class="image-frame" onload="this.previousElementSibling.style.display='none'">
+                </div>
+            </div>
+            <!-- 新增免責聲明 -->
+            <p class="disclaimer">本展示之照片與歌曲歸原創作者所有，純分享勿商用</p>
+        </div>
+
+        <!-- 幻燈片 2: 歷史沿革 -->
+        <div class="slide">
+            <div class="background-pattern"></div>
+            <h1 class="title">從堡壘到藝術殿堂的演變</h1>
+            <p class="intro-text">
+                羅浮宮的歷史跨越八個世紀，從中世紀的防禦堡壘，到法國王室的居所，最終成為向公眾開放的世界頂級博物館。
+            </p>
+            <div class="content-container">
+                <div class="timeline-container">
+                    <div class="timeline">
+                        <div class="timeline-item">
+                            <div class="timeline-date">12世紀</div>
+                            <div class="timeline-text"><span class="highlight-blue">菲利普二世</span>國王建造的防禦堡壘，用於保護巴黎免受入侵</div>
+                        </div>
+                        <div class="timeline-item">
+                            <div class="timeline-date">1546年</div>
+                            <div class="timeline-text"><span class="highlight-blue">弗朗索瓦一世</span>將堡壘改建成皇家住所，開始了其向宮殿的轉變</div>
+                        </div>
+                        <div class="timeline-item">
+                            <div class="timeline-date">1682年</div>
+                            <div class="timeline-text"><span class="highlight-blue">路易十四</span>將皇家住所遷至<span class="highlight-gold">凡爾賽宮</span>，羅浮宮主要用於展示皇家收藏品</div>
+                        </div>
+                        <div class="timeline-item">
+                            <div class="timeline-date">1793年8月10日</div>
+                            <div class="timeline-text">法國大革命期間，羅浮宮正式作為公共博物館開放，當時有 <span class="highlight-gold">537</span> 幅繪畫作品</div>
+                        </div>
+                        <div class="timeline-item">
+                            <div class="timeline-date">1989年</div>
+                            <div class="timeline-text"><span class="highlight-blue">貝聿銘</span>設計的玻璃金字塔落成，成為博物館的主入口和現代標誌</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="image-container">
+                    <div class="image-loader"></div>
+                    <img src="https://private-us-east-1.manuscdn.com/sessionFile/ZOBoN7mygyvHx7GpNEELw6/sandbox/slides_resource_iywi1ry5zgbghrtk1cwxd-14d39162-e2b-prod-aws_1750919487846_na1fn_L2hvbWUvdWJ1bnR1L3ByZXNlbnRhdGlvbl9hc3NldHMvbG91dnJlX2hpc3RvcnlfbmV3.jpg?x-oss-process=image/resize,w_1560,h_1560/format,webp&Expires=1767225600&Policy=eyJTdGF0ZW1lbnQiOlt7IlJlc291cmNlIjoiaHR0cHM6Ly9wcml2YXRlLXVzLWVhc3QtMS5tYW51c2Nkbi5jb20vc2Vzc2lvbkZpbGUvWk9Cb043bXlneXZIeDdHcE5FRUx3Ni9zYW5kYm94L3NsaWRlc19yZXNvdXJjZV9peXdpMXJ5NXpnYmdocnRrMWN3eGQtMTRkMzkxNjItZTJiLXByb2QtYXdzXzE3NTA5MTk0ODc4NDZfbmExZm5fTDJodmJXVXZkV0oxYm5SMUwzQnlaWE5sYm5SaGRHbHZibDloYzNObGRITXZiRzkxZG5KbFgyaHBjM1J2Y25sZmJtVjMuanBnP3gtb3NzLXByb2Nlc3M9aW1hZ2UvcmVzaXplLHdfMTU2MCxoXzE1NjAvZm9ybWF0LHdlYnAiLCJDb25kaXRpb24iOnsiRGF0ZUxlc3NUaGFuIjp7IkFXUzpFcG9jaFRpbWUiOjE3NjcyMjU2MDB9fX1dfQ__&Key-Pair-Id=K2HSFNDJXOU9YS&Signature=RGCLaQRdn1sZZwGTjpCeWsW2~QE3rPgFtfvLXpey4JZhy0nrGCBMhIiWriwxp-VoVpduqXoAwsSk6WGOtAyWKsguEzffcnrYfhRnCCGjs4o5E60KTOfoeelOjonZ9AefKvxmBkvywBZubkD~yFPc2Mnwpzv9NUlvAAiOnUhiPBhOYIwZ3W5ACQj0eEEPwL96mqqyCwPSoSR11vcVZtWWOVVGyHXDMLwYti96uT2kMrmXvWzLTRPnSaba7kpsb361KDaAAGPnSya2dq1Y2fKRfQf9UeuoPKv5Py4jj2XDMpGQR~UHRZKehmn3Lt~4-UtLNebqY7NG4wfwIz-9Ww8rXg__" 
+                         alt="羅浮宮歷史景觀" class="image-frame" onload="this.previousElementSibling.style.display='none'">
+                </div>
+            </div>
+        </div>
+
+        <!-- 幻燈片 3: 建築特色 -->
+        <div class="slide">
+            <div class="background-pattern"></div>
+            <h1 class="title">建築奇蹟：過去與現在的融合</h1>
+            <p class="intro-text">
+                羅浮宮的建築風格見證了多個時期的變遷，從中世紀的軍事建築到古典主義宮殿，再到現代主義的標誌性金字塔。
+            </p>
+            <div class="content-container">
+                <div class="text-content">
+                    <div class="architecture-feature">
+                        <div class="feature-title">
+                            <i class="fas fa-fort-awesome"></i>
+                            <span>中世紀基礎</span>
+                        </div>
+                        <div class="feature-text">
+                            原始12世紀堡壘的遺跡仍可在博物館的地下室看到，包括中世紀的<span class="highlight-blue">護城河</span>和<span class="highlight-blue">地牢</span>。
+                        </div>
+                    </div>
+                    
+                    <div class="architecture-feature">
+                        <div class="feature-title">
+                            <i class="fas fa-landmark"></i>
+                            <span>古典宮殿</span>
+                        </div>
+                        <div class="feature-text">
+                            宮殿展示了法國<span class="highlight-gold">古典建築風格</span>，其優雅的立面、宏偉的庭院和16至19世紀的華麗室內裝飾。
+                        </div>
+                    </div>
+                    
+                    <div class="architecture-feature">
+                        <div class="feature-title">
+                            <i class="fas fa-glass-martini-alt"></i>
+                            <span>現代金字塔</span>
+                        </div>
+                        <div class="feature-text">
+                            <span class="highlight-blue">貝聿銘</span>設計的頗具爭議的玻璃金字塔於1989年完工，已成為博物館的標誌性符號，將當代設計與歷史建築融為一體。
+                        </div>
+                    </div>
+                    
+                    <div class="stats-container">
+                        <div class="stat">
+                            <div class="stat-number">72,735 m²</div>
+                            <div class="stat-label">展覽面積</div>
+                        </div>
+                        <div class="stat">
+                            <div class="stat-number">60,600 m²</div>
+                            <div class="stat-label">永久收藏品面積</div>
+                        </div>
+                        <div class="stat">
+                            <div class="stat-number">#1</div>
+                            <div class="stat-label">全球最大博物館</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="image-container">
+                    <div class="image-loader"></div>
+                    <img src="https://www.wilhelmchang.com/wp-content/uploads/2019/04/DSC_1734-e1556458628335.jpg" 
+                         alt="羅浮宮建築" class="image-frame" onload="this.previousElementSibling.style.display='none'">
+                </div>
+            </div>
+        </div>
+
+        <!-- 幻燈片 4: 館藏部門 -->
+        <div class="slide">
+            <div class="background-pattern"></div>
+            <h1 class="title">八大館藏部門</h1>
+            <p class="intro-text">
+                羅浮宮龐大的藏品分為八個專門的館藏部門，每個部門代表不同的時期、文化和藝術形式。
+            </p>
+            <div class="content-container">
+                <div class="text-content">
+                    <div class="department">
+                        <div class="department-title">
+                            <i class="fas fa-landmark"></i>
+                            <span>埃及古物部</span>
+                        </div>
+                        <div class="department-text">
+                            超過 <span class="highlight-gold">50,000</span> 件藏品，時間跨度從公元前4000年到公元4世紀，包括<span class="highlight-blue">塔尼斯的大獅身人面像</span>和<span class="highlight-blue">《坐著的書吏》</span>。
+                        </div>
+                    </div>
+                    
+                    <div class="department">
+                        <div class="department-title">
+                            <i class="fas fa-monument"></i>
+                            <span>東方古物部</span>
+                        </div>
+                        <div class="department-text">
+                            涵蓋<span class="highlight-gold">美索不達米亞</span>、波斯、中亞和喜馬拉雅地區的文物，展現了古代東方文明的輝煌。
+                        </div>
+                    </div>
+                    
+                    <div class="department">
+                        <div class="department-title">
+                            <i class="fas fa-university"></i>
+                            <span>希臘、伊特魯里亚和羅馬古物部</span>
+                        </div>
+                        <div class="department-text">
+                            收藏了大量古希臘、伊特魯里亞和古羅馬的藝術品，包括雕塑、陶器和裝飾藝術。
+                        </div>
+                    </div>
+                    
+                    <div class="department">
+                        <div class="department-title">
+                            <i class="fas fa-palette"></i>
+                            <span>繪畫部</span>
+                        </div>
+                        <div class="department-text">
+                            超過 <span class="highlight-gold">7,500</span> 幅繪畫，包括歐洲從13世紀到19世紀初的大師作品，如<span class="highlight-blue">達芬奇</span>、<span class="highlight-blue">拉斐爾</span>和<span class="highlight-blue">倫勃朗</span>的傑作。
+                        </div>
+                    </div>
+                </div>
+                <div class="image-container">
+                    <div class="image-loader"></div>
+                    <img src="https://i0.wp.com/carollin.tw/wp-content/uploads/flickr/12266786546_9dbd44f982_z.jpg?w=1080&ssl=1" 
+                         alt="羅浮宮埃及館" class="image-frame" onload="this.previousElementSibling.style.display='none'">
+                </div>
+            </div>
+        </div>
+
+        <!-- 幻燈片 5: 著名藝術品 - 蒙娜麗莎 -->
+        <div class="slide">
+            <div class="background-pattern"></div>
+            <h1 class="title">世界著名藝術傑作</h1>
+            <p class="intro-text">
+                羅浮宮擁有眾多舉世聞名的藝術品，這些作品不僅是人類創造力的傑作，也是藝術史上的里程碑。
+            </p>
+            
+            <div class="masterpiece">
+                <div class="image-loader"></div>
+                <img src="https://private-us-east-1.manuscdn.com/sessionFile/ZOBoN7mygyvHx7GpNEELw6/sandbox/slides_resource_iywi1ry5zgbghrtk1cwxd-14d39162-e2b-prod-aws_1750919629966_na1fn_L2hvbWUvdWJ1bnR1L3ByZXNlbnRhdGlvbl9hc3NldHMvbW9uYV9saXNhX2NvcnJlY3Q.jpg?x-oss-process=image/resize,w_1560,h_1560/format,webp&Expires=1767225600&Policy=eyJTdGF0ZW1lbnQiOlt7IlJlc291cmNlIjoiaHR0cHM6Ly9wcml2YXRlLXVzLWVhc3QtMS5tYW51c2Nkbi5jb20vc2Vzc2lvbkZpbGUvWk9Cb043bXlneXZIeDdHcE5FRUx3Ni9zYW5kYm94L3NsaWRlc19yZXNvdXJjZV9peXdpMXJ5NXpnYmdocnRrMWN3eGQtMTRkMzkxNjItZTJiLXByb2QtYXdzXzE3NTA5MTk2Mjk5NjZfbmExZm5fTDJodmJXVXZkV0oxYm5SMUwzQnlaWE5sYm5SaGRHbHZibDloYzNObGRITXZiVzl1WVY5c2FYTmhYMk52Y25KbFkzUS5qcGc~eC1vc3MtcHJvY2Vzcz1pbWFnZS9yZXNpemUsd18xNTYwLGhfMTU2MC9mb3JtYXQsd2VicCIsIkNvbmRpdGlvbiI6eyJEYXRlTGVzc1RoYW4iOnsiQVdTOkVwb2NoVGltZSI6MTc2NzIyNTYwMH19fV19&Key-Pair-Id=K2HSFNDJXOU9YS&Signature=rAnFjtGKE9ph22jrYkTuakmuh~J0j8FirIGxDhNE0aJs81mOqM5sDyFBjgYci~Vr2GB4exgckkO2n2hDBuamZi5ShIxhi8D10JvxFfyDpnd7c3hgHKLg9GAFcnxLCnkndK~Uoav2zft8KRRELairJWZ4wO4N7qYxyHOREgNcsI-kxG4F5tUo3YiCUm5Ss-ecYA007vvudmNpz26MHGdREwzBU4Q0Ob1TnJhg94J0Y~LymayAF8hPJsOh5rMjAcrca~w0pAgd-nGgEeRdleiyKeginnPciXDee1VHTNZQH4px6tGsYlN4lIgzg4LFmZog1lElk6XdUO~zr4J5f-gSpw__" 
+                     alt="蒙娜麗莎" class="masterpiece-image" onload="this.previousElementSibling.style.display='none'">
+                <h3 class="masterpiece-title">蒙娜麗莎</h3>
+                <p class="masterpiece-info">
+                    <span class="highlight-blue">達芬奇</span>的傑作（1503-1519年）也許是世界上最著名的繪畫，以其主題<span class="highlight-gold">神秘的微笑</span>和達芬奇革命性的技法而聞名。
+                </p>
+                <p class="masterpiece-fact">
+                    由<span class="highlight-gold">防彈玻璃</span>保護，每天有<span class="highlight-gold">30,000</span>人參觀
+                </p>
+            </div>
+        </div>
+
+        <!-- 幻燈片 6: 著名藝術品 - 米洛的維納斯 -->
+        <div class="slide">
+            <div class="background-pattern"></div>
+            <h1 class="title">世界著名藝術傑作</h1>
+             <p class="intro-text">
+                羅浮宮擁有眾多舉世聞名的藝術品，這些作品不僅是人類創造力的傑作，也是藝術史上的里程碑。
+            </p>
+            <div class="masterpiece">
+                <div class="image-loader"></div>
+                <img src="https://vacatis.com/wp-content/uploads/2025/01/Best-Time-to-Visit-the-Venus-de-Milo-Sculpture-louvre.fr_.jpg" 
+                     alt="米洛的維納斯" class="masterpiece-image" onload="this.previousElementSibling.style.display='none'">
+                <h3 class="masterpiece-title">米洛的維納斯</h3>
+                <p class="masterpiece-info">
+                    這座<span class="highlight-blue">古希臘</span>大理石雕像（約公元前130-100年）被視為古典美學的理想典範，儘管缺少雙臂，仍以其<span class="highlight-gold">優美的曲線</span>聞名。
+                </p>
+                <p class="masterpiece-fact">
+                    於1820年在希臘<span class="highlight-gold">米洛斯島</span>被發現，是古希臘雕塑藝術的巔峰之作
+                </p>
+            </div>
+            
+            <p class="quote-text">
+                "每一件藝術作品都是它所屬時代的孩子，在許多情況下，也是我們情感的母親。"
+            </p>
+            <p class="quote-author">— <span class="highlight-blue">瓦西里·康定斯基</span></p>
+        </div>
+
+        <!-- 幻燈片 7: 拿破崙三世套房 -->
+        <div class="slide">
+            <div class="background-pattern"></div>
+            <h1 class="title">輝煌的第二帝國：拿破崙三世套房</h1>
+            <p class="intro-text">
+                探索拿破崙三世時期的奢華與輝煌。這些套房是<span class="highlight-gold">第二帝國風格</span>的典範，展示了當時皇室生活的極致奢華與精緻工藝，與博物館的其他展區形成鮮明對比。
+            </p>
+            <div class="content-container">
+                <div class="text-content">
+                    <div class="architecture-feature">
+                        <div class="feature-title">
+                            <i class="fas fa-couch"></i>
+                            <span>奢華裝飾</span>
+                        </div>
+                        <div class="feature-text">
+                            套房以其豐富的<span class="highlight-gold">鍍金</span>、華麗的<span class="highlight-gold">吊燈</span>、天鵝絨窗簾和精緻的灰泥裝飾而聞名，營造出令人目不暇給的視覺效果。
+                        </div>
+                    </div>
+                    <div class="architecture-feature">
+                        <div class="feature-title">
+                            <i class="fas fa-history"></i>
+                            <span>歷史功能</span>
+                        </div>
+                        <div class="feature-text">
+                            這些房間曾是<span class="highlight-blue">國務部長的官邸</span>和接待廳，用於舉辦盛大的晚宴和社交活動，是當時法國政治和社交生活的中心。
+                        </div>
+                    </div>
+                    <div class="architecture-feature">
+                        <div class="feature-title">
+                            <i class="fas fa-gem"></i>
+                            <span>保存完好的典範</span>
+                        </div>
+                        <div class="feature-text">
+                            作為第二帝國裝飾藝術保存最完好的範例之一，這些套房讓遊客能夠一窺19世紀中葉法國上層社会的生活場景。
+                        </div>
+                    </div>
+                </div>
+                <div class="image-container">
+                    <div class="image-loader"></div>
+                    <img src="https://media.greatfire.org/cdn-cgi/image/width=574/proxy/?url=https://mmbiz.qpic.cn/mmbiz_jpg/qC3uyNA8ZPMyX7CJkPA3fj93ibSnB6ic8ibialaZVpu3SHpzKXFOrsHnNzW8tNDgR6od4Hic08Oib7RCCcrFYpsCNZbw/640?wx_fmt=jpeg" 
+                         alt="拿破崙三世套房" class="image-frame" onload="this.previousElementSibling.style.display='none'">
+                </div>
+            </div>
+        </div>
+
+        <!-- 幻燈片 8: 重要畫廊 -->
+        <div class="slide">
+            <div class="background-pattern"></div>
+            <h1 class="title">壯麗的畫廊</h1>
+            <p class="intro-text">
+                除了著名的藝術品外，羅浮宮本身就是建築和室內設計的傑作，其令人驚嘆的畫廊既展示了其中的藝術品，也展現了宮殿豐富的歷史。
+            </p>
+            
+            <div class="content-container">
+                <div class="text-content">
+                    <div class="gallery-feature">
+                        <div class="gallery-title">
+                            <i class="fas fa-sun"></i>
+                            <span>阿波羅畫廊</span>
+                        </div>
+                        <div class="gallery-description">
+                            壯觀的阿波羅畫廊為凡爾賽宮的<span class="highlight-gold">鏡廳</span>提供了靈感。其天花板通過寓言繪畫和奢華的鍍金裝飾慶祝<span class="highlight-blue">太陽王路易十四</span>。
+                        </div>
+                        <div class="gallery-fact">
+                            現存放法國王室珠寶和其他皇家珍寶
+                        </div>
+                    </div>
+                    
+                    <div class="gallery-feature">
+                        <div class="gallery-title">
+                            <i class="fas fa-palette"></i>
+                            <span>紅色房間（Salles Rouges）</span>
+                        </div>
+                        <div class="gallery-description">
+                            標誌性的紅色房間以<span class="highlight-gold">深紅色牆壁</span>為特色，生動地展示了博物館收藏的<span class="highlight-blue">魯本斯</span>和<span class="highlight-blue">德拉克洛瓦</span>等大師的大幅繪畫。
+                        </div>
+                        <div class="gallery-fact">
+                            收藏了羅浮宮許多16至19世紀最重要的繪畫
+                        </div>
+                    </div>
+                    
+                    <div class="stats-container">
+                        <div class="stat">
+                            <div class="stat-number">72,735 m²</div>
+                            <div class="stat-label">展覽空間</div>
+                        </div>
+                        <div class="stat">
+                            <div class="stat-number">403</div>
+                            <div class="stat-label">展覽廳</div>
+                        </div>
+                        <div class="stat">
+                            <div class="stat-number">14.5 km</div>
+                            <div class="stat-label">畫廊總長度</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="image-container">
+                    <div class="image-loader"></div>
+                    <img src="https://imageproxy.pixnet.cc/imgproxy?url=https://pic.pimg.tw/pongopix/1531030729-403725770_n.jpg" 
+                             alt="阿波羅畫廊" class="image-frame" onload="this.previousElementSibling.style.display='none'">
+                </div>
+            </div>
+        </div>
+
+        <!-- 幻燈片 9: 數據統計 -->
+        <div class="slide">
+            <div class="background-pattern"></div>
+            <h1 class="title">數字背後的羅浮宮</h1>
+            <p class="intro-text">
+                羅浮宮令人印象深刻的統計數據揭示了其藏品的非凡規模、全球意義以及在博物館參觀者中無與倫比的受歡迎程度。
+            </p>
+            
+            <div class="stats-container">
+                <div class="stats-column">
+                    <div class="stat-card">
+                        <div class="stat-title" style="color: var(--accent-color-blue); font-weight: bold;">總藏品數量</div>
+                        <div class="stat-value">615,797</div>
+                        <div class="stat-description">
+                            涵蓋從史前時期到21世紀的文物
+                        </div>
+                    </div>
+                    
+                    <div class="stat-card">
+                        <div class="stat-title" style="color: var(--accent-color-blue); font-weight: bold;">展出藏品</div>
+                        <div class="stat-value">35,000</div>
+                        <div class="stat-description">
+                            目前展出的作品（占總藏品的<span class="highlight-gold">6%</span>）
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="stats-column">
+                    <div class="stat-card">
+                        <div class="stat-title" style="color: var(--accent-color-blue); font-weight: bold;">展覽面積</div>
+                        <div class="stat-value">72,735 m²</div>
+                        <div class="stat-description">
+                            按展覽面積計算為世界最大博物館
+                        </div>
+                    </div>
+                    
+                    <div class="stat-card">
+                        <div class="stat-title" style="color: var(--accent-color-blue); font-weight: bold;">全球排名</div>
+                        <div class="stat-value">#1</div>
+                        <div class="stat-description">
+                            自2023年以來全球參觀人數最多的博物館
+                        </div>
+                    </div>
+                    
+                    <div class="stat-card">
+                        <div class="stat-title" style="color: var(--accent-color-blue); font-weight: bold;">年參觀人數</div>
+                        <div class="stat-value">870萬</div>
+                        <div class="stat-description">
+                            2024年的參觀人次
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 幻燈片 10: 遺產與影響 -->
+        <div class="slide">
+            <div class="background-pattern"></div>
+            <h1 class="title">活的遺產</h1>
+            <p class="intro-text">
+                羅浮宮不僅僅是藝術的倉庫，它作為一個充滿活力的文化機構不斷演變，具有全球影響力，塑造了我們體驗、理解和保護共享藝術遺產的方式。
+            </p>
+            
+            <div class="content-container">
+                <div class="text-content">
+                    <div class="legacy-feature">
+                        <div class="legacy-icon">
+                            <i class="fas fa-globe"></i>
+                        </div>
+                        <div class="legacy-content">
+                            <div class="legacy-title">文化大使</div>
+                            <div class="legacy-text">
+                                羅浮宮作為法國首要的文化大使，通過巡迴展覽、合作研究以及2017年開放的<span class="highlight-gold">阿布扎比羅浮宮</span>來促進國際合作。
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="legacy-feature">
+                        <div class="legacy-icon">
+                            <i class="fas fa-graduation-cap"></i>
+                        </div>
+                        <div class="legacy-content">
+                            <div class="legacy-title">教育創新</div>
+                            <div class="legacy-text">
+                                通過為各年齡段提供的工作坊、講座和專門課程，博物館將其龐大的藏品轉化為<span class="highlight-blue">生動的教育資源</span>。
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="legacy-feature">
+                        <div class="legacy-icon">
+                            <i class="fas fa-laptop"></i>
+                        </div>
+                        <div class="legacy-content">
+                            <div class="legacy-title">數位轉型</div>
+                            <div class="legacy-text">
+                                羅浮宮擁抱技術，提供虛擬參觀、互動導覽和全面的<span class="highlight-blue">在線數據庫</span>，提供超過<span class="highlight-gold">480,000</span>件藝術品的訪問權限。
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="image-container">
+                    <div class="image-loader"></div>
+                    <img src="https://i0.wp.com/oui-my-france.com/wp-content/uploads/2024/10/%E7%BE%85%E6%B5%AE%E5%AE%AE%E4%B8%89%E5%AF%B6.png?resize=1170%2C614&ssl=1" 
+                         alt="羅浮宮三寶" class="image-frame" onload="this.previousElementSibling.style.display='none'">
+                </div>
+            </div>
+            
+            <p class="quote-text">
+                "羅浮宮不僅僅是物件的集合，它是通過藝術表達的人類記憶。"
+            </p>
+        </div>
+    </div>
+
+    <!-- 導覽按鈕 -->
+    <div class="nav-buttons">
+        <button class="nav-btn prev-btn"><i class="fas fa-chevron-left"></i></button>
+        <button class="nav-btn next-btn"><i class="fas fa-chevron-right"></i></button>
+    </div>
+
+    <!-- 幻燈片指示器 -->
+    <div class="slide-indicators"></div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // 元素獲取
+            const slides = document.querySelectorAll('.slide');
+            const prevBtn = document.querySelector('.prev-btn');
+            const nextBtn = document.querySelector('.next-btn');
+            const indicatorsContainer = document.querySelector('.slide-indicators');
+            const fullscreenBtn = document.querySelector('.fullscreen-btn');
+            const autoplayControl = document.querySelector('.autoplay-control');
+            const autoplayIcon = document.getElementById('autoplay-icon');
+            const autoplayText = document.getElementById('autoplay-text');
+            const backgroundMusic = document.getElementById('background-music');
+
+            // 狀態變數
+            let currentSlide = 0;
+            let autoplayInterval;
+            let isAutoplay = true; 
+            const autoplayDelay = 7000;
+            let musicStarted = false; 
+
+            // --- 音樂播放功能 ---
+            function playMusic() {
+                if (!musicStarted) {
+                    const playPromise = backgroundMusic.play();
+                    if (playPromise !== undefined) {
+                        playPromise.then(_ => {
+                            musicStarted = true;
+                        }).catch(error => {
+                            console.log("音樂自動播放失敗，等待用戶互動。", error);
+                        });
+                    }
+                }
+            }
+
+            // --- 核心功能函數 ---
+            function goToSlide(index) {
+                slides[currentSlide].classList.remove('active');
+                if (indicators[currentSlide]) indicators[currentSlide].classList.remove('active');
+                
+                currentSlide = (index + slides.length) % slides.length; 
+                
+                slides[currentSlide].classList.add('active');
+                if (indicators[currentSlide]) indicators[currentSlide].classList.add('active');
+            }
+
+            function startAutoplay() {
+                clearInterval(autoplayInterval);
+                autoplayInterval = setInterval(() => {
+                    goToSlide(currentSlide + 1);
+                }, autoplayDelay);
+            }
+
+            function stopAutoplay() {
+                clearInterval(autoplayInterval);
+            }
+
+            function updateAutoplayButtonUI() {
+                if (isAutoplay) {
+                    autoplayIcon.className = 'fas fa-pause';
+                    autoplayText.textContent = '自動播放: 開啟';
+                } else {
+                    autoplayIcon.className = 'fas fa-play';
+                    autoplayText.textContent = '自動播放: 關閉';
+                }
+            }
+
+            // --- 事件監聽與初始化 ---
+            slides.forEach((_, index) => {
+                const indicator = document.createElement('div');
+                indicator.classList.add('indicator');
+                indicator.addEventListener('click', () => {
+                    playMusic(); 
+                    goToSlide(index);
+                    if (isAutoplay) {
+                        startAutoplay();
+                    }
+                });
+                indicatorsContainer.appendChild(indicator);
+            });
+            const indicators = document.querySelectorAll('.indicator');
+
+            prevBtn.addEventListener('click', () => {
+                playMusic(); 
+                goToSlide(currentSlide - 1);
+                if (isAutoplay) startAutoplay();
+            });
+            
+            nextBtn.addEventListener('click', () => {
+                playMusic(); 
+                goToSlide(currentSlide + 1);
+                if (isAutoplay) startAutoplay();
+            });
+
+            document.addEventListener('keydown', (e) => {
+                if (e.key === 'ArrowLeft' || e.key === 'ArrowRight') {
+                    playMusic(); 
+                    if (e.key === 'ArrowLeft') {
+                        goToSlide(currentSlide - 1);
+                    } else {
+                        goToSlide(currentSlide + 1);
+                    }
+                    if (isAutoplay) startAutoplay();
+                }
+                if (e.key === 'Escape' && document.fullscreenElement) {
+                    exitFullscreen();
+                }
+                if (e.key === 'F11') {
+                    e.preventDefault();
+                    toggleFullscreen();
+                }
+            });
+
+            autoplayControl.addEventListener('click', () => {
+                playMusic(); 
+                isAutoplay = !isAutoplay;
+                if (isAutoplay) {
+                    startAutoplay();
+                } else {
+                    stopAutoplay();
+                }
+                updateAutoplayButtonUI();
+            });
+
+            function toggleFullscreen() {
+                playMusic(); 
+                if (!document.fullscreenElement) {
+                    if (document.documentElement.requestFullscreen) document.documentElement.requestFullscreen();
+                    else if (document.documentElement.mozRequestFullScreen) document.documentElement.mozRequestFullScreen();
+                    else if (document.documentElement.webkitRequestFullscreen) document.documentElement.webkitRequestFullscreen();
+                    else if (document.documentElement.msRequestFullscreen) document.documentElement.msRequestFullscreen();
+                } else {
+                    if (document.exitFullscreen) document.exitFullscreen();
+                    else if (document.mozCancelFullScreen) document.mozCancelFullScreen();
+                    else if (document.webkitExitFullscreen) document.webkitExitFullscreen();
+                    else if (document.msExitFullscreen) document.msExitFullscreen();
+                }
+            }
+
+            function updateFullscreenButton() {
+                if (document.fullscreenElement) {
+                    fullscreenBtn.innerHTML = '<i class="fas fa-compress"></i>';
+                    fullscreenBtn.title = "退出全螢幕";
+                } else {
+                    fullscreenBtn.innerHTML = '<i class="fas fa-expand"></i>';
+                    fullscreenBtn.title = "進入全螢幕";
+                }
+            }
+            
+            fullscreenBtn.addEventListener('click', toggleFullscreen);
+            document.addEventListener('fullscreenchange', updateFullscreenButton);
+            document.addEventListener('webkitfullscreenchange', updateFullscreenButton);
+            document.addEventListener('mozfullscreenchange', updateFullscreenButton);
+            document.addEventListener('MSFullscreenChange', updateFullscreenButton);
+
+            // 初始化
+            goToSlide(0); 
+            updateAutoplayButtonUI(); 
+            if (isAutoplay) {
+                startAutoplay(); 
+            }
+        });
+    </script>
+</body>
+</html>
