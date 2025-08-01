@@ -1,0 +1,1074 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>電影導演視覺風格展示</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=Roboto:wght@300;400;700&display=swap');
+        
+        :root {
+            --hitchcock-bg: #000000;
+            --anderson-bg: #f0e6c1;
+            --nolan-bg: #0a192f;
+            --wong-bg: #0f0f1a;
+            --tarantino-bg: #2b1c15;
+            --miyazaki-bg: linear-gradient(to bottom, #90e0ef, #caf0f8);
+            /* New Directors */
+            --fincher-bg: #2c3e50;
+            --cuaron-bg: #a9a9a9;
+            --burton-bg: #413c69;
+            --kubrick-bg: #f5f5f5;
+        }
+        
+        body {
+            background-color: #121212;
+            color: #f0f0f0;
+            font-family: 'Roboto', sans-serif;
+            overflow-x: hidden;
+        }
+        
+        .director-card {
+            transition: all 0.4s ease;
+            transform: scale(0.95);
+            opacity: 0.8;
+            cursor: pointer;
+            position: relative;
+            overflow: hidden;
+            border-radius: 12px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+        }
+        
+        .director-card.active {
+            transform: scale(1);
+            opacity: 1;
+            box-shadow: 0 10px 25px rgba(255, 255, 255, 0.1);
+            z-index: 10;
+        }
+        
+        .director-card:hover:not(.active) {
+            transform: scale(0.98);
+            opacity: 0.9;
+        }
+        
+        .hitchcock-style {
+            background: var(--hitchcock-bg);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+        
+        .anderson-style {
+            background: var(--anderson-bg);
+            border: 1px solid #e6c1c1;
+            color: #333; /* 增加深色文字提高可讀性 */
+        }
+        
+        .nolan-style {
+            background: var(--nolan-bg);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+        
+        .wong-style {
+            background: var(--wong-bg);
+            border: 1px solid rgba(217, 32, 39, 0.5);
+        }
+        
+        .tarantino-style {
+            background: var(--tarantino-bg);
+            border: 1px solid #e76f51;
+        }
+        
+        .miyazaki-style {
+            background: var(--miyazaki-bg);
+            border: 1px solid #588157;
+            color: #2d6a4f; /* 使用深綠色增強可讀性 */
+        }
+
+        /* New Director Styles */
+        .fincher-style {
+            background: var(--fincher-bg);
+            border: 1px solid #6c7a89;
+        }
+
+        .cuaron-style {
+            background: var(--cuaron-bg);
+            border: 1px solid #777;
+            color: #333;
+        }
+
+        .burton-style {
+            background: var(--burton-bg);
+            border: 1px solid #a389d4;
+        }
+
+        .kubrick-style {
+            background: var(--kubrick-bg);
+            border: 1px solid #c0392b;
+            color: #333;
+        }
+        
+        .diagonal-line {
+            position: absolute;
+            height: 2px;
+            width: 100%;
+            background-color: #ffffff;
+            transform: rotate(-45deg);
+            transform-origin: left;
+            opacity: 0.3;
+        }
+        
+        .film-grain::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIzMDAiIGhlaWdodD0iMzAwIj48ZmlsdGVyIGlkPSJhIiB4PSIwIiB5PSIwIj48ZmVUdXJidWxlbmNlIHR5cGU9ImZyYWN0YWxOb2lzZSIgYmFzZUZyZXF1ZW5jeT0iLjc1IiBzdGl0Y2hUaWxlcz0ic3RpdGNoIi8+PGZlQ29sb3JNYXRyaXggdHlwZT0ic2F0dXJhdGUiIHZhbHVlcz0iMCIvPjwvZmlsdGVyPjxyZWN0IHdpZHRoPSIzMDAiIGhlaWdodD0iMzAwIiBmaWx0ZXI9InVybCgjYSkiIG9wYWNpdHk9Ii4wNSIvPjwvc3ZnPg==');
+            pointer-events: none;
+            opacity: 0.1;
+            z-index: 1;
+        }
+        
+        .light-leak {
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(ellipse at top right, rgba(217, 32, 39, 0.3), transparent 70%),
+                        radial-gradient(ellipse at bottom left, rgba(45, 125, 210, 0.3), transparent 70%);
+            pointer-events: none;
+            opacity: 0.6;
+            z-index: 0;
+        }
+        
+        .grid-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: linear-gradient(rgba(255, 255, 255, 0.03) 1px, transparent 1px),
+                              linear-gradient(90deg, rgba(255, 255, 255, 0.03) 1px, transparent 1px);
+            background-size: 20px 20px;
+            pointer-events: none;
+            z-index: 1;
+        }
+        
+        .clouds {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI0MDAiIGhlaWdodD0iNDAwIiB2aWV3Qm94PSIwIDAgNDAwIDQwMCI+PGRlZnM+PGZpbHRlciBpZD0iYSIgeD0iMCIgeT0iMCIgd2lkdGg9IjEwMCUiIGhlaWdodD0iMTAwJSI+PGZlR2F1c3NpYW5CbHVyIGluPSJTb3VyY2VHcmFwaGljIiBzdGREZXZpYXRpb249IjEwIi8+PC9maWx0ZXI+PC9kZWZzPjxjaXJjbGUgY3g9IjgwIiBjeT0iODAiIHI9IjQwIiBmaWxsPSIjZmZmIiBvcGFjaXR5PSIuNCIgZmlsdGVyPSJ1cmwoI2EpIi8+PGNpcmNsZSBjeD0iMzAwIiBjeT0iMTIwIiByPSI0MCIgZmlsbD0iI2ZmZiIgb3BhY2l0eT0iLjIiIGZpbHRlcj0idXJsKCNhKSIvPjxjaXJjbGUgY3g9IjE1MCIgY3k9IjMwMCIgcj0iNDAiIGZpbGw9IiNmZmYiIG9wYWNpdHk9Ii4zIiBmaWx0ZXI9InVybCgjYSkiLz48L3N2Zz4=');
+            opacity: 0.7;
+            pointer-events: none;
+            z-index: 0;
+        }
+        
+        .video-container {
+            position: relative;
+            overflow: hidden;
+            border-radius: 8px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.5);
+            aspect-ratio: 16/9;
+        }
+        
+        .video-container video {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        
+        .director-name {
+            font-family: 'Playfair Display', serif;
+            font-weight: 700;
+            letter-spacing: 1px;
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
+        }
+        
+        .technique-item {
+            display: flex;
+            align-items: center;
+            margin-bottom: 8px;
+            padding: 8px;
+            border-radius: 6px;
+            background: rgba(255, 255, 255, 0.05);
+        }
+        
+        .color-palette {
+            display: flex;
+            gap: 10px;
+            margin-top: 10px;
+        }
+        
+        .color-box {
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+        }
+        
+        .director-details {
+            transition: all 0.5s ease;
+            max-height: 0;
+            overflow: hidden;
+            opacity: 0;
+        }
+        
+        .director-card.active .director-details {
+            max-height: 500px;
+            opacity: 1;
+        }
+        
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        
+        .directors-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 25px;
+            margin-bottom: 40px;
+        }
+        
+        .video-section {
+            background: rgba(30, 30, 40, 0.8);
+            border-radius: 15px;
+            padding: 25px;
+            margin-top: 30px;
+            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.4);
+        }
+        
+        .section-title {
+            font-family: 'Playfair Display', serif;
+            font-size: 2.5rem;
+            text-align: center;
+            margin-bottom: 30px;
+            position: relative;
+            padding-bottom: 15px;
+        }
+        
+        .section-title::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 100px;
+            height: 3px;
+            background: linear-gradient(90deg, #ff6b6b, #4ecdc4);
+        }
+        
+        .video-info {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 25px;
+            margin-top: 25px;
+        }
+        
+        .info-card {
+            flex: 1;
+            min-width: 250px;
+            background: rgba(50, 50, 60, 0.6);
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+        }
+        
+        .info-card h3 {
+            font-size: 1.4rem;
+            margin-bottom: 15px;
+            color: #4ecdc4;
+            border-bottom: 2px solid rgba(78, 205, 196, 0.3);
+            padding-bottom: 8px;
+        }
+        
+        .lang-toggle {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            z-index: 100;
+            background: rgba(30, 30, 40, 0.8);
+            color: #f0f0f0;
+            border: 1px solid #4ecdc4;
+            border-radius: 20px;
+            padding: 8px 16px;
+            font-size: 0.9rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .lang-toggle:hover {
+            background: rgba(78, 205, 196, 0.2);
+            transform: translateY(-2px);
+        }
+        
+        @media (max-width: 768px) {
+            .directors-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .video-info {
+                flex-direction: column;
+            }
+            
+            .lang-toggle {
+                top: 10px;
+                right: 10px;
+                padding: 6px 12px;
+                font-size: 0.8rem;
+            }
+        }
+    </style>
+</head>
+<body class="bg-gray-900">
+    <button id="lang-toggle" class="lang-toggle">English</button>
+    
+    <div class="container">
+        <header class="text-center py-10">
+            <h1 class="section-title" id="page-title">電影導演視覺風格展示</h1>
+            <p class="text-xl text-gray-300 max-w-3xl mx-auto" id="page-subtitle">
+                探索傳奇導演的獨特視覺語言
+            </p>
+        </header>
+        
+        <div class="directors-grid">
+            <!-- 希區考克 -->
+            <div class="director-card hitchcock-style film-grain active" data-director="hitchcock">
+                <div class="diagonal-line" style="top: 30px;"></div>
+                <div class="diagonal-line" style="top: 150px;"></div>
+                <div class="diagonal-line" style="top: 270px;"></div>
+                
+                <div class="p-6">
+                    <h2 class="director-name text-white text-2xl mb-4" data-lang-key="hitchcock-name">亞佛烈·希區考克</h2>
+                    <p class="text-gray-300 mb-4" data-lang-key="hitchcock-desc">懸疑大師，銳角鏡頭，窺視式取景</p>
+                    
+                    <div class="director-details">
+                        <div class="technique-item">
+                            <i class="fas fa-camera mr-3 text-red-400"></i>
+                            <span data-lang-key="hitchcock-t1">窺視式取景 - 觀眾作為觀察者</span>
+                        </div>
+                        <div class="technique-item">
+                            <i class="fas fa-sun mr-3 text-yellow-400"></i>
+                            <span data-lang-key="hitchcock-t2">高對比度照明與深邃陰影</span>
+                        </div>
+                        <div class="technique-item">
+                            <i class="fas fa-vector-square mr-3 text-blue-400"></i>
+                            <span data-lang-key="hitchcock-t3">創造視覺張力的銳角</span>
+                        </div>
+                        
+                        <p class="mt-4 text-gray-300" data-lang-key="color-palette">顏色調色盤</p>
+                        <div class="color-palette">
+                            <div class="color-box" style="background-color: #000000;"></div>
+                            <div class="color-box" style="background-color: #ffffff;"></div>
+                            <div class="color-box" style="background-color: #444444;"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- 魏斯·安德森 -->
+            <div class="director-card anderson-style" data-director="anderson">
+                <div class="p-6">
+                    <h2 class="director-name text-2xl mb-4" style="color: #2d3748;" data-lang-key="anderson-name">魏斯·安德森</h2>
+                    <p class="mb-4" style="color: #4a5568;" data-lang-key="anderson-desc">對稱構圖，柔和色調，古怪舞台</p>
+                    
+                    <div class="director-details">
+                        <div class="technique-item" style="color: #2d3748;">
+                            <i class="fas fa-crop-alt mr-3 text-pink-500"></i>
+                            <span data-lang-key="anderson-t1">完美對稱的構圖</span>
+                        </div>
+                        <div class="technique-item" style="color: #2d3748;">
+                            <i class="fas fa-palette mr-3 text-green-500"></i>
+                            <span data-lang-key="anderson-t2">精心設計的柔和色調</span>
+                        </div>
+                        <div class="technique-item" style="color: #2d3748;">
+                            <i class="fas fa-theater-masks mr-3 text-blue-500"></i>
+                            <span data-lang-key="anderson-t3">古怪的舞台佈置</span>
+                        </div>
+                        
+                        <p class="mt-4" style="color: #4a5568;" data-lang-key="color-palette">顏色調色盤</p>
+                        <div class="color-palette">
+                            <div class="color-box" style="background-color: #c1e6d3;"></div>
+                            <div class="color-box" style="background-color: #e6c1c1;"></div>
+                            <div class="color-box" style="background-color: #c1d3e6;"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- 克里斯多福·諾蘭 -->
+            <div class="director-card nolan-style" data-director="nolan">
+                <div class="grid-overlay"></div>
+                
+                <div class="p-6">
+                    <h2 class="director-name text-gray-300 text-2xl mb-4" data-lang-key="nolan-name">克里斯多福·諾蘭</h2>
+                    <p class="text-gray-400 mb-4" data-lang-key="nolan-desc">非線性敘事，深色陰影，IMAX取景</p>
+                    
+                    <div class="director-details">
+                        <div class="technique-item">
+                            <i class="fas fa-history mr-3 text-blue-400"></i>
+                            <span data-lang-key="nolan-t1">非線性敘事結構</span>
+                        </div>
+                        <div class="technique-item">
+                            <i class="fas fa-expand mr-3 text-yellow-400"></i>
+                            <span data-lang-key="nolan-t2">IMAX畫幅與建築精度</span>
+                        </div>
+                        <div class="technique-item">
+                            <i class="fas fa-cube mr-3 text-gray-400"></i>
+                            <span data-lang-key="nolan-t3">實景特效優先於CGI</span>
+                        </div>
+                        
+                        <p class="mt-4 text-gray-400" data-lang-key="color-palette">顏色調色盤</p>
+                        <div class="color-palette">
+                            <div class="color-box" style="background-color: #0a192f;"></div>
+                            <div class="color-box" style="background-color: #000000;"></div>
+                            <div class="color-box" style="background-color: #3a506b;"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- 王家衛 -->
+            <div class="director-card wong-style film-grain" data-director="wong">
+                <div class="light-leak"></div>
+                
+                <div class="p-6">
+                    <h2 class="director-name text-white text-2xl mb-4" data-lang-key="wong-name">王家衛</h2>
+                    <p class="text-gray-300 mb-4" data-lang-key="wong-desc">夢幻慢動作，霓虹燈光，情感特寫</p>
+                    
+                    <div class="director-details">
+                        <div class="technique-item">
+                            <i class="fas fa-tachometer-alt mr-3 text-red-400"></i>
+                            <span data-lang-key="wong-t1">夢幻慢動作序列</span>
+                        </div>
+                        <div class="technique-item">
+                            <i class="fas fa-lightbulb mr-3 text-blue-400"></i>
+                            <span data-lang-key="wong-t2">霓虹浸染的城市燈光</span>
+                        </div>
+                        <div class="technique-item">
+                            <i class="fas fa-user mr-3 text-green-400"></i>
+                            <span data-lang-key="wong-t3">充滿情感的特寫鏡頭</span>
+                        </div>
+                        
+                        <p class="mt-4 text-gray-300" data-lang-key="color-palette">顏色調色盤</p>
+                        <div class="color-palette">
+                            <div class="color-box" style="background-color: #d92027;"></div>
+                            <div class="color-box" style="background-color: #2d7dd2;"></div>
+                            <div class="color-box" style="background-color: #20d99b;"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- 昆汀·塔倫提諾 -->
+            <div class="director-card tarantino-style film-grain" data-director="tarantino">
+                <div class="p-6">
+                    <h2 class="director-name text-yellow-300 text-2xl mb-4" data-lang-key="tarantino-name">昆汀·塔倫提諾</h2>
+                    <p class="text-yellow-200 mb-4" data-lang-key="tarantino-desc">風格化張力，復古美學，暴力美學</p>
+                    
+                    <div class="director-details">
+                        <div class="technique-item">
+                            <i class="fas fa-exchange-alt mr-3 text-red-500"></i>
+                            <span data-lang-key="tarantino-t1">非線性敘事結構</span>
+                        </div>
+                        <div class="technique-item">
+                            <i class="fas fa-fire mr-3 text-orange-500"></i>
+                            <span data-lang-key="tarantino-t2">風格化暴力與視覺回報</span>
+                        </div>
+                        <div class="technique-item">
+                            <i class="fas fa-comments mr-3 text-yellow-500"></i>
+                            <span data-lang-key="tarantino-t3">建立張力的擴展對話</span>
+                        </div>
+                        
+                        <p class="mt-4 text-yellow-200" data-lang-key="color-palette">顏色調色盤</p>
+                        <div class="color-palette">
+                            <div class="color-box" style="background-color: #f9a826;"></div>
+                            <div class="color-box" style="background-color: #e76f51;"></div>
+                            <div class="color-box" style="background-color: #d62828;"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- 宮崎駿 -->
+            <div class="director-card miyazaki-style" data-director="miyazaki">
+                <div class="clouds"></div>
+                
+                <div class="p-6">
+                    <h2 class="director-name text-2xl mb-4" style="color: #2d6a4f;" data-lang-key="miyazaki-name">宮崎駿</h2>
+                    <p class="mb-4" style="color: #40916c;" data-lang-key="miyazaki-desc">手繪柔和，自然與飛翔，奇幻寧靜</p>
+                    
+                    <div class="director-details">
+                        <div class="technique-item" style="color: #2d6a4f;">
+                            <i class="fas fa-paint-brush mr-3 text-green-600"></i>
+                            <span data-lang-key="miyazaki-t1">流暢運動的手繪動畫</span>
+                        </div>
+                        <div class="technique-item" style="color: #2d6a4f;">
+                            <i class="fas fa-tree mr-3 text-green-700"></i>
+                            <span data-lang-key="miyazaki-t2">細膩的自然環境</span>
+                        </div>
+                        <div class="technique-item" style="color: #2d6a4f;">
+                            <i class="fas fa-wind mr-3 text-blue-500"></i>
+                            <span data-lang-key="miyazaki-t3">飛行與失重主題</span>
+                        </div>
+                        
+                        <p class="mt-4" style="color: #40916c;" data-lang-key="color-palette">顏色調色盤</p>
+                        <div class="color-palette">
+                            <div class="color-box" style="background-color: #588157;"></div>
+                            <div class="color-box" style="background-color: #90e0ef;"></div>
+                            <div class="color-box" style="background-color: #ffdd00;"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 大衛·芬奇 -->
+            <div class="director-card fincher-style" data-director="fincher">
+                <div class="p-6">
+                    <h2 class="director-name text-white text-2xl mb-4" data-lang-key="fincher-name">大衛·芬奇</h2>
+                    <p class="text-gray-300 mb-4" data-lang-key="fincher-desc">陰鬱冷峻色調，精準數位攝影，極度細節控制</p>
+                    <div class="director-details">
+                        <div class="technique-item">
+                            <i class="fas fa-camera-retro mr-3 text-cyan-400"></i>
+                            <span data-lang-key="fincher-t1">數位精準</span>
+                        </div>
+                        <div class="technique-item">
+                            <i class="fas fa-palette mr-3 text-blue-300"></i>
+                            <span data-lang-key="fincher-t2">冰冷色調</span>
+                        </div>
+                        <div class="technique-item">
+                            <i class="fas fa-adjust mr-3 text-gray-200"></i>
+                            <span data-lang-key="fincher-t3">強烈對比</span>
+                        </div>
+                        <p class="mt-4 text-gray-300" data-lang-key="color-palette">顏色調色盤</p>
+                        <div class="color-palette">
+                            <div class="color-box" style="background-color: #2c3e50;"></div>
+                            <div class="color-box" style="background-color: #16a085;"></div>
+                            <div class="color-box" style="background-color: #95a5a6;"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 阿方索·卡隆 -->
+            <div class="director-card cuaron-style" data-director="cuaron">
+                <div class="p-6">
+                    <h2 class="director-name text-2xl mb-4" style="color: #2d3748;" data-lang-key="cuaron-name">阿方索·卡隆</h2>
+                    <p class="mb-4" style="color: #4a5568;" data-lang-key="cuaron-desc">流暢運鏡，詩意長鏡頭，沉浸式真實感</p>
+                    <div class="director-details">
+                        <div class="technique-item" style="color: #2d3748;">
+                            <i class="fas fa-infinity mr-3 text-green-700"></i>
+                            <span data-lang-key="cuaron-t1">長鏡頭美學</span>
+                        </div>
+                        <div class="technique-item" style="color: #2d3748;">
+                            <i class="fas fa-hand-rock mr-3 text-yellow-800"></i>
+                            <span data-lang-key="cuaron-t2">手持攝影</span>
+                        </div>
+                        <div class="technique-item" style="color: #2d3748;">
+                            <i class="fas fa-lightbulb mr-3 text-blue-600"></i>
+                            <span data-lang-key="cuaron-t3">光線敘事</span>
+                        </div>
+                        <p class="mt-4" style="color: #4a5568;" data-lang-key="color-palette">顏色調色盤</p>
+                        <div class="color-palette">
+                            <div class="color-box" style="background-color: #d2b48c;"></div>
+                            <div class="color-box" style="background-color: #4682b4;"></div>
+                            <div class="color-box" style="background-color: #556b2f;"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 提姆·波頓 -->
+            <div class="director-card burton-style film-grain" data-director="burton">
+                <div class="p-6">
+                    <h2 class="director-name text-purple-300 text-2xl mb-4" data-lang-key="burton-name">提姆·波頓</h2>
+                    <p class="text-purple-200 mb-4" data-lang-key="burton-desc">哥德式風格，怪誕與溫馨，黑暗童話美學</p>
+                    <div class="director-details">
+                        <div class="technique-item">
+                            <i class="fas fa-chess-rook mr-3 text-gray-400"></i>
+                            <span data-lang-key="burton-t1">哥德美學</span>
+                        </div>
+                        <div class="technique-item">
+                            <i class="fas fa-adjust mr-3 text-white"></i>
+                            <span data-lang-key="burton-t2">黑白與色彩</span>
+                        </div>
+                        <div class="technique-item">
+                            <i class="fas fa-ghost mr-3 text-red-400"></i>
+                            <span data-lang-key="burton-t3">誇張的人物造型</span>
+                        </div>
+                        <p class="mt-4 text-purple-200" data-lang-key="color-palette">顏色調色盤</p>
+                        <div class="color-palette">
+                            <div class="color-box" style="background-color: #2c2c2c;"></div>
+                            <div class="color-box" style="background-color: #ffffff;"></div>
+                            <div class="color-box" style="background-color: #9b59b6;"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 史丹利·庫柏力克 -->
+            <div class="director-card kubrick-style" data-director="kubrick">
+                <div class="p-6">
+                    <h2 class="director-name text-2xl mb-4" style="color: #c0392b;" data-lang-key="kubrick-name">史丹利·庫柏力克</h2>
+                    <p class="mb-4" style="color: #2c3e50;" data-lang-key="kubrick-desc">極致精準，冷靜控制，探索人類矛盾</p>
+                    <div class="director-details">
+                        <div class="technique-item" style="color: #2c3e50;">
+                            <i class="fas fa-square mr-3 text-red-700"></i>
+                            <span data-lang-key="kubrick-t1">極簡主義</span>
+                        </div>
+                        <div class="technique-item" style="color: #2c3e50;">
+                            <i class="fas fa-user-slash mr-3 text-black"></i>
+                            <span data-lang-key="kubrick-t2">孤獨感</span>
+                        </div>
+                        <div class="technique-item" style="color: #2c3e50;">
+                            <i class="fas fa-cogs mr-3 text-gray-600"></i>
+                            <span data-lang-key="kubrick-t3">機械式運鏡</span>
+                        </div>
+                        <p class="mt-4" style="color: #2c3e50;" data-lang-key="color-palette">顏色調色盤</p>
+                        <div class="color-palette">
+                            <div class="color-box" style="background-color: #e74c3c;"></div>
+                            <div class="color-box" style="background-color: #ffffff;"></div>
+                            <div class="color-box" style="background-color: #000000;"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="video-section">
+            <h2 class="text-2xl font-bold mb-6 text-center" id="video-section-title">導演風格影片展示</h2>
+            
+            <div class="video-container">
+                <video id="director-video" controls class="w-full h-full">
+                    <source id="video-source" src="" type="video/mp4">
+                    您的瀏覽器不支援影片標籤。
+                </video>
+            </div>
+            
+            <div class="video-info">
+                <div class="info-card">
+                    <h3 id="techniques-title">風格特點</h3>
+                    <ul class="space-y-2" id="techniques-list">
+                        <li class="flex items-start">
+                            <i class="fas fa-chevron-right mt-1 mr-2 text-blue-400"></i>
+                            <span>點擊導演卡片以查看詳細資訊</span>
+                        </li>
+                    </ul>
+                </div>
+                
+                <div class="info-card">
+                    <h3 id="framing-title">取景與構圖</h3>
+                    <ul class="space-y-2" id="framing-list">
+                        <li class="flex items-start">
+                            <i class="fas fa-chevron-right mt-1 mr-2 text-blue-400"></i>
+                            <span>點擊導演卡片以查看詳細資訊</span>
+                        </li>
+                    </ul>
+                </div>
+                
+                <div class="info-card">
+                    <h3 id="lighting-title">燈光技術</h3>
+                    <p id="lighting-text">點擊導演卡片以查看詳細資訊</p>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const directorCards = document.querySelectorAll('.director-card');
+            const directorVideo = document.getElementById('director-video');
+            const videoSource = document.getElementById('video-source');
+            const techniquesList = document.getElementById('techniques-list');
+            const framingList = document.getElementById('framing-list');
+            const lightingText = document.getElementById('lighting-text');
+            const langToggle = document.getElementById('lang-toggle');
+            
+            // 語言數據
+            const languageData = {
+                'zh': {
+                    'page-title': '電影導演視覺風格展示',
+                    'page-subtitle': '探索傳奇導演的獨特視覺語言',
+                    'video-section-title': '導演風格影片展示',
+                    'techniques-title': '風格特點',
+                    'framing-title': '取景與構圖',
+                    'lighting-title': '燈光技術',
+                    'color-palette': '顏色調色盤',
+                    'hitchcock-name': '亞佛烈·希區考克',
+                    'hitchcock-desc': '懸疑大師，銳角鏡頭，窺視式取景',
+                    'hitchcock-t1': '窺視式取景 - 觀眾作為觀察者',
+                    'hitchcock-t2': '高對比度照明與深邃陰影',
+                    'hitchcock-t3': '創造視覺張力的銳角',
+                    'anderson-name': '魏斯·安德森',
+                    'anderson-desc': '對稱構圖，柔和色調，古怪舞台',
+                    'anderson-t1': '完美對稱的構圖',
+                    'anderson-t2': '精心設計的柔和色調',
+                    'anderson-t3': '古怪的舞台佈置',
+                    'nolan-name': '克里斯多福·諾蘭',
+                    'nolan-desc': '非線性敘事，深色陰影，IMAX取景',
+                    'nolan-t1': '非線性敘事結構',
+                    'nolan-t2': 'IMAX畫幅與建築精度',
+                    'nolan-t3': '實景特效優先於CGI',
+                    'wong-name': '王家衛',
+                    'wong-desc': '夢幻慢動作，霓虹燈光，情感特寫',
+                    'wong-t1': '夢幻慢動作序列',
+                    'wong-t2': '霓虹浸染的城市燈光',
+                    'wong-t3': '充滿情感的特寫鏡頭',
+                    'tarantino-name': '昆汀·塔倫提諾',
+                    'tarantino-desc': '風格化張力，復古美學，暴力美學',
+                    'tarantino-t1': '非線性敘事結構',
+                    'tarantino-t2': '風格化暴力與視覺回報',
+                    'tarantino-t3': '建立張力的擴展對話',
+                    'miyazaki-name': '宮崎駿',
+                    'miyazaki-desc': '手繪柔和，自然與飛翔，奇幻寧靜',
+                    'miyazaki-t1': '流暢運動的手繪動畫',
+                    'miyazaki-t2': '細膩的自然環境',
+                    'miyazaki-t3': '飛行與失重主題',
+                    'fincher-name': '大衛·芬奇',
+                    'fincher-desc': '陰鬱冷峻色調，精準數位攝影，極度細節控制',
+                    'fincher-t1': '數位精準',
+                    'fincher-t2': '冰冷色調',
+                    'fincher-t3': '強烈對比',
+                    'cuaron-name': '阿方索·卡隆',
+                    'cuaron-desc': '流暢運鏡，詩意長鏡頭，沉浸式真實感',
+                    'cuaron-t1': '長鏡頭美學',
+                    'cuaron-t2': '手持攝影',
+                    'cuaron-t3': '光線敘事',
+                    'burton-name': '提姆·波頓',
+                    'burton-desc': '哥德式風格，怪誕與溫馨，黑暗童話美學',
+                    'burton-t1': '哥德美學',
+                    'burton-t2': '黑白與色彩',
+                    'burton-t3': '誇張的人物造型',
+                    'kubrick-name': '史丹利·庫柏力克',
+                    'kubrick-desc': '極致精準，冷靜控制，探索人類矛盾',
+                    'kubrick-t1': '極簡主義',
+                    'kubrick-t2': '孤獨感',
+                    'kubrick-t3': '機械式運鏡'
+                },
+                'en': {
+                    'page-title': 'Film Director Visual Styles',
+                    'page-subtitle': 'Explore the unique visual languages of legendary directors',
+                    'video-section-title': 'Director Style Video Showcase',
+                    'techniques-title': 'Style Features',
+                    'framing-title': 'Framing & Composition',
+                    'lighting-title': 'Lighting Techniques',
+                    'color-palette': 'Color Palette',
+                    'hitchcock-name': 'Alfred Hitchcock',
+                    'hitchcock-desc': 'Master of suspense, acute angles, voyeuristic framing',
+                    'hitchcock-t1': 'Voyeuristic framing - audience as observer',
+                    'hitchcock-t2': 'High-contrast lighting with deep shadows',
+                    'hitchcock-t3': 'Acute angles creating visual tension',
+                    'anderson-name': 'Wes Anderson',
+                    'anderson-desc': 'Symmetrical composition, pastel tones, eccentric staging',
+                    'anderson-t1': 'Perfectly symmetrical compositions',
+                    'anderson-t2': 'Carefully designed pastel color schemes',
+                    'anderson-t3': 'Eccentric stage-like settings',
+                    'nolan-name': 'Christopher Nolan',
+                    'nolan-desc': 'Non-linear storytelling, dark shadows, IMAX framing',
+                    'nolan-t1': 'Non-linear narrative structure',
+                    'nolan-t2': 'IMAX aspect ratio and architectural precision',
+                    'nolan-t3': 'Practical effects over CGI',
+                    'wong-name': 'Wong Kar-wai',
+                    'wong-desc': 'Dreamy slow motion, neon lighting, emotional close-ups',
+                    'wong-t1': 'Dreamy slow-motion sequences',
+                    'wong-t2': 'Neon-drenched city lighting',
+                    'wong-t3': 'Emotionally charged close-ups',
+                    'tarantino-name': 'Quentin Tarantino',
+                    'tarantino-desc': 'Stylized tension, retro aesthetics, violence as art',
+                    'tarantino-t1': 'Non-linear storytelling',
+                    'tarantino-t2': 'Stylized violence with visual payoff',
+                    'tarantino-t3': 'Extended dialogue building tension',
+                    'miyazaki-name': 'Hayao Miyazaki',
+                    'miyazaki-desc': 'Hand-drawn softness, nature and flight, fantasy serenity',
+                    'miyazaki-t1': 'Fluid hand-drawn animation',
+                    'miyazaki-t2': 'Detailed natural environments',
+                    'miyazaki-t3': 'Themes of flight and weightlessness',
+                    'fincher-name': 'David Fincher',
+                    'fincher-desc': 'Gloomy tones, precise digital photography, extreme control',
+                    'fincher-t1': 'Digital Precision',
+                    'fincher-t2': 'Cold Color Palette',
+                    'fincher-t3': 'Strong Contrast',
+                    'cuaron-name': 'Alfonso Cuarón',
+                    'cuaron-desc': 'Fluid camera, poetic long takes, immersive realism',
+                    'cuaron-t1': 'Long Take Aesthetics',
+                    'cuaron-t2': 'Handheld Camera',
+                    'cuaron-t3': 'Narrative Lighting',
+                    'burton-name': 'Tim Burton',
+                    'burton-desc': 'Gothic style, grotesque & warm, dark fairytale aesthetic',
+                    'burton-t1': 'Gothic Aesthetics',
+                    'burton-t2': 'B&W with Color',
+                    'burton-t3': 'Exaggerated Character Design',
+                    'kubrick-name': 'Stanley Kubrick',
+                    'kubrick-desc': 'Ultimate precision, cold control, exploring human contradiction',
+                    'kubrick-t1': 'Minimalism',
+                    'kubrick-t2': 'Sense of Solitude',
+                    'kubrick-t3': 'Mechanical Camera Movement'
+                }
+            };
+            
+            // 當前語言（預設為中文繁體）
+            let currentLang = 'zh';
+            
+            // 更新頁面語言
+            function updateLanguage() {
+                // 更新通用UI文本
+                document.getElementById('page-title').textContent = languageData[currentLang]['page-title'];
+                document.getElementById('page-subtitle').textContent = languageData[currentLang]['page-subtitle'];
+                document.getElementById('video-section-title').textContent = languageData[currentLang]['video-section-title'];
+                document.getElementById('techniques-title').textContent = languageData[currentLang]['techniques-title'];
+                document.getElementById('framing-title').textContent = languageData[currentLang]['framing-title'];
+                document.getElementById('lighting-title').textContent = languageData[currentLang]['lighting-title'];
+                
+                // 更新所有帶有 data-lang-key 屬性的元素文本
+                const langElements = document.querySelectorAll('[data-lang-key]');
+                langElements.forEach(element => {
+                    const key = element.getAttribute('data-lang-key');
+                    if (languageData[currentLang][key]) {
+                        element.textContent = languageData[currentLang][key];
+                    }
+                });
+                
+                // 更新影片區塊的預設提示文字
+                const activeCard = document.querySelector('.director-card.active');
+                if (activeCard) {
+                    const director = activeCard.getAttribute('data-director');
+                    setDirectorContent(director); // 只更新文字內容，不重新載入影片
+                } else {
+                    // 如果沒有任何卡片被選中，更新提示文字
+                    const placeholderText = currentLang === 'zh' ? '點擊導演卡片以查看詳細資訊' : 'Click a director card to see details';
+                    techniquesList.innerHTML = `<li class="flex items-start"><i class="fas fa-chevron-right mt-1 mr-2 text-blue-400"></i><span>${placeholderText}</span></li>`;
+                    framingList.innerHTML = `<li class="flex items-start"><i class="fas fa-chevron-right mt-1 mr-2 text-blue-400"></i><span>${placeholderText}</span></li>`;
+                    lightingText.textContent = placeholderText;
+                }
+            }
+            
+            // 語言切換按鈕事件
+            langToggle.addEventListener('click', function() {
+                currentLang = currentLang === 'zh' ? 'en' : 'zh';
+                this.textContent = currentLang === 'zh' ? 'English' : '中文繁體';
+                updateLanguage();
+            });
+            
+            // 導演詳細數據
+            const directorsData = {
+                hitchcock: {
+                    video: "https://private-us-east-1.manuscdn.com/sessionFile/LqkN3i1msJGPEk389JsGco/sandbox/slides_resource_ilutcfzjeip8l2a4gnq0k-1deed40e-e2b-prod-aws_1750751574485_na1fn_L2hvbWUvdWJ1bnR1L2RpcmVjdG9yX3N0eWxlc19wcmVzZW50YXRpb24vYWxmcmVkX2hpdGNoY29jaw.mp4?Policy=eyJTdGF0ZW1lbnQiOlt7IlJlc291cmNlIjoiaHR0cHM6Ly9wcml2YXRlLXVzLWVhc3QtMS5tYW51c2Nkbi5jb20vc2Vzc2lvbkZpbGUvTHFrTjNpMW1zSkdQRWszODlKc0djby9zYW5kYm94L3NsaWRlc19yZXNvdXJjZV9pbHV0Y2Z6amVpcDhsMmE0Z25xMGstMWRlZWQ0MGUtZTJiLXByb2QtYXdzXzE3NTA3NTE1NzQ0ODVfbmExZm5fTDJodmJXVXZkV0oxYm5SMUwyUnBjbVZqZEc5eVgzTjBlV3hsYzE5d2NtVnpaVzUwWVhScGIyNHZZV3htY21Wa1gyaHBkR05vWTI5amF3Lm1wNCIsIkNvbmRpdGlvbiI6eyJEYXRlTGVzc1RoYW4iOnsiQVdTOkVwb2NoVGltZSI6MTc2NzIyNTYwMH19fV19&Key-Pair-Id=K2HSFNDJXOU9YS&Signature=BUnwOdUtM0hTJHB9Zz7UnzBsTLydulSTRumbpoYyHc3xNOhQu3cQRPjr8U-TvWG5QxrjvIhitwJ45CdNnEhTbmHWGy3WPbfaGlXf4wh~q~haliBfF17MuzyV7em1W06G1-cfHXUM~IOYnbHmTdrQZtLuyZ8nqpBwEGr21jkvTqAW2u4t8ZvOyKAXaqVGhJq4q035jPE8eRzw9I4qpC1xXFZHXQG2X4RivGB93wVJ5O0oOtTB6UAODir1OqODeQwRdWaKme-n2rRaeLzNuEet5pM4gDxilsJ8B2g3KLOAozpkpjcDs4vVGdk2XwevBEu4TSTMriMeBfQh1DL2bVwspw__",
+                    techniques: {
+                        zh: ["窺視式取景 - 觀眾作為觀察者", "創造視覺張力的銳角", "高對比度照明與深邃陰影"],
+                        en: ["Voyeuristic framing - audience as observer", "Acute angles creating visual tension", "High-contrast lighting with deep shadows"]
+                    },
+                    framing: {
+                        zh: ["高角度鏡頭", "框中有框的構圖", "戲劇性的景深", "對角線構圖"],
+                        en: ["High-angle shots", "Frame within a frame composition", "Dramatic depth of field", "Diagonal compositions"]
+                    },
+                    lighting: {
+                        zh: "受黑色電影啟發的明暗對比照明，使用單一強光源創造戲劇性陰影。",
+                        en: "Chiaroscuro lighting inspired by film noir, using a single strong light source to create dramatic shadows."
+                    }
+                },
+                anderson: {
+                    video: "https://private-us-east-1.manuscdn.com/sessionFile/LqkN3i1msJGPEk389JsGco/sandbox/slides_resource_ilutcfzjeip8l2a4gnq0k-1deed40e-e2b-prod-aws_1750751679156_na1fn_L2hvbWUvdWJ1bnR1L2RpcmVjdG9yX3N0eWxlc19wcmVzZW50YXRpb24vd2VzX2FuZGVyc29u.mp4?Policy=eyJTdGF0ZW1lbnQiOlt7IlJlc291cmNlIjoiaHR0cHM6Ly9wcml2YXRlLXVzLWVhc3QtMS5tYW51c2Nkbi5jb20vc2Vzc2lvbkZpbGUvTHFrTjNpMW1zSkdQRWszODlKc0djby9zYW5kYm94L3NsaWRlc19yZXNvdXJjZV9pbHV0Y2Z6amVpcDhsMmE0Z25xMGstMWRlZWQ0MGUtZTJiLXByb2QtYXdzXzE3NTA3NTE2NzkxNTZfbmExZm5fTDJodmJXVXZkV0oxYm5SMUwyUnBjbVZqZEc5eVgzTjBlV3hsYzE5d2NtVnpaVzUwWVhScGIyNHZkMlZ6WDJGdVpHVnljMjl1Lm1wNCIsIkNvbmRpdGlvbiI6eyJEYXRlTGVzc1RoYW4iOnsiQVdTOkVwb2NoVGltZSI6MTc2NzIyNTYwMH19fV19&Key-Pair-Id=K2HSFNDJXOU9YS&Signature=IR8S8s6ve0tuJzF-94Yth5wp3teuWDrFsfd62Orvukp8qJ7r-uB3SabtGLLSwvCMar4FlxRS9ulBKkmhW-qC~sNdHOZnzkKKjNFrou3COkSmihMCGvgZ-PZr11nmsPoiUsbeDkY21PXNztnIuiNxY7cVV1hzqyul4wkkoG3xCuS3x99GDGNlWRmWt0HSUd1uYJQnXPqRDhgla9iaPbDtw9KAjgiRb-1mrlh1KRDYt~hV5hx6Rysnp3J5RTtjROQqLRDLS5pXspeayHTiHeBmZ8S9LY4Bza37pn-qSkrF6XdxNB4Xim40CDfcNhJHrtres1H5QtBCOqMNnWlcSDqhLg__",
+                    techniques: {
+                        zh: ["完美對稱的構圖", "精心設計的場景佈置", "精確而刻意的攝影機運動"],
+                        en: ["Perfectly symmetrical compositions", "Meticulously designed set pieces", "Precise and deliberate camera movements"]
+                    },
+                    framing: {
+                        zh: ["中心取景", "平面透視", "俯拍鏡頭", "舞台式布景"],
+                        en: ["Center framing", "Planar perspective", "Overhead shots", "Tableau-style staging"]
+                    },
+                    lighting: {
+                        zh: "平坦均勻的燈光，增強柔和色調。柔和、漫射的照明營造出童話般的氛圍。",
+                        en: "Flat, even lighting that enhances pastel color palettes. Soft, diffused illumination for a storybook feel."
+                    }
+                },
+                nolan: {
+                    video: "https://private-us-east-1.manuscdn.com/sessionFile/LqkN3i1msJGPEk389JsGco/sandbox/slides_resource_ilutcfzjeip8l2a4gnq0k-1deed40e-e2b-prod-aws_1750751731455_na1fn_L2hvbWUvdWJ1bnR1L2RpcmVjdG9yX3N0eWxlc19wcmVzZW50YXRpb24vY2hyaXN0b3BoZXJfbm9sYW4.mp4?Policy=eyJTdGF0ZW1lbnQiOlt7IlJlc291cmNlIjoiaHR0cHM6Ly9wcml2YXRlLXVzLWVhc3QtMS5tYW51c2Nkbi5jb20vc2Vzc2lvbkZpbGUvTHFrTjNpMW1zSkdQRWszODlKc0djby9zYW5kYm94L3NsaWRlc19yZXNvdXJjZV9pbHV0Y2Z6amVpcDhsMmE0Z25xMGstMWRlZWQ0MGUtZTJiLXByb2QtYXdzXzE3NTA3NTE3MzE0NTVfbmExZm5fTDJodmJXVXZkV0oxYm5SMUwyUnBjbVZqZEc5eVgzTjBlV3hsYzE5d2NtVnpaVzUwWVhScGIyNHZZMmh5YVhOMGIzQm9aWEpmYm05c1lXNC5tcDQiLCJDb25kaXRpb24iOnsiRGF0ZUxlc3NUaGFuIjp7IkFXUzpFcG9jaFRpbWUiOjE3NjcyMjU2MDB9fX1dfQ__&Key-Pair-Id=K2HSFNDJXOU9YS&Signature=cDaWVmv1IMM-EzW-FzacyU8jiEbLSS0ajQoLOfs4XaGmy5897ywpm-XsD2k-L-krogKXW8c7O1J0iNbKQ68RGfz1IRR9TyRhI3HmIVwEFB0SLGQkqu1OC7sNJLiSXOyf6-j2HVM~uH3B3Dw56Awv2M9hTqqrlaxdZs0Nung-Ha2XQtPfJSEag9ezDvrjfI1On202bWkgrVeAmLEcXUIM~XYgh~NAy9aWnm2GI9KkkitcnvlNizSwDPhbAVaLGwiTyLHVmyfvCxQ0KYkRh1ySyU0Dx1gAritLpHRwFxBeAHValhqzJzQQDJ-EJMM3aku1mw3FOxKS29DwpT4qJw6LXA__",
+                    techniques: {
+                        zh: ["非線性敘事與複雜時間線", "IMAX畫幅與建築精度", "盡可能使用實景特效而非CGI"],
+                        en: ["Non-linear narratives with complex timelines", "IMAX aspect ratio and architectural precision", "Practical effects over CGI whenever possible"]
+                    },
+                    framing: {
+                        zh: ["IMAX長寬比", "極廣角鏡頭", "旋轉視角", "建築線條"],
+                        en: ["IMAX aspect ratio", "Extreme wide shots", "Rotating perspectives", "Architectural lines"]
+                    },
+                    lighting: {
+                        zh: "高對比度照明與深邃陰影。利用自然光源營造戲劇性高光，創造深度和維度。",
+                        en: "High-contrast lighting with deep shadows. Natural light sources create dramatic highlights, adding depth and dimension."
+                    }
+                },
+                wong: {
+                    video: "https://private-us-east-1.manuscdn.com/sessionFile/LqkN3i1msJGPEk389JsGco/sandbox/slides_resource_ilutcfzjeip8l2a4gnq0k-1deed40e-e2b-prod-aws_1750751798398_na1fn_L2hvbWUvdWJ1bnR1L2RpcmVjdG9yX3N0eWxlc19wcmVzZW50YXRpb24vd29uZ19rYXJfd2Fp.mp4?Policy=eyJTdGF0ZW1lbnQiOlt7IlJlc291cmNlIjoiaHR0cHM6Ly9wcml2YXRlLXVzLWVhc3QtMS5tYW51c2Nkbi5jb20vc2Vzc2lvbkZpbGUvTHFrTjNpMW1zSkdQRWszODlKc0djby9zYW5kYm94L3NsaWRlc19yZXNvdXJjZV9pbHV0Y2Z6amVpcDhsMmE0Z25xMGstMWRlZWQ0MGUtZTJiLXByb2QtYXdzXzE3NTA3NTE3OTgzOThfbmExZm5fTDJodmJXVXZkV0oxYm5SMUwyUnBjbVZqZEc5eVgzTjBlV3hsYzE5d2NtVnpaVzUwWVhScGIyNHZkMjl1WjE5cllYSmZkMkZwLm1wNCIsIkNvbmRpdGlvbiI6eyJEYXRlTGVzc1RoYW4iOnsiQVdTOkVwb2NoVGltZSI6MTc2NzIyNTYwMH19fV19&Key-Pair-Id=K2HSFNDJXOU9YS&Signature=u0Wtww4elGb3BWE28p-Z15WplcOUuLwpRj6vtZ4~JWWlgNWrccSfRddu-~DhU42g~4utqWr6p9G~ELoRT11pcHS8gfF235tReHEewRrFVt6H~Ac8rQQHZsR7yyrhNLXYky557JKqdfd4cjAbIBRV2MeF1MPjePSmHQyxwV~GFrBIP5-vXisKeY4DTpkaawB3E-5PEogVRwXuwxGUVq3rp5qDHLdB8KQrXPgmhUSMCp4eb6hEwLJKxCYh5n50NV8uzKmx28iVyCPrHfGKdA51-zl7aChMA220Qid4qp0oVFUFgiCV4H8aNyZidktKWq3YFsGfP7F~7eJAnPxbXoHZ8A__",
+                    techniques: {
+                        zh: ["夢幻慢動作序列", "充滿情感的特寫鏡頭", "抽幀效果（混合幀率）"],
+                        en: ["Dreamy slow-motion sequences", "Emotionally charged close-ups", "Step-printing (blended frame rates)"]
+                    },
+                    framing: {
+                        zh: ["極端特寫", "反射表面", "遮蔽式取景", "淺景深"],
+                        en: ["Extreme close-ups", "Reflective surfaces", "Obscured framing", "Shallow depth of field"]
+                    },
+                    lighting: {
+                        zh: "霓虹浸染的城市燈光，鮮豔色彩在濕潤表面上反射。充滿情緒與氛圍感，並帶有刻意的漏光效果。",
+                        en: "Neon-drenched city lighting, with vibrant colors reflecting off wet surfaces. Moody and atmospheric, with intentional light leaks."
+                    }
+                },
+                tarantino: {
+                    video: "https://private-us-east-1.manuscdn.com/sessionFile/LqkN3i1msJGPEk389JsGco/sandbox/slides_resource_ilutcfzjeip8l2a4gnq0k-1deed40e-e2b-prod-aws_1750751867860_na1fn_L2hvbWUvdWJ1bnR1L2RpcmVjdG9yX3N0eWxlc19wcmVzZW50YXRpb24vcXVlbnRpbl90YXJhbnRpbm8.mp4?Policy=eyJTdGF0ZW1lbnQiOlt7IlJlc291cmNlIjoiaHR0cHM6Ly9wcml2YXRlLXVzLWVhc3QtMS5tYW51c2Nkbi5jb20vc2Vzc2lvbkZpbGUvTHFrTjNpMW1zSkdQRWszODlKc0djby9zYW5kYm94L3NsaWRlc19yZXNvdXJjZV9pbHV0Y2Z6amVpcDhsMmE0Z25xMGstMWRlZWQ0MGUtZTJiLXByb2QtYXdzXzE3NTA3NTE4Njc4NjBfbmExZm5fTDJodmJXVXZkV0oxYm5SMUwyUnBjbVZqZEc5eVgzTjBlV3hsYzE5d2NtVnpaVzUwWVhScGIyNHZjWFZsYm5ScGJsOTBZWEpoYm5ScGJtOC5tcDQiLCJDb25kaXRpb24iOnsiRGF0ZUxlc3NUaGFuIjp7IkFXUzpFcG9jaFRpbWUiOjE3NjcyMjU2MDB9fX1dfQ__&Key-Pair-Id=K2HSFNDJXOU9YS&Signature=Sswv-XW3xOy2PXLsaknTy9yaOG~YRGYyYgncwiK7NPuayjYa8X~AsF~xKsS-xpeWEHiYE51~GEsTGneyAnBlFIEylJOnoTk3SQOcgw0xzXEf0UQpwKiM3ZOY6zNPZ8UeojjFwBkKhdWc1yMv7S92Yfzf9Njh03vS5XwMr-fxvE9k9g~qUPenpP0UurPgeYZdzD4adV6WqnaNi4MmYm6Ukinnve8YcJyHO3bJ1YznZZdCg3DBZPL2NaKQzwelwlbJs8zaiNbS8-JRe7WDUkENqajtNwxpL6yKZ2kkD4KZPTQHG-6we0Qk6pbdg4Yrz4f~iOpAbMSUqsecvNgTcGJM8Q__",
+                    techniques: {
+                        zh: ["非線性敘事結構", "建立張力的擴展對話", "具有視覺回報的風格化暴力"],
+                        en: ["Non-linear narrative structures", "Extended dialogue building tension", "Stylized violence with visual payoff"]
+                    },
+                    framing: {
+                        zh: ["後車廂視角", "墨西哥式對峙", "極端特寫", "低角度權力鏡頭"],
+                        en: ["Trunk shots", "Mexican standoffs", "Extreme close-ups", "Low-angle power shots"]
+                    },
+                    lighting: {
+                        zh: "溫暖、飽和的燈光，帶有復古電影感。高對比度搭配現場光源，營造戲劇性的陰影。",
+                        en: "Warm, saturated lighting with a retro film feel. High contrast with practical light sources to create dramatic shadows."
+                    }
+                },
+                miyazaki: {
+                    video: "https://private-us-east-1.manuscdn.com/sessionFile/LqkN3i1msJGPEk389JsGco/sandbox/slides_resource_ilutcfzjeip8l2a4gnq0k-1deed40e-e2b-prod-aws_1750751939665_na1fn_L2hvbWUvdWJ1bnR1L2RpcmVjdG9yX3N0eWxlc19wcmVzZW50YXRpb24vaGF5YW9fbWl5YXpha2k.mp4?Policy=eyJTdGF0ZW1lbnQiOlt7IlJlc291cmNlIjoiaHR0cHM6Ly9wcml2YXRlLXVzLWVhc3QtMS5tYW51c2Nkbi5jb20vc2Vzc2lvbkZpbGUvTHFrTjNpMW1zSkdQRWszODlKc0djby9zYW5kYm94L3NsaWRlc19yZXNvdXJjZV9pbHV0Y2Z6amVpcDhsMmE0Z25xMGstMWRlZWQ0MGUtZTJiLXByb2QtYXdzXzE3NTA3NTE5Mzk2NjVfbmExZm5fTDJodmJXVXZkV0oxYm5SMUwyUnBjbVZqZEc5eVgzTjBlV3hsYzE5d2NtVnpaVzUwWVhScGIyNHZhR0Y1WVc5ZmJXbDVZWHBoYTJrLm1wNCIsIkNvbmRpdGlvbiI6eyJEYXRlTGVzc1RoYW4iOnsiQVdTOkVwb2NoVGltZSI6MTc2NzIyNTYwMH19fV19&Key-Pair-Id=K2HSFNDJXOU9YS&Signature=m8YxJhnSB-mH5G~TImFvcn7coHurpqe2Ml-u6csyoIJA8nSr7ZStNm0zY70tRUwQaowx8JI3hEdqJOavH8Cshu3644ISxrXXr7PornLAE8IjsNYaibaJ2QDlARyKDihHSnThdpizGUO20VeJ3hwbhpoeIo5bVgPT91QG1bepZMIFnqTmHb6niIzAy3taNDVmBs~v5cO2hYjPybsB5FIJrbMBqDZDqJn4wwN4TfJIZKLGtSeM4woZIvkSzmRnRGpq5lsypKYz3jmrCOE3wtP2N32hJVAcdxt6yr~vJAHPy4gl~BX4j7XVeXXi4GnbokNF6hpQxT1WBfv7aFUjRmptlQ__",
+                    techniques: {
+                        zh: ["流暢運動的手繪動畫", "細膩的自然環境", "飛行與失重主題"],
+                        en: ["Fluid hand-drawn animation", "Detailed natural environments", "Themes of flight and weightlessness"]
+                    },
+                    framing: {
+                        zh: ["寬廣的定場鏡頭", "對細節的關注", "動態運動", "平衡的構圖"],
+                        en: ["Wide establishing shots", "Attention to minute details", "Dynamic movement", "Balanced compositions"]
+                    },
+                    lighting: {
+                        zh: "柔和、漫射的燈光搭配溫暖的陽光和柔和的陰影。自然光源創造平和、寧靜的氛圍。",
+                        en: "Soft, diffused lighting with warm sunlight and gentle shadows. Natural light sources create a peaceful, serene atmosphere."
+                    }
+                },
+                fincher: {
+                    video: "https://ping763573.github.io/big-adventure/31.mp4",
+                    techniques: {
+                        zh: ["大量使用數位攝影機，畫面銳利且充滿細節", "廣泛使用藍、綠、灰等冷色調", "強烈的明暗對比，創造深邃陰影"],
+                        en: ["Heavy use of digital cameras for sharp, detailed images", "Extensive use of cold colors like blue, green, and grey", "Strong light-dark contrast to create deep shadows"]
+                    },
+                    framing: {
+                        zh: ["精準的滑軌與鏡頭運動", "常用低角度鏡頭呈現權力或壓迫感", "充滿秩序與壓迫感的對稱構圖"],
+                        en: ["Precise dolly and camera movements", "Frequent use of low-angle shots for power or oppression", "Symmetrical compositions full of order and pressure"]
+                    },
+                    lighting: {
+                        zh: "擅長使用少數光源，讓大部分畫面處於陰影中，隱藏資訊並增加懸疑。善於利用霓虹燈、街燈等環境光，創造出真實且充滿故事性的光線。",
+                        en: "Expertly uses few light sources, leaving most of the frame in shadow to hide information and add suspense. Utilizes ambient light like neon and street lamps to create realistic, story-rich lighting."
+                    }
+                },
+                cuaron: {
+                    video: "https://ping763573.github.io/big-adventure/33.mp4",
+                    techniques: {
+                        zh: ["標誌性的超長鏡頭，模糊觀眾與電影的界線", "常用手持鏡頭，增加畫面的真實感與臨場感", "透過光線的細膩變化來傳達情緒"],
+                        en: ["Signature long takes that blur the line between audience and film", "Frequent use of handheld cameras to increase realism and presence", "Conveying emotions through subtle changes in light"]
+                    },
+                    framing: {
+                        zh: ["鏡頭圍繞角色移動，探索空間並展現孤獨", "深焦鏡頭強調環境與人物的關係", "廣角鏡頭呈現廣闊空間感與人物渺小"],
+                        en: ["Circling camera movements to explore space and show isolation", "Deep focus to emphasize the relationship between environment and character", "Wide-angle lenses to present a sense of vast space and human smallness"]
+                    },
+                    lighting: {
+                        zh: "偏好使用自然光，營造出真實而溫暖的質感。善於利用背光勾勒人物輪廓，創造出充滿詩意的剪影效果。",
+                        en: "Prefers using natural light to create a realistic and warm texture. Adept at using backlight to outline characters, creating poetic silhouette effects."
+                    }
+                },
+                burton: {
+                    video: "https://ping763573.github.io/big-adventure/34.mp4",
+                    techniques: {
+                        zh: ["充滿維多利亞時代的陰森古堡、枯樹林氛圍", "常用鮮豔色彩與黑白場景形成對比", "大眼睛、瘦長身材的誇張人物造型"],
+                        en: ["Full of a gloomy, Victorian-era atmosphere with castles and dead forests", "Vivid colors contrasted with black and white scenes to highlight loneliness", "Exaggerated character designs with large eyes and slender bodies"]
+                    },
+
+                    framing: {
+                        zh: ["常用垂直線條強調高聳與夢幻非現實感", "使用廣角鏡頭扭曲畫面邊緣，增加奇異感", "特寫捕捉人物的細微表情與內心世界"],
+                        en: ["Often uses vertical lines to emphasize height and a dreamlike, unreal feel", "Uses wide-angle lenses to distort frame edges for a strange visual effect", "Close-ups to capture subtle character expressions and their inner world"]
+                    },
+                    lighting: {
+                        zh: "舞台式打光，突出中央人物，周圍籠罩在陰影中。使用強烈的光束或聚光燈來創造戲劇性的效果。",
+                        en: "Theatrical lighting that highlights central characters, with surroundings shrouded in shadow. Uses strong beams or spotlights for dramatic, stage-like effects."
+                    }
+                },
+                kubrick: {
+                    video: "https://ping763573.github.io/big-adventure/32.mp4",
+                    techniques: {
+                        zh: ["簡潔的佈景與構圖，強調空間的幾何美學", "透過廣闊空間與渺小人物傳達疏離與孤獨感", "精準滑軌與鏡頭運動，營造冷漠客觀視角"],
+                        en: ["Minimalist sets and compositions emphasizing geometric aesthetics", "Conveying alienation and solitude through vast spaces and small figures", "Precise dolly and camera movements for a cold, objective viewpoint"]
+                    },
+                    framing: {
+                        zh: ["標誌性的單點透視構圖，具強烈視覺衝擊力", "俯視鏡頭展現人物的渺小與無力", "充滿秩序與美感，但冰冷壓迫的對稱構圖"],
+                        en: ["Signature one-point perspective compositions with strong visual impact", "Top-down shots showing the smallness and powerlessness of characters", "Symmetrical compositions filled with order, beauty, but also coldness and pressure"]
+                    },
+                    lighting: {
+                        zh: "偏好使用自然光或燭光等微弱光源，營造真實與戲劇張力。在某些場景使用高調照明，創造不真實的壓迫感。",
+                        en: "Prefers using natural or low light sources like candlelight for realism and tension. In some scenes, uses high-key lighting to create an unreal sense of pressure."
+                    }
+                }
+            };
+            
+            // 設置初始導演 (只載入影片，文字由 updateLanguage 處理)
+            function setInitialDirector(director) {
+                const data = directorsData[director];
+                videoSource.src = data.video;
+                directorVideo.load();
+                updateLanguage(); // 載入初始文字
+            }
+
+            // 更新導演內容（文字部分）
+            function setDirectorContent(director) {
+                const data = directorsData[director];
+                
+                // 設置技術特點
+                techniquesList.innerHTML = '';
+                data.techniques[currentLang].forEach(tech => {
+                    const li = document.createElement('li');
+                    li.className = 'flex items-start';
+                    li.innerHTML = `<i class="fas fa-chevron-right mt-1 mr-2 text-blue-400"></i><span>${tech}</span>`;
+                    techniquesList.appendChild(li);
+                });
+                
+                // 設置取景與構圖
+                framingList.innerHTML = '';
+                data.framing[currentLang].forEach(frame => {
+                    const li = document.createElement('li');
+                    li.className = 'flex items-start';
+                    li.innerHTML = `<i class="fas fa-chevron-right mt-1 mr-2 text-blue-400"></i><span>${frame}</span>`;
+                    framingList.appendChild(li);
+                });
+                
+                // 設置燈光技術
+                lightingText.textContent = data.lighting[currentLang];
+            }
+            
+            // 點擊卡片時的完整處理函數
+            function selectDirector(director) {
+                const data = directorsData[director];
+                // 設置影片
+                videoSource.src = data.video;
+                directorVideo.load();
+                // 設置文字內容
+                setDirectorContent(director);
+            }
+            
+            // 為每個導演卡片添加點擊事件
+            directorCards.forEach(card => {
+                card.addEventListener('click', function() {
+                    directorCards.forEach(c => c.classList.remove('active'));
+                    this.classList.add('active');
+                    const director = this.getAttribute('data-director');
+                    selectDirector(director);
+                });
+            });
+
+            // 初始化頁面
+            setInitialDirector('hitchcock');
+        });
+    </script>
+</body>
+</html>
