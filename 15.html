@@ -1,0 +1,1015 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>台北故宮博物院：東方文明的璀璨寶庫</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#9E2A2B', // 故宫红
+                        secondary: '#D9AE6C', // 故宫金
+                        dark: '#2D2926', // 深棕
+                        light: '#F5F0E8', // 米白
+                        accent: '#4A5859', // 青灰
+                    },
+                    fontFamily: {
+                        sans: ['Noto Sans TC', 'sans-serif'],
+                        serif: ['Noto Serif TC', 'serif'],
+                    },
+                }
+            }
+        }
+    </script>
+    <style type="text/tailwindcss">
+        @layer utilities {
+            .content-auto {
+                content-visibility: auto;
+            }
+            .text-shadow {
+                text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+            }
+            .text-shadow-lg {
+                text-shadow: 3px 3px 6px rgba(0, 0, 0, 0.7);
+            }
+            .bg-blur {
+                backdrop-filter: blur(8px);
+            }
+            .scrollbar-hide::-webkit-scrollbar {
+                display: none;
+            }
+            .scrollbar-hide {
+                -ms-overflow-style: none;
+                scrollbar-width: none;
+            }
+            .slide-transition {
+                transition: opacity 1s ease-in-out, transform 1s ease-in-out;
+            }
+            .image-fade-in {
+                animation: fadeIn 1.5s ease-in-out;
+            }
+            @keyframes fadeIn {
+                from { opacity: 0; transform: scale(0.95); }
+                to { opacity: 1; transform: scale(1); }
+            }
+            .pulse-slow {
+                animation: pulse 3s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+            }
+            @keyframes pulse {
+                0%, 100% { opacity: 1; }
+                50% { opacity: 0.8; }
+            }
+            .text-gradient-gold {
+                background: linear-gradient(to right, #D9AE6C, #F5F0E8);
+                -webkit-background-clip: text;
+                background-clip: text;
+                color: transparent;
+            }
+        }
+    </style>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@300;400;500;700&family=Noto+Serif+TC:wght@400;600;700&display=swap" rel="stylesheet">
+</head>
+<body class="bg-dark text-light font-sans h-screen">
+    <!-- 背景音樂 -->
+    <audio id="bgMusic" loop>
+        <source src="https://ping763573.github.io/big-adventure/11.mp3" type="audio/mpeg">
+    </audio>
+
+    <!-- 主容器 -->
+    <div id="app" class="relative h-screen w-screen">
+        <!-- 幻灯片容器 -->
+        <div id="slidesContainer" class="relative h-full w-full">
+            <!-- 幻灯片1：歡迎頁 -->
+            <div class="slide absolute inset-0 opacity-0 slide-transition" data-index="0">
+                <div class="absolute inset-0 bg-cover bg-center" style="background-image: url('https://www.travel.taipei/content/images/attractions/221739/1920x1080_attractions-image-hrvtkvaowueb7-w8--qy9g.jpg'); filter: brightness(0.7);"></div>
+                <div class="absolute inset-0 flex flex-col justify-center items-center text-center px-4">
+                    <h1 class="text-[clamp(3rem,9vw,6rem)] font-serif font-extrabold text-gradient-gold text-shadow-lg mb-4" data-lang-key="welcomeTitle">
+                        台北故宮博物院
+                    </h1>
+                    <p class="text-[clamp(1.2rem,3vw,1.8rem)] text-white/90 text-shadow mb-10 max-w-4xl font-light" data-lang-key="welcomeSubtitle">
+                        東方文明的璀璨寶庫
+                    </p>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6 max-w-5xl">
+                        <div class="bg-dark/60 bg-blur p-6 rounded-lg border border-secondary/30 transform hover:scale-105 transition-transform">
+                            <p class="text-lg" data-lang-key="fact1"><i class="fa fa-calendar-check-o text-secondary mr-2 w-5 text-center"></i> 建立於1965年，為世界四大博物館之一</p>
+                        </div>
+                        <div class="bg-dark/60 bg-blur p-6 rounded-lg border border-secondary/30 transform hover:scale-105 transition-transform">
+                            <p class="text-lg" data-lang-key="fact2"><i class="fa fa-diamond text-secondary mr-2 w-5 text-center"></i> 藏品逾70萬件，涵蓋中國數千年文化藝術</p>
+                        </div>
+                        <div class="bg-dark/60 bg-blur p-6 rounded-lg border border-secondary/30 transform hover:scale-105 transition-transform">
+                            <p class="text-lg" data-lang-key="fact3"><i class="fa fa-users text-secondary mr-2 w-5 text-center"></i> 每年吸引超過400萬觀光人次</p>
+                        </div>
+                        <div class="bg-dark/60 bg-blur p-6 rounded-lg border border-secondary/30 transform hover:scale-105 transition-transform">
+                            <p class="text-lg" data-lang-key="fact4"><i class="fa fa-map-marker text-secondary mr-2 w-5 text-center"></i> 台北市士林區至善路二段221號</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 幻灯片2：歷史沿革 -->
+            <div class="slide absolute inset-0 opacity-0 slide-transition" data-index="1">
+                <div class="absolute inset-0 bg-cover bg-center" style="background-image: url('https://www.taiwan.net.tw/att/1/big_scenic_spots/pic_74_4.jpg'); filter: brightness(0.6);"></div>
+                <div class="absolute inset-0 p-6 md:p-12 overflow-y-auto scrollbar-hide">
+                    <div class="relative pb-24">
+                        <h2 class="text-[clamp(2.2rem,6vw,3.5rem)] font-serif font-bold text-white text-shadow-lg mb-12 text-center" data-lang-key="historyTitle">
+                            從遷藏到弘揚的歷史軌跡
+                        </h2>
+                        <div class="relative max-w-5xl mx-auto">
+                            <!-- 時間軸中心線 -->
+                            <div class="absolute left-1/2 transform -translate-x-1/2 h-full w-1 bg-primary rounded-full"></div>
+                            <div class="relative mb-16 flex flex-col md:flex-row items-center">
+                                <div class="md:w-1/2 md:pr-12 md:text-right order-2 md:order-1 mt-6 md:mt-0">
+                                    <div class="bg-dark/80 bg-blur p-6 rounded-lg border border-secondary/30">
+                                        <h3 class="text-3xl font-serif font-bold text-secondary mb-2" data-lang-key="historyYear1">1925年</h3>
+                                        <p class="text-lg leading-relaxed" data-lang-key="historyDesc1">北京紫禁城成立國立故宮博物院，標誌著中國現代博物館事業的重要里程碑。</p>
+                                    </div>
+                                </div><div class="absolute left-1/2 transform -translate-x-1/2 w-8 h-8 rounded-full bg-primary border-4 border-light z-10 order-1 md:order-2"></div><div class="md:w-1/2 md:pl-12 order-3"></div>
+                            </div>
+                            <div class="relative mb-16 flex flex-col md:flex-row items-center">
+                                <div class="md:w-1/2 md:pr-12 order-2"></div><div class="absolute left-1/2 transform -translate-x-1/2 w-8 h-8 rounded-full bg-primary border-4 border-light z-10 order-1"></div>
+                                <div class="md:w-1/2 md:pl-12 order-3 mt-6 md:mt-0">
+                                    <div class="bg-dark/80 bg-blur p-6 rounded-lg border border-secondary/30">
+                                        <h3 class="text-3xl font-serif font-bold text-secondary mb-2" data-lang-key="historyYear2">1931-1949年</h3>
+                                        <p class="text-lg leading-relaxed" data-lang-key="historyDesc2">因戰亂，文物先後遷移至上海、南京、四川等地，最終部分珍貴文物輾轉來台，為文化保存做出重要貢獻。</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="relative mb-16 flex flex-col md:flex-row items-center">
+                                <div class="md:w-1/2 md:pr-12 md:text-right order-2 md:order-1 mt-6 md:mt-0">
+                                    <div class="bg-dark/80 bg-blur p-6 rounded-lg border border-secondary/30">
+                                        <h3 class="text-3xl font-serif font-bold text-secondary mb-2" data-lang-key="historyYear3">1965年</h3>
+                                        <p class="text-lg leading-relaxed" data-lang-key="historyDesc3">台北故宮博物院正式落成啟用，成為保存和展示中華文化瑰寶的重要場所。</p>
+                                    </div>
+                                </div><div class="absolute left-1/2 transform -translate-x-1/2 w-8 h-8 rounded-full bg-primary border-4 border-light z-10 order-1 md:order-2"></div><div class="md:w-1/2 md:pl-12 order-3"></div>
+                            </div>
+                            <div class="relative mb-16 flex flex-col md:flex-row items-center">
+                                <div class="md:w-1/2 md:pr-12 order-2"></div><div class="absolute left-1/2 transform -translate-x-1/2 w-8 h-8 rounded-full bg-primary border-4 border-light z-10 order-1"></div>
+                                <div class="md:w-1/2 md:pl-12 order-3 mt-6 md:mt-0">
+                                    <div class="bg-dark/80 bg-blur p-6 rounded-lg border border-secondary/30">
+                                        <h3 class="text-3xl font-serif font-bold text-secondary mb-2" data-lang-key="historyYear4">2000年代</h3>
+                                        <p class="text-lg leading-relaxed" data-lang-key="historyDesc4">啟動數位典藏計畫，讓珍貴文物透過數位化方式永久保存，並積極開展國際文化交流活動。</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="relative flex flex-col md:flex-row items-center">
+                                <div class="md:w-1/2 md:pr-12 md:text-right order-2 md:order-1 mt-6 md:mt-0">
+                                    <div class="bg-dark/80 bg-blur p-6 rounded-lg border border-secondary/30">
+                                        <h3 class="text-3xl font-serif font-bold text-secondary mb-2" data-lang-key="historyYear5">2020年起</h3>
+                                        <p class="text-lg leading-relaxed" data-lang-key="historyDesc5">推動新故宮計畫，著重於現代化轉型，提升參觀體驗，並加強文化教育與國際合作。</p>
+                                    </div>
+                                </div><div class="absolute left-1/2 transform -translate-x-1/2 w-8 h-8 rounded-full bg-primary border-4 border-light z-10 order-1 md:order-2"></div><div class="md:w-1/2 md:pl-12 order-3"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 幻灯片3：建築特色 -->
+            <div class="slide absolute inset-0 opacity-0 slide-transition" data-index="2">
+                <div class="absolute inset-0 bg-cover bg-center" style="background-image: url('https://digitalarchive.npm.gov.tw/Image/GetImage?imageId=654933&randomCode=45340830'); filter: brightness(0.6);"></div>
+                <div class="absolute inset-0 p-6 md:p-12 overflow-y-auto scrollbar-hide">
+                    <div class="relative pb-24">
+                        <h2 class="text-[clamp(2.2rem,6vw,3.5rem)] font-serif font-bold text-white text-shadow-lg mb-10 text-center" data-lang-key="archTitle">
+                            現代與古典融合的宮殿美學
+                        </h2>
+                        <div class="max-w-6xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-10">
+                            <div class="bg-dark/80 bg-blur p-8 rounded-lg border border-secondary/30 transform hover:scale-[1.02] transition-transform flex flex-col">
+                                <div class="w-full h-64 bg-black/30 rounded-lg mb-6 flex-shrink-0"><img src="https://www.npm.gov.tw/images/ogimg.jpg" alt="台北故宮博物院建築外觀" class="w-full h-full object-contain rounded-lg image-fade-in" loading="lazy"></div>
+                                <h3 class="text-3xl font-serif font-bold text-secondary mb-4" data-lang-key="archSub1">仿唐宋風格建築</h3>
+                                <p class="text-lg leading-relaxed mb-4" data-lang-key="archDesc1_1">故宮建築採用青瓦白牆的經典設計，體現了唐宋時期宮殿建築的優雅與莊嚴。外觀簡潔大方，線條流暢，展現東方建築的獨特魅力。</p>
+                                <p class="text-lg leading-relaxed" data-lang-key="archDesc1_2">建築師巧妙地將傳統元素與現代功能相結合，創造出既符合歷史氛圍又適合現代博物館運作的空間。</p>
+                            </div>
+                            <div class="bg-dark/80 bg-blur p-8 rounded-lg border border-secondary/30 transform hover:scale-[1.02] transition-transform flex flex-col">
+                                <div class="w-full h-64 bg-black/30 rounded-lg mb-6 flex-shrink-0"><img src="https://www.npm.gov.tw/Att_FCK/image/2021/zhishan.jpg" alt="台北故宮博物院內部展廳" class="w-full h-full object-contain rounded-lg image-fade-in" loading="lazy"></div>
+                                <h3 class="text-3xl font-serif font-bold text-secondary mb-4" data-lang-key="archSub2">建築結構與空間</h3>
+                                <p class="text-lg leading-relaxed mb-4" data-lang-key="archDesc2_1">正館為三層主樓，配備現代化展廳與庫房。空間規劃講究層次與流動性，讓參觀者能在舒適的環境中欣賞文物。</p>
+                                <p class="text-lg leading-relaxed" data-lang-key="archDesc2_2">附設的至善園是一座精美的仿古庭園，展示了東方造園藝術的精髓，為參觀者提供了一個寧靜沉思的空間。</p>
+                            </div>
+                            <div class="md:col-span-2 bg-dark/80 bg-blur p-8 rounded-lg border border-secondary/30 transform hover:scale-[1.02] transition-transform">
+                                <h3 class="text-3xl font-serif font-bold text-secondary mb-6 text-center" data-lang-key="exhibitTitle">展覽與館藏特色</h3>
+                                <div class="grid grid-cols-1 lg:grid-cols-2 gap-x-8 gap-y-6 text-lg">
+                                    <div>
+                                        <h4 class="text-xl font-semibold text-secondary/90 mb-2 flex items-center" data-lang-key="exhibitSub1"><i class="fa fa-building-o fa-fw mr-3"></i>主要展覽空間</h4>
+                                        <p class="leading-relaxed" data-lang-key="exhibitDesc1">故宮本館設有三層樓，提供不同主題的展覽，輪流展出豐富的館藏文物。</p>
+                                    </div>
+                                    <div>
+                                        <h4 class="text-xl font-semibold text-secondary/90 mb-2 flex items-center" data-lang-key="exhibitSub2"><i class="fa fa-star-o fa-fw mr-3"></i>特展</h4>
+                                        <p class="leading-relaxed" data-lang-key="exhibitDesc2">故宮定期舉辦特展，展出特定主題的文物或藝術品，例如「碁人弈事—古代圍棋文化」。</p>
+                                    </div>
+                                    <div class="lg:col-span-2">
+                                        <h4 class="text-xl font-semibold text-secondary/90 mb-2 flex items-center" data-lang-key="exhibitSub3"><i class="fa fa-desktop fa-fw mr-3"></i>數位展覽</h4>
+                                        <p class="leading-relaxed" data-lang-key="exhibitDesc3">故宮也積極推出數位展覽，例如「眾神降臨—沉浸故宮3.0數位展」，提供創新的沉浸式觀展體驗。</p>
+                                    </div>
+                                    <div class="lg:col-span-2">
+                                         <h4 class="text-xl font-semibold text-secondary/90 mb-2 flex items-center" data-lang-key="exhibitSub4"><i class="fa fa-diamond fa-fw mr-3"></i>館藏特色</h4>
+                                         <ul class="list-disc list-inside space-y-2 ml-1 leading-relaxed">
+                                            <li data-lang-key="exhibitDesc4_1"><strong>典藏三類：</strong>故宮館藏豐富，主要包含中國古代的書畫、器物、圖書文獻等。</li>
+                                            <li data-lang-key="exhibitDesc4_2"><strong>鎮院三寶：</strong>范寬〈谿山行旅圖〉、郭熙〈早春圖〉和李唐〈萬壑松風圖〉被譽為「故宮三寶」，是書畫中的經典代表。</li>
+                                            <li data-lang-key="exhibitDesc4_3"><strong>人氣文物：</strong>翠玉白菜、肉形石、毛公鼎等巧奪天工的器物，是故宮最受歡迎的熱門展品。</li>
+                                         </ul>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 幻灯片4：三大館藏類別 -->
+            <div class="slide absolute inset-0 opacity-0 slide-transition" data-index="3">
+                <div class="absolute inset-0 bg-cover bg-center" style="background-image: url('https://x0.ifengimg.com/ucms/2022_48/7BE193D8D1C27AB00E736D213DE2F6EC2789F806_size603_w1200_h3009.jpg'); filter: brightness(0.5);"></div>
+                <div class="absolute inset-0 p-6 md:p-12 overflow-y-auto scrollbar-hide">
+                    <div class="relative pb-24">
+                        <h2 class="text-[clamp(2.2rem,6vw,3.5rem)] font-serif font-bold text-white text-shadow-lg mb-10 text-center" data-lang-key="collectionTitle">
+                            千年文化的精華典藏
+                        </h2>
+                        <div class="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-3 gap-8">
+                            <div class="bg-dark/70 bg-blur rounded-lg overflow-hidden border border-secondary/30 transform hover:-translate-y-2 transition-all duration-300 flex flex-col">
+                                <div class="h-64 overflow-hidden bg-black/30 flex-shrink-0"><img src="https://www.npm.gov.tw/NewFileAtt.ashx?name=exbit/04010118/08016647.jpg" alt="歷代書畫名品展示" class="w-full h-full object-contain transform hover:scale-105 transition-transform duration-700" loading="lazy"></div>
+                                <div class="p-6 flex-grow flex flex-col">
+                                    <h3 class="text-3xl font-serif font-bold text-secondary mb-4 text-center" data-lang-key="collectionCat1">書畫類</h3>
+                                    <p class="text-lg mb-4 leading-relaxed" data-lang-key="collectionDesc1">故宮收藏的書畫作品涵蓋從魏晉到明清的名家傑作，體現了中國書畫藝術的演變與成就。</p>
+                                    <ul class="space-y-3 text-lg mt-auto">
+                                        <li data-lang-key="collectionItem1_1"><i class="fa fa-paint-brush text-secondary mt-1 mr-3"></i><span>王羲之的書法，展現魏晉風流</span></li>
+                                        <li data-lang-key="collectionItem1_2"><i class="fa fa-paint-brush text-secondary mt-1 mr-3"></i><span>宋徽宗的繪畫，體現皇家藝術</span></li>
+                                        <li data-lang-key="collectionItem1_3"><i class="fa fa-paint-brush text-secondary mt-1 mr-3"></i><span>董其昌等明清大師的書畫精品</span></li>
+                                    </ul>
+                                </div>
+                            </div>
+                            <div class="bg-dark/70 bg-blur rounded-lg overflow-hidden border border-secondary/30 transform hover:-translate-y-2 transition-all duration-300 flex flex-col">
+                                <div class="h-64 overflow-hidden bg-black/30 flex-shrink-0"><img src="https://www.npm.gov.tw/NewFileAtt.ashx?name=exbit/04000569/08009710.jpg" alt="歷代陶瓷珍品展示" class="w-full h-full object-contain transform hover:scale-105 transition-transform duration-700" loading="lazy"></div>
+                                <div class="p-6 flex-grow flex flex-col">
+                                    <h3 class="text-3xl font-serif font-bold text-secondary mb-4 text-center" data-lang-key="collectionCat2">陶瓷類</h3>
+                                    <p class="text-lg mb-4 leading-relaxed" data-lang-key="collectionDesc2">故宮的陶瓷收藏種類齊全，年代久遠，從原始青瓷到明清彩瓷，展現中國陶瓷藝術的輝煌。</p>
+                                    <ul class="space-y-3 text-lg mt-auto">
+                                        <li data-lang-key="collectionItem2_1"><i class="fa fa-flask text-secondary mt-1 mr-3"></i><span>宋代五大名窯（汝、官、哥、鈞、定）</span></li>
+                                        <li data-lang-key="collectionItem2_2"><i class="fa fa-flask text-secondary mt-1 mr-3"></i><span>元代青花瓷，代表陶瓷藝術巔峰</span></li>
+                                        <li data-lang-key="collectionItem2_3"><i class="fa fa-flask text-secondary mt-1 mr-3"></i><span>明清彩瓷，色彩絢麗，工藝精湛</span></li>
+                                    </ul>
+                                </div>
+                            </div>
+                            <div class="bg-dark/70 bg-blur rounded-lg overflow-hidden border border-secondary/30 transform hover:-translate-y-2 transition-all duration-300 flex flex-col">
+                                <div class="h-64 overflow-hidden bg-black/30 flex-shrink-0"><img src="https://www.npm.gov.tw/Att_FCK/image/2021/themevisit/selection1/IV-01.jpg" alt="歷代器物珍品展示" class="w-full h-full object-contain transform hover:scale-105 transition-transform duration-700" loading="lazy"></div>
+                                <div class="p-6 flex-grow flex flex-col">
+                                    <h3 class="text-3xl font-serif font-bold text-secondary mb-4 text-center" data-lang-key="collectionCat3">器物類</h3>
+                                    <p class="text-lg mb-4 leading-relaxed" data-lang-key="collectionDesc3">器物類藏品豐富多樣，涵蓋青銅、玉、漆器與佛像等，見證中國工藝美術的發展歷程。</p>
+                                    <ul class="space-y-3 text-lg mt-auto">
+                                        <li data-lang-key="collectionItem3_1"><i class="fa fa-diamond text-secondary mt-1 mr-3"></i><span>商周青銅器，紋飾精美，具歷史價值</span></li>
+                                        <li data-lang-key="collectionItem3_2"><i class="fa fa-diamond text-secondary mt-1 mr-3"></i><span>歷代玉器，雕刻精細，寓意深遠</span></li>
+                                        <li data-lang-key="collectionItem3_3"><i class="fa fa-diamond text-secondary mt-1 mr-3"></i><span>佛教藝術珍品，包括佛像、經卷等</span></li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 幻灯片5：經典國寶 - 肉形石 -->
+            <div class="slide absolute inset-0 opacity-0 slide-transition" data-index="4">
+                <div class="absolute inset-0 bg-cover bg-center" style="background-image: url('https://d3d9mb8xdsbq52.cloudfront.net/s3/200713/173257znh.jpg'); filter: brightness(0.6);"></div>
+                <div class="absolute inset-0 p-6 md:p-12 overflow-y-auto scrollbar-hide">
+                    <div class="relative pb-24">
+                        <h2 class="text-[clamp(2.2rem,6vw,3.5rem)] font-serif font-bold text-white text-shadow-lg mb-10 text-center" data-lang-key="treasureTitle1">
+                            人氣國寶・巧奪天工
+                        </h2>
+                        <div class="max-w-6xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-10 items-center">
+                            <div class="relative group h-full flex items-center">
+                                <div class="absolute inset-0 bg-gradient-to-tr from-primary/20 to-transparent rounded-lg transform rotate-3 group-hover:rotate-0 transition-transform"></div>
+                                <div class="w-full bg-black/30 rounded-lg p-4"><img src="https://i.ytimg.com/vi/TqrponPFPRY/maxresdefault.jpg" alt="台北故宮博物院鎮館之寶 - 肉形石" class="w-full h-auto max-h-[60vh] object-contain rounded-lg shadow-2xl image-fade-in border-4 border-secondary/50" loading="lazy"></div>
+                                <div class="absolute -bottom-4 -right-4 bg-primary text-white px-6 py-3 rounded-lg font-serif font-bold text-2xl shadow-lg transform rotate-3 group-hover:rotate-0 transition-transform" data-lang-key="meatStoneName">肉形石</div>
+                            </div>
+                            <div class="bg-dark/80 bg-blur p-8 rounded-lg border border-secondary/30">
+                                <h3 class="text-4xl font-serif font-bold text-secondary mb-6 text-center" data-lang-key="meatStoneName2">肉形石</h3>
+                                <div class="space-y-6 text-xl">
+                                    <p class="flex items-start leading-relaxed" data-lang-key="meatStoneDesc1"><i class="fa fa-history text-secondary text-2xl mt-1 mr-4"></i><span>晚清時期的仿生玉雕，是故宮最受歡迎的藏品之一，堪稱中國工藝美術的巔峰之作。</span></p>
+                                    <p class="flex items-start leading-relaxed" data-lang-key="meatStoneDesc2"><i class="fa fa-paint-brush text-secondary text-2xl mt-1 mr-4"></i><span>工匠利用玉石天然的色彩與質地，細緻呈現豬肉的皮、脂、肉，栩栩如生，幾可亂真。</span></p>
+                                    <p class="flex items-start leading-relaxed" data-lang-key="meatStoneDesc3"><i class="fa fa-star text-secondary text-2xl mt-1 mr-4"></i><span>不僅展現精湛技藝，更體現了中華文化中「食」與「藝」的緊密結合與生活之美。</span></p>
+                                    <p class="flex items-start text-lg mt-4 text-white/80" data-lang-key="meatStoneSize"><i class="fa fa-info-circle text-secondary text-xl mt-1 mr-4"></i><span>尺寸：高5.7公分，寬6.6公分，厚5.3公分。</span></p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 幻灯片6：經典國寶 - 翠玉白菜 -->
+            <div class="slide absolute inset-0 opacity-0 slide-transition" data-index="5">
+                <div class="absolute inset-0 bg-cover bg-center" style="background-image: url('https://i2.kknews.cc/NJimdWWrmRaJMuXTAWTSRprdJAKq9oWrpA/0.jpg'); filter: brightness(0.6);"></div>
+                <div class="absolute inset-0 p-6 md:p-12 overflow-y-auto scrollbar-hide">
+                    <div class="relative pb-24">
+                        <h2 class="text-[clamp(2.2rem,6vw,3.5rem)] font-serif font-bold text-white text-shadow-lg mb-10 text-center" data-lang-key="treasureTitle2">
+                            人氣國寶・吉祥寓意
+                        </h2>
+                        <div class="max-w-6xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-10 items-center">
+                            <div class="bg-dark/80 bg-blur p-8 rounded-lg border border-secondary/30">
+                                <h3 class="text-4xl font-serif font-bold text-secondary mb-6 text-center" data-lang-key="cabbageName">翠玉白菜</h3>
+                                <div class="space-y-6 text-xl">
+                                    <p class="flex items-start leading-relaxed" data-lang-key="cabbageDesc1"><i class="fa fa-history text-secondary text-2xl mt-1 mr-4"></i><span>清代光緒皇帝瑾妃的嫁妝之一，以其巧奪天工的技藝和生動的寓意而聞名。</span></p>
+                                    <p class="flex items-start leading-relaxed" data-lang-key="cabbageDesc2"><i class="fa fa-pagelines text-secondary text-2xl mt-1 mr-4"></i><span>工匠利用玉石本身的天然顏色，將白菜的綠葉白梗巧妙呈現，如同真實一般。</span></p>
+                                    <p class="flex items-start leading-relaxed" data-lang-key="cabbageDesc3"><i class="fa fa-bug text-secondary text-2xl mt-1 mr-4"></i><span>菜葉上雕有螽斯與蝗蟲，象徵「多子多孫」的美好祝福，寓意吉祥。</span></p>
+                                     <p class="flex items-start text-lg mt-4 text-white/80" data-lang-key="cabbageSize"><i class="fa fa-info-circle text-secondary text-xl mt-1 mr-4"></i><span>尺寸：高18.7公分，寬9.1公分，厚5.07公分。</span></p>
+                                </div>
+                            </div>
+                            <div class="relative group h-full flex items-center">
+                                <div class="absolute inset-0 bg-gradient-to-tl from-primary/20 to-transparent rounded-lg transform -rotate-3 group-hover:rotate-0 transition-transform"></div>
+                                 <div class="w-full bg-black/30 rounded-lg p-4"><img src="https://theme.npm.edu.tw/exh106/NorthandSouth-4/common/images/selection/img3s.png" alt="台北故宮博物院鎮館之寶 - 翠玉白菜" class="w-full h-auto max-h-[60vh] object-contain rounded-lg shadow-2xl image-fade-in border-4 border-secondary/50" loading="lazy"></div>
+                                <div class="absolute -bottom-4 -left-4 bg-primary text-white px-6 py-3 rounded-lg font-serif font-bold text-2xl shadow-lg transform -rotate-3 group-hover:rotate-0 transition-transform" data-lang-key="cabbageName2">翠玉白菜</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 幻灯片7：經典國寶 - 毛公鼎 -->
+            <div class="slide absolute inset-0 opacity-0 slide-transition" data-index="6">
+                <div class="absolute inset-0 bg-cover bg-center" style="background-image: url('https://img.jiguzuo.com/guohua/tupian/202503/061d9d49d56d7558893979b37237f6ea.jpg!list.jpg'); filter: brightness(0.6);"></div>
+                <div class="absolute inset-0 p-6 md:p-12 overflow-y-auto scrollbar-hide">
+                    <div class="relative pb-24">
+                        <h2 class="text-[clamp(2.2rem,6vw,3.5rem)] font-serif font-bold text-white text-shadow-lg mb-10 text-center" data-lang-key="treasureTitle3">
+                            人氣國寶・史料重器
+                        </h2>
+                        <div class="max-w-6xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-10 items-center">
+                            <div class="relative group h-full flex items-center">
+                                <div class="absolute inset-0 bg-gradient-to-tr from-primary/20 to-transparent rounded-lg transform rotate-3 group-hover:rotate-0 transition-transform"></div>
+                                <div class="w-full bg-black/30 rounded-lg p-4"><img src="https://theme.npm.edu.tw/selection/att/collection/04001041/17009605.jpg" alt="台北故宮博物院鎮館之寶 - 毛公鼎" class="w-full h-auto max-h-[60vh] object-contain rounded-lg shadow-2xl image-fade-in border-4 border-secondary/50" loading="lazy"></div>
+                                <div class="absolute -bottom-4 -right-4 bg-primary text-white px-6 py-3 rounded-lg font-serif font-bold text-2xl shadow-lg transform rotate-3 group-hover:rotate-0 transition-transform" data-lang-key="maoGongDingName">毛公鼎</div>
+                            </div>
+                            <div class="bg-dark/80 bg-blur p-8 rounded-lg border border-secondary/30">
+                                <h3 class="text-4xl font-serif font-bold text-secondary mb-6 text-center" data-lang-key="maoGongDingName2">毛公鼎</h3>
+                                <div class="space-y-6 text-xl">
+                                    <p class="flex items-start leading-relaxed" data-lang-key="maoGongDingDesc1"><i class="fa fa-history text-secondary text-2xl mt-1 mr-4"></i><span>西周晚期鑄造的青銅器，是現存銘文最長的青銅器，被譽為「青銅器之王」。</span></p>
+                                    <p class="flex items-start leading-relaxed" data-lang-key="maoGongDingDesc2"><i class="fa fa-file-text-o text-secondary text-2xl mt-1 mr-4"></i><span>內壁鑄有長達500字的銘文，記載了周宣王誥誡其臣子毛公的歷史事件。</span></p>
+                                    <p class="flex items-start leading-relaxed" data-lang-key="maoGongDingDesc3"><i class="fa fa-gavel text-secondary text-2xl mt-1 mr-4"></i><span>這件國寶不僅是藝術珍品，更是研究西周歷史、文化和制度的重要文獻。</span></p>
+                                    <p class="flex items-start text-lg mt-4 text-white/80" data-lang-key="maoGongDingSize"><i class="fa fa-info-circle text-secondary text-xl mt-1 mr-4"></i><span>尺寸：高53.8公分，口徑47公分，重34.7公斤。</span></p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 幻灯片8：經典國寶 - 范寬〈谿山行旅圖〉 -->
+            <div class="slide absolute inset-0 opacity-0 slide-transition" data-index="7">
+                <div class="absolute inset-0 bg-cover bg-center" style="background-image: url('https://www.npm.gov.tw/Att_FCK/image/2021/themevisit/selection1/IV-16.jpg'); filter: brightness(0.6);"></div>
+                <div class="absolute inset-0 p-6 md:p-12 overflow-y-auto scrollbar-hide">
+                    <div class="relative pb-24">
+                        <h2 class="text-[clamp(2.2rem,6vw,3.5rem)] font-serif font-bold text-white text-shadow-lg mb-10 text-center" data-lang-key="treasureTitle4">
+                            鎮院三寶・山水巨作
+                        </h2>
+                        <div class="max-w-6xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-10 items-center">
+                            <div class="bg-dark/80 bg-blur p-8 rounded-lg border border-secondary/30">
+                                <h3 class="text-4xl font-serif font-bold text-secondary mb-6 text-center" data-lang-key="fanKuanName">范寬〈谿山行旅圖〉</h3>
+                                <div class="space-y-6 text-xl">
+                                    <p class="flex items-start leading-relaxed" data-lang-key="fanKuanDesc1"><i class="fa fa-image text-secondary text-2xl mt-1 mr-4"></i><span>以巍峨雄壯的主峰佔據畫面中心，氣勢磅礴。</span></p>
+                                    <p class="flex items-start leading-relaxed" data-lang-key="fanKuanDesc2"><i class="fa fa-sitemap text-secondary text-2xl mt-1 mr-4"></i><span>構圖雄偉，展現北宋山水畫的宏大氣魄。</span></p>
+                                    <p class="flex items-start leading-relaxed" data-lang-key="fanKuanDesc3"><i class="fa fa-paint-brush text-secondary text-2xl mt-1 mr-4"></i><span>筆法細膩，山石紋理清晰，如同斧劈刀鑿。</span></p>
+                                    <p class="flex items-start leading-relaxed" data-lang-key="fanKuanDesc4"><i class="fa fa-users text-secondary text-2xl mt-1 mr-4"></i><span>畫中可見行旅商隊，點綴出人間煙火，使畫面更添生動。</span></p>
+                                </div>
+                            </div>
+                            <div class="relative group h-full flex items-center">
+                                <div class="absolute inset-0 bg-gradient-to-tl from-primary/20 to-transparent rounded-lg transform -rotate-3 group-hover:rotate-0 transition-transform"></div>
+                                 <div class="w-full bg-black/30 rounded-lg p-4"><img src="https://theme.npm.edu.tw/selection/att/collection/04000959/17009764.jpg" alt="鎮院三寶 - 范寬〈谿山行旅圖〉" class="w-full h-auto max-h-[60vh] object-contain rounded-lg shadow-2xl image-fade-in border-4 border-secondary/50" loading="lazy"></div>
+                                <div class="absolute -bottom-4 -left-4 bg-primary text-white px-6 py-3 rounded-lg font-serif font-bold text-2xl shadow-lg transform -rotate-3 group-hover:rotate-0 transition-transform" data-lang-key="fanKuanName2">谿山行旅圖</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 幻灯片9：經典國寶 - 郭熙〈早春圖〉 -->
+            <div class="slide absolute inset-0 opacity-0 slide-transition" data-index="8">
+                <div class="absolute inset-0 bg-cover bg-center" style="background-image: url('https://www.npm.gov.tw/Att_FCK/image/2021/themevisit/selection1/IV-05.jpg'); filter: brightness(0.6);"></div>
+                <div class="absolute inset-0 p-6 md:p-12 overflow-y-auto scrollbar-hide">
+                    <div class="relative pb-24">
+                        <h2 class="text-[clamp(2.2rem,6vw,3.5rem)] font-serif font-bold text-white text-shadow-lg mb-10 text-center" data-lang-key="treasureTitle5">
+                            鎮院三寶・早春詩意
+                        </h2>
+                        <div class="max-w-6xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-10 items-center">
+                            <div class="relative group h-full flex items-center">
+                                <div class="absolute inset-0 bg-gradient-to-tr from-primary/20 to-transparent rounded-lg transform rotate-3 group-hover:rotate-0 transition-transform"></div>
+                                <div class="w-full bg-black/30 rounded-lg p-4"><img src="https://theme.npm.edu.tw/selection/att/collection/04000960/17009765.jpg" alt="鎮院三寶 - 郭熙〈早春圖〉" class="w-full h-auto max-h-[60vh] object-contain rounded-lg shadow-2xl image-fade-in border-4 border-secondary/50" loading="lazy"></div>
+                                <div class="absolute -bottom-4 -right-4 bg-primary text-white px-6 py-3 rounded-lg font-serif font-bold text-2xl shadow-lg transform rotate-3 group-hover:rotate-0 transition-transform" data-lang-key="guoXiName2">早春圖</div>
+                            </div>
+                            <div class="bg-dark/80 bg-blur p-8 rounded-lg border border-secondary/30">
+                                <h3 class="text-4xl font-serif font-bold text-secondary mb-6 text-center" data-lang-key="guoXiName">郭熙〈早春圖〉</h3>
+                                <div class="space-y-6 text-xl">
+                                    <p class="flex items-start leading-relaxed" data-lang-key="guoXiDesc1"><i class="fa fa-leaf text-secondary text-2xl mt-1 mr-4"></i><span>描繪早春時節，萬物復甦的景致。</span></p>
+                                    <p class="flex items-start leading-relaxed" data-lang-key="guoXiDesc2"><i class="fa fa-cloud text-secondary text-2xl mt-1 mr-4"></i><span>筆觸柔和，山勢連綿，雲霧繚繞，營造出朦朧而夢幻的氛圍。</span></p>
+                                    <p class="flex items-start leading-relaxed" data-lang-key="guoXiDesc3"><i class="fa fa-sitemap text-secondary text-2xl mt-1 mr-4"></i><span>採用「三遠」構圖法，使畫面空間感豐富，景物層次分明。</span></p>
+                                    <p class="flex items-start leading-relaxed" data-lang-key="guoXiDesc4"><i class="fa fa-search text-secondary text-2xl mt-1 mr-4"></i><span>畫中隱藏著生動的細節，如遠處的漁舟、近處的行人，充滿生機。</span></p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- 幻灯片10：經典國寶 - 李唐〈萬壑松風圖〉 -->
+            <div class="slide absolute inset-0 opacity-0 slide-transition" data-index="9">
+                <div class="absolute inset-0 bg-cover bg-center" style="background-image: url('https://www.npm.gov.tw/Att_FCK/image/2021/themevisit/selection1/IV-11.jpg'); filter: brightness(0.6);"></div>
+                <div class="absolute inset-0 p-6 md:p-12 overflow-y-auto scrollbar-hide">
+                    <div class="relative pb-24">
+                        <h2 class="text-[clamp(2.2rem,6vw,3.5rem)] font-serif font-bold text-white text-shadow-lg mb-10 text-center" data-lang-key="treasureTitle6">
+                            鎮院三寶・松壑風聲
+                        </h2>
+                        <div class="max-w-6xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-10 items-center">
+                            <div class="bg-dark/80 bg-blur p-8 rounded-lg border border-secondary/30">
+                                <h3 class="text-4xl font-serif font-bold text-secondary mb-6 text-center" data-lang-key="liTangName">李唐〈萬壑松風圖〉</h3>
+                                <div class="space-y-6 text-xl">
+                                    <p class="flex items-start leading-relaxed" data-lang-key="liTangDesc1"><i class="fa fa-tree text-secondary text-2xl mt-1 mr-4"></i><span>展現蒼勁挺拔的松樹與深邃的幽谷，氣勢雄渾。</span></p>
+                                    <p class="flex items-start leading-relaxed" data-lang-key="liTangDesc2"><i class="fa fa-paint-brush text-secondary text-2xl mt-1 mr-4"></i><span>筆法剛健有力，墨色變化豐富，表現出松樹與山石的質感。</span></p>
+                                    <p class="flex items-start leading-relaxed" data-lang-key="liTangDesc3"><i class="fa fa-bolt text-secondary text-2xl mt-1 mr-4"></i><span>畫面動靜相宜，既有萬壑的深遠，又有松風的呼嘯，極富動感。</span></p>
+                                    <p class="flex items-start leading-relaxed" data-lang-key="liTangDesc4"><i class="fa fa-university text-secondary text-2xl mt-1 mr-4"></i><span>畫作充滿了藝術家對自然山水的深刻體悟，是南宋畫院的代表作。</span></p>
+                                </div>
+                            </div>
+                            <div class="relative group h-full flex items-center">
+                                <div class="absolute inset-0 bg-gradient-to-tl from-primary/20 to-transparent rounded-lg transform -rotate-3 group-hover:rotate-0 transition-transform"></div>
+                                 <div class="w-full bg-black/30 rounded-lg p-4"><img src="https://theme.npm.edu.tw/selection/att/VideoYoutube/00000029.jpg" alt="鎮院三寶 - 李唐〈萬壑松風圖〉" class="w-full h-auto max-h-[60vh] object-contain rounded-lg shadow-2xl image-fade-in border-4 border-secondary/50" loading="lazy"></div>
+                                <div class="absolute -bottom-4 -left-4 bg-primary text-white px-6 py-3 rounded-lg font-serif font-bold text-2xl shadow-lg transform -rotate-3 group-hover:rotate-0 transition-transform" data-lang-key="liTangName2">萬壑松風圖</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 幻灯片11：經典名作 - 清明上河圖 -->
+            <div class="slide absolute inset-0 opacity-0 slide-transition" data-index="10">
+                <div class="absolute inset-0 bg-cover bg-center" style="background-image: url('https://imageproxy.pixnet.cc/imgproxy?url=https://pic.pimg.tw/threethree33/1582446941-1824307859.jpg'); filter: brightness(0.6);"></div>
+                <div class="absolute inset-0 p-6 md:p-12 overflow-y-auto scrollbar-hide">
+                    <div class="relative pb-24">
+                        <h2 class="text-[clamp(2.2rem,6vw,3.5rem)] font-serif font-bold text-white text-shadow-lg mb-10 text-center" data-lang-key="treasureTitle7">
+                            傳世經典・風俗畫卷
+                        </h2>
+                        <div class="max-w-6xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-10 items-center">
+                             <div class="relative group h-full flex items-center">
+                                <div class="absolute inset-0 bg-gradient-to-tr from-primary/20 to-transparent rounded-lg transform rotate-3 group-hover:rotate-0 transition-transform"></div>
+                                <div class="w-full bg-black/30 rounded-lg p-4"><img src="https://theme.npm.edu.tw/selection/att/collection/04000988/17010203.jpg" alt="經典名作 - 清明上河圖" class="w-full h-auto max-h-[60vh] object-contain rounded-lg shadow-2xl image-fade-in border-4 border-secondary/50" loading="lazy"></div>
+                                <div class="absolute -bottom-4 -right-4 bg-primary text-white px-6 py-3 rounded-lg font-serif font-bold text-2xl shadow-lg transform rotate-3 group-hover:rotate-0 transition-transform" data-lang-key="qingmingName2">清明上河圖</div>
+                            </div>
+                            <div class="bg-dark/80 bg-blur p-8 rounded-lg border border-secondary/30">
+                                <h3 class="text-4xl font-serif font-bold text-secondary mb-6 text-center" data-lang-key="qingmingName">傳張擇端〈清明上河圖〉</h3>
+                                <div class="space-y-6 text-xl">
+                                    <p class="flex items-start leading-relaxed" data-lang-key="qingmingDesc1"><i class="fa fa-map-o text-secondary text-2xl mt-1 mr-4"></i><span>描繪北宋都城汴京在清明節期間的繁華景象。</span></p>
+                                    <p class="flex items-start leading-relaxed" data-lang-key="qingmingDesc2"><i class="fa fa-video-camera text-secondary text-2xl mt-1 mr-4"></i><span>畫卷如同一部動態的歷史紀錄片，內容涵蓋市井百態、商販交易等。</span></p>
+                                    <p class="flex items-start leading-relaxed" data-lang-key="qingmingDesc3"><i class="fa fa-pencil text-secondary text-2xl mt-1 mr-4"></i><span>筆法細緻入微，人物表情與動作栩栩如生，展現出當時社會的風貌。</span></p>
+                                    <p class="flex items-start leading-relaxed" data-lang-key="qingmingDesc4"><i class="fa fa-book text-secondary text-2xl mt-1 mr-4"></i><span>不僅是藝術傑作，更是研究北宋風俗民情的珍貴史料。</span></p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 幻灯片12：經典名作 - 富春山居圖 -->
+            <div class="slide absolute inset-0 opacity-0 slide-transition" data-index="11">
+                <div class="absolute inset-0 bg-cover bg-center" style="background-image: url('https://digitalarchive.npm.gov.tw/Image/GetImage?imageId=428653&randomCode=17980244182'); filter: brightness(0.6);"></div>
+                <div class="absolute inset-0 p-6 md:p-12 overflow-y-auto scrollbar-hide">
+                    <div class="relative pb-24">
+                        <h2 class="text-[clamp(2.2rem,6vw,3.5rem)] font-serif font-bold text-white text-shadow-lg mb-10 text-center" data-lang-key="treasureTitle8">
+                            傳世經典・水墨之宗
+                        </h2>
+                        <div class="max-w-6xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-10 items-center">
+                            <div class="bg-dark/80 bg-blur p-8 rounded-lg border border-secondary/30">
+                                <h3 class="text-4xl font-serif font-bold text-secondary mb-6 text-center" data-lang-key="fuchunName">黃公望〈富春山居圖〉</h3>
+                                <div class="space-y-6 text-xl">
+                                    <p class="flex items-start leading-relaxed" data-lang-key="fuchunDesc1"><i class="fa fa-image text-secondary text-2xl mt-1 mr-4"></i><span>描繪了富春江兩岸的初秋景色，山水層疊，意境深遠。</span></p>
+                                    <p class="flex items-start leading-relaxed" data-lang-key="fuchunDesc2"><i class="fa fa-tint text-secondary text-2xl mt-1 mr-4"></i><span>筆墨淡雅，運用乾筆皴擦與水墨渲染，呈現出山石的紋理與層次感。</span></p>
+                                    <p class="flex items-start leading-relaxed" data-lang-key="fuchunDesc3"><i class="fa fa-star text-secondary text-2xl mt-1 mr-4"></i><span>畫風簡潔平淡，被譽為「中國山水畫之母」，對後世影響深遠。</span></p>
+                                    <p class="flex items-start leading-relaxed" data-lang-key="fuchunDesc4"><i class="fa fa-fire text-secondary text-2xl mt-1 mr-4"></i><span>因被焚而分為兩段，其中一段「無用師卷」收藏於台北故宮。</span></p>
+                                </div>
+                            </div>
+                            <div class="relative group h-full flex items-center">
+                                <div class="absolute inset-0 bg-gradient-to-tl from-primary/20 to-transparent rounded-lg transform -rotate-3 group-hover:rotate-0 transition-transform"></div>
+                                 <div class="w-full bg-black/30 rounded-lg p-4"><img src="https://theme.npm.edu.tw/selection/att/collection/04000975/17010399.jpg" alt="經典名作 - 富春山居圖" class="w-full h-auto max-h-[60vh] object-contain rounded-lg shadow-2xl image-fade-in border-4 border-secondary/50" loading="lazy"></div>
+                                <div class="absolute -bottom-4 -left-4 bg-primary text-white px-6 py-3 rounded-lg font-serif font-bold text-2xl shadow-lg transform -rotate-3 group-hover:rotate-0 transition-transform" data-lang-key="fuchunName2">富春山居圖</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 幻灯片13：經典名作 - 秋山問道圖 -->
+            <div class="slide absolute inset-0 opacity-0 slide-transition" data-index="12">
+                <div class="absolute inset-0 bg-cover bg-center" style="background-image: url('https://www.mdnkids.com/upload/images/20241012-15-02.jpg'); filter: brightness(0.6);"></div>
+                <div class="absolute inset-0 p-6 md:p-12 overflow-y-auto scrollbar-hide">
+                    <div class="relative pb-24">
+                        <h2 class="text-[clamp(2.2rem,6vw,3.5rem)] font-serif font-bold text-white text-shadow-lg mb-10 text-center" data-lang-key="treasureTitle9">
+                            傳世經典・江南氣韻
+                        </h2>
+                        <div class="max-w-6xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-10 items-center">
+                            <div class="relative group h-full flex items-center">
+                                <div class="absolute inset-0 bg-gradient-to-tr from-primary/20 to-transparent rounded-lg transform rotate-3 group-hover:rotate-0 transition-transform"></div>
+                                <div class="w-full bg-black/30 rounded-lg p-4"><img src="https://digitalarchive.npm.gov.tw/Image/GetImage?imageId=1278633&randomCode=1893156048" alt="經典名作 - 秋山問道圖" class="w-full h-auto max-h-[60vh] object-contain rounded-lg shadow-2xl image-fade-in border-4 border-secondary/50" loading="lazy"></div>
+                                <div class="absolute -bottom-4 -right-4 bg-primary text-white px-6 py-3 rounded-lg font-serif font-bold text-2xl shadow-lg transform rotate-3 group-hover:rotate-0 transition-transform" data-lang-key="juranName2">秋山問道圖</div>
+                            </div>
+                            <div class="bg-dark/80 bg-blur p-8 rounded-lg border border-secondary/30">
+                                <h3 class="text-4xl font-serif font-bold text-secondary mb-6 text-center" data-lang-key="juranName">巨然〈秋山問道圖〉</h3>
+                                <div class="space-y-6 text-xl">
+                                    <p class="flex items-start leading-relaxed" data-lang-key="juranDesc1"><i class="fa fa-pagelines text-secondary text-2xl mt-1 mr-4"></i><span>描繪秋日山林間，高士隱居問道的情景，充滿禪意。</span></p>
+                                    <p class="flex items-start leading-relaxed" data-lang-key="juranDesc2"><i class="fa fa-image text-secondary text-2xl mt-1 mr-4"></i><span>構圖以層巒疊嶂為主，山勢渾厚圓潤，展現出江南山水的溫潤氣息。</span></p>
+                                    <p class="flex items-start leading-relaxed" data-lang-key="juranDesc3"><i class="fa fa-paint-brush text-secondary text-2xl mt-1 mr-4"></i><span>筆法用長披麻皴，線條綿密細長，營造出山石的體積感。</span></p>
+                                    <p class="flex items-start leading-relaxed" data-lang-key="juranDesc4"><i class="fa fa-user-circle-o text-secondary text-2xl mt-1 mr-4"></i><span>畫中點綴著人物與亭臺，使畫面更具人文氣息與故事性。</span></p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 幻灯片14：參觀資訊 -->
+            <div class="slide absolute inset-0 opacity-0 slide-transition" data-index="13">
+                <div class="absolute inset-0 bg-cover bg-center" style="background-image: url('https://www.npm.gov.tw/NewFileAtt.ashx?name=exbit/04011102/08019085.jpg'); filter: brightness(0.6);"></div>
+                <div class="absolute inset-0 p-6 md:p-12 overflow-y-auto scrollbar-hide">
+                    <div class="relative pb-24">
+                        <h2 class="text-[clamp(2.2rem,6vw,3.5rem)] font-serif font-bold text-white text-shadow-lg mb-10 text-center" data-lang-key="visitorTitle">
+                            參觀資訊與交通指南
+                        </h2>
+                        <div class="max-w-5xl mx-auto space-y-8">
+                            <div class="bg-dark/80 bg-blur p-8 rounded-lg border border-secondary/30">
+                                <h3 class="text-3xl font-serif font-bold text-secondary mb-4 flex items-center" data-lang-key="visitorHours"><i class="fa fa-clock-o mr-4"></i>開放時間</h3>
+                                <p class="text-xl" data-lang-key="visitorHoursDesc">每日上午9:00至下午5:00（週一休館）</p>
+                            </div>
+                            <div class="bg-dark/80 bg-blur p-8 rounded-lg border border-secondary/30">
+                                <h3 class="text-3xl font-serif font-bold text-secondary mb-4 flex items-center" data-lang-key="visitorTickets"><i class="fa fa-ticket mr-4"></i>票價資訊</h3>
+                                <ul class="space-y-2 text-xl list-disc list-inside">
+                                    <li data-lang-key="ticket1">普通參觀券：新台幣 350 元</li>
+                                    <li data-lang-key="ticket2">團體參觀券：新台幣 300 元（10人以上團體）</li>
+                                    <li data-lang-key="ticket3">學生、兒童、長者、身心障礙者及陪伴者：免費入場</li>
+                                </ul>
+                            </div>
+                            <div class="bg-dark/80 bg-blur p-8 rounded-lg border border-secondary/30">
+                                <h3 class="text-3xl font-serif font-bold text-secondary mb-4 flex items-center" data-lang-key="visitorTransport"><i class="fa fa-bus mr-4"></i>交通方式</h3>
+                                <div class="space-y-4 text-xl">
+                                    <p class="flex items-start" data-lang-key="transport1"><i class="fa fa-subway text-secondary mt-1 mr-3"></i><span><strong>捷運轉公車：</strong>搭乘淡水信義線至「士林站」，轉乘公車（紅30、255等）至故宮博物院站。</span></p>
+                                    <p class="flex items-start" data-lang-key="transport2"><i class="fa fa-taxi text-secondary mt-1 mr-3"></i><span><strong>計程車：</strong>從士林捷運站搭乘約10-15分鐘即可抵達。</span></p>
+                                    <p class="flex items-start" data-lang-key="transport3"><i class="fa fa-car text-secondary mt-1 mr-3"></i><span><strong>自行開車：</strong>可停放於故宮博物院地下停車場。</span></p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 幻灯片15：數位典藏與學習 -->
+            <div class="slide absolute inset-0 opacity-0 slide-transition" data-index="14">
+                <div class="absolute inset-0 bg-cover bg-center" style="background-image: url('https://image.peoplemedia.tw/news/073b9947-845e-4155-9f03-0ce4064061e6.jpg'); filter: brightness(0.6);"></div>
+                <div class="absolute inset-0 p-6 md:p-12 overflow-y-auto scrollbar-hide">
+                    <div class="relative pb-24">
+                        <h2 class="text-[clamp(2.2rem,6vw,3.5rem)] font-serif font-bold text-white text-shadow-lg mb-10 text-center" data-lang-key="digitalTitle">
+                            數位典藏與互動學習
+                        </h2>
+                        <div class="max-w-6xl mx-auto space-y-12">
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                                <div class="bg-dark/80 bg-blur p-8 rounded-lg border border-secondary/30 transform hover:scale-[1.02] transition-transform">
+                                    <h3 class="text-3xl font-serif font-bold text-secondary mb-4 flex items-center" data-lang-key="digitalSub1"><i class="fa fa-globe mr-3"></i>線上虛擬展廳</h3>
+                                    <p class="text-lg mb-6 leading-relaxed" data-lang-key="digitalDesc1">透過高科技VR技術，讓您無需親臨現場，也能身歷其境般體驗故宮展廳的宏偉與文物的細節之美。</p>
+                                    <a href="#" class="inline-block bg-primary text-light px-8 py-3 rounded-full font-bold hover:bg-secondary hover:text-dark transition-colors" onclick="alert(getAlertText('demoLink')); return false;" data-lang-key="digitalBtn1">立即體驗</a>
+                                </div>
+                                <div class="bg-dark/80 bg-blur p-8 rounded-lg border border-secondary/30 transform hover:scale-[1.02] transition-transform">
+                                    <h3 class="text-3xl font-serif font-bold text-secondary mb-4 flex items-center" data-lang-key="digitalSub2"><i class="fa fa-book mr-3"></i>數位典藏資料庫</h3>
+                                    <p class="text-lg mb-6 leading-relaxed" data-lang-key="digitalDesc2">故宮的數位典藏資料庫收錄海量高清文物圖片和詳細資訊，為學術研究和文化愛好者提供寶貴資源。</p>
+                                    <a href="#" class="inline-block bg-primary text-light px-8 py-3 rounded-full font-bold hover:bg-secondary hover:text-dark transition-colors" onclick="alert(getAlertText('demoLink')); return false;" data-lang-key="digitalBtn2">探索資料庫</a>
+                                </div>
+                            </div>
+                            <div class="bg-dark/80 bg-blur p-8 rounded-lg border border-secondary/30 text-center">
+                                <h3 class="text-3xl font-serif font-bold text-secondary mb-4 flex items-center justify-center" data-lang-key="digitalSub3"><i class="fa fa-comments mr-3"></i>線上語音導覽</h3>
+                                <div class="space-y-4">
+                                    <p class="text-lg leading-relaxed" data-lang-key="digitalDesc3">使用我們的語音導覽服務，您可以更深入地了解每一件文物背後的故事與歷史。</p>
+                                    <button id="voiceGuideBtn" class="bg-primary text-light px-8 py-3 rounded-full font-bold text-xl hover:bg-secondary hover:text-dark transition-colors pulse-slow">
+                                        <i class="fa fa-microphone mr-3"></i><span data-lang-key="digitalBtn3">開始導覽</span>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- 幻灯片16：致謝頁面 -->
+            <div class="slide absolute inset-0 opacity-0 slide-transition" data-index="15">
+                <div class="absolute inset-0 bg-cover bg-center" style="background-image: url('https://picsum.photos/id/1056/1920/1080'); filter: brightness(0.7);"></div>
+                <div class="absolute inset-0 flex flex-col justify-center items-center text-center px-4">
+                    <h2 class="text-[clamp(2.5rem,7vw,4.5rem)] font-serif font-bold text-white text-shadow-lg mb-4" data-lang-key="thankYouTitle">
+                        感謝您的瀏覽
+                    </h2>
+                    <p class="text-[clamp(1.2rem,3vw,1.8rem)] text-white/90 text-shadow mb-10 max-w-4xl font-light" data-lang-key="thankYouDesc">
+                        希望這趟虛擬旅程能讓您對台北故宮有更深的認識。期待您親自蒞臨，感受中華文化的博大精深。
+                    </p>
+                    <div class="flex space-x-8">
+                        <a href="#" class="text-white text-5xl hover:text-secondary transition-colors transform hover:-translate-y-1" title="官方網站" data-lang-key-title="socialWebsite"><i class="fa fa-globe"></i></a>
+                        <a href="#" class="text-white text-5xl hover:text-secondary transition-colors transform hover:-translate-y-1" title="Facebook" data-lang-key-title="socialFacebook"><i class="fa fa-facebook-square"></i></a>
+                        <a href="#" class="text-white text-5xl hover:text-secondary transition-colors transform hover:-translate-y-1" title="Instagram" data-lang-key-title="socialInstagram"><i class="fa fa-instagram"></i></a>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+        <!-- 導航按鈕 -->
+        <div class="absolute bottom-6 left-1/2 transform -translate-x-1/2 flex items-center space-x-4 z-20">
+            <button id="prevBtn" class="bg-white/30 text-white p-4 rounded-full shadow-lg backdrop-blur-md hover:bg-white/50 transition-colors"><i class="fa fa-chevron-left"></i></button>
+            <div id="dotsContainer" class="flex space-x-2"></div>
+            <button id="nextBtn" class="bg-white/30 text-white p-4 rounded-full shadow-lg backdrop-blur-md hover:bg-white/50 transition-colors"><i class="fa fa-chevron-right"></i></button>
+        </div>
+
+        <!-- 輔助控制按鈕 -->
+        <div class="absolute top-6 right-6 flex items-center space-x-4 z-20">
+            <button id="langToggleBtn" class="bg-white/30 text-white p-3 w-16 rounded-full shadow-lg backdrop-blur-md hover:bg-white/50 transition-colors font-sans font-bold" title="切換語言 / Language">
+                EN
+            </button>
+            <button id="autoPlayBtn" class="bg-white/30 text-white p-3 rounded-full shadow-lg backdrop-blur-md hover:bg-white/50 transition-colors" title="自動播放"><i class="fa fa-pause"></i></button>
+            <button id="fullscreenBtn" class="bg-white/30 text-white p-3 rounded-full shadow-lg backdrop-blur-md hover:bg-white/50 transition-colors" title="全螢幕"><i class="fa fa-expand"></i></button>
+            <button id="musicBtn" class="bg-white/30 text-white p-3 rounded-full shadow-lg backdrop-blur-md hover:bg-white/50 transition-colors" title="背景音樂"><i class="fa fa-music"></i></button>
+        </div>
+    </div>
+
+    <script>
+        // --- 翻譯資料庫 ---
+        const translations = {
+            'zh-Hant': {
+                // page 1
+                welcomeTitle: "台北故宮博物院",
+                welcomeSubtitle: "東方文明的璀璨寶庫",
+                fact1: '<i class="fa fa-calendar-check-o text-secondary mr-2 w-5 text-center"></i> 建立於1965年，為世界四大博物館之一',
+                fact2: '<i class="fa fa-diamond text-secondary mr-2 w-5 text-center"></i> 藏品逾70萬件，涵蓋中國數千年文化藝術',
+                fact3: '<i class="fa fa-users text-secondary mr-2 w-5 text-center"></i> 每年吸引超過400萬觀光人次',
+                fact4: '<i class="fa fa-map-marker text-secondary mr-2 w-5 text-center"></i> 台北市士林區至善路二段221號',
+                // page 2
+                historyTitle: "從遷藏到弘揚的歷史軌跡",
+                historyYear1: "1925年", historyDesc1: "北京紫禁城成立國立故宮博物院，標誌著中國現代博物館事業的重要里程碑。",
+                historyYear2: "1931-1949年", historyDesc2: "因戰亂，文物先後遷移至上海、南京、四川等地，最終部分珍貴文物輾轉來台，為文化保存做出重要貢獻。",
+                historyYear3: "1965年", historyDesc3: "台北故宮博物院正式落成啟用，成為保存和展示中華文化瑰寶的重要場所。",
+                historyYear4: "2000年代", historyDesc4: "啟動數位典藏計畫，讓珍貴文物透過數位化方式永久保存，並積極開展國際文化交流活動。",
+                historyYear5: "2020年起", historyDesc5: "推動新故宮計畫，著重於現代化轉型，提升參觀體驗，並加強文化教育與國際合作。",
+                // page 3
+                archTitle: "現代與古典融合的宮殿美學",
+                archSub1: "仿唐宋風格建築", archDesc1_1: "故宮建築採用青瓦白牆的經典設計，體現了唐宋時期宮殿建築的優雅與莊嚴。外觀簡潔大方，線條流暢，展現東方建築的獨特魅力。", archDesc1_2: "建築師巧妙地將傳統元素與現代功能相結合，創造出既符合歷史氛圍又適合現代博物館運作的空間。",
+                archSub2: "建築結構與空間", archDesc2_1: "正館為三層主樓，配備現代化展廳與庫房。空間規劃講究層次與流動性，讓參觀者能在舒適的環境中欣賞文物。", archDesc2_2: "附設的至善園是一座精美的仿古庭園，展示了東方造園藝術的精髓，為參觀者提供了一個寧靜沉思的空間。",
+                exhibitTitle: "展覽與館藏特色",
+                exhibitSub1: '<i class="fa fa-building-o fa-fw mr-3"></i>主要展覽空間', exhibitDesc1: "故宮本館設有三層樓，提供不同主題的展覽，輪流展出豐富的館藏文物。",
+                exhibitSub2: '<i class="fa fa-star-o fa-fw mr-3"></i>特展', exhibitDesc2: "故宮定期舉辦特展，展出特定主題的文物或藝術品，例如「碁人弈事—古代圍棋文化」。",
+                exhibitSub3: '<i class="fa fa-desktop fa-fw mr-3"></i>數位展覽', exhibitDesc3: "故宮也積極推出數位展覽，例如「眾神降臨—沉浸故宮3.0數位展」，提供創新的沉浸式觀展體驗。",
+                exhibitSub4: '<i class="fa fa-diamond fa-fw mr-3"></i>館藏特色',
+                exhibitDesc4_1: "<strong>典藏三類：</strong>故宮館藏豐富，主要包含中國古代的書畫、器物、圖書文獻等。",
+                exhibitDesc4_2: "<strong>鎮院三寶：</strong>范寬〈谿山行旅圖〉、郭熙〈早春圖〉和李唐〈萬壑松風圖〉被譽為「故宮三寶」，是書畫中的經典代表。",
+                exhibitDesc4_3: "<strong>人氣文物：</strong>翠玉白菜、肉形石、毛公鼎等巧奪天工的器物，是故宮最受歡迎的熱門展品。",
+                // page 4
+                collectionTitle: "千年文化的精華典藏",
+                collectionCat1: "書畫類", collectionDesc1: "故宮收藏的書畫作品涵蓋從魏晉到明清的名家傑作，體現了中國書畫藝術的演變與成就。",
+                collectionItem1_1: '<i class="fa fa-paint-brush text-secondary mt-1 mr-3"></i><span>王羲之的書法，展現魏晉風流</span>', collectionItem1_2: '<i class="fa fa-paint-brush text-secondary mt-1 mr-3"></i><span>宋徽宗的繪畫，體現皇家藝術</span>', collectionItem1_3: '<i class="fa fa-paint-brush text-secondary mt-1 mr-3"></i><span>董其昌等明清大師的書畫精品</span>',
+                collectionCat2: "陶瓷類", collectionDesc2: "故宮的陶瓷收藏種類齊全，年代久遠，從原始青瓷到明清彩瓷，展現中國陶瓷藝術的輝煌。",
+                collectionItem2_1: '<i class="fa fa-flask text-secondary mt-1 mr-3"></i><span>宋代五大名窯（汝、官、哥、鈞、定）</span>', collectionItem2_2: '<i class="fa fa-flask text-secondary mt-1 mr-3"></i><span>元代青花瓷，代表陶瓷藝術巔峰</span>', collectionItem2_3: '<i class="fa fa-flask text-secondary mt-1 mr-3"></i><span>明清彩瓷，色彩絢麗，工藝精湛</span>',
+                collectionCat3: "器物類", collectionDesc3: "器物類藏品豐富多樣，涵蓋青銅、玉、漆器與佛像等，見證中國工藝美術的發展歷程。",
+                collectionItem3_1: '<i class="fa fa-diamond text-secondary mt-1 mr-3"></i><span>商周青銅器，紋飾精美，具歷史價值</span>', collectionItem3_2: '<i class="fa fa-diamond text-secondary mt-1 mr-3"></i><span>歷代玉器，雕刻精細，寓意深遠</span>', collectionItem3_3: '<i class="fa fa-diamond text-secondary mt-1 mr-3"></i><span>佛教藝術珍品，包括佛像、經卷等</span>',
+                // page 5
+                treasureTitle1: "人氣國寶・巧奪天工", meatStoneName: "肉形石", meatStoneName2: "肉形石",
+                meatStoneDesc1: '<i class="fa fa-history text-secondary text-2xl mt-1 mr-4"></i><span>晚清時期的仿生玉雕，是故宮最受歡迎的藏品之一，堪稱中國工藝美術的巔峰之作。</span>',
+                meatStoneDesc2: '<i class="fa fa-paint-brush text-secondary text-2xl mt-1 mr-4"></i><span>工匠利用玉石天然的色彩與質地，細緻呈現豬肉的皮、脂、肉，栩栩如生，幾可亂真。</span>',
+                meatStoneDesc3: '<i class="fa fa-star text-secondary text-2xl mt-1 mr-4"></i><span>不僅展現精湛技藝，更體現了中華文化中「食」與「藝」的緊密結合與生活之美。</span>',
+                meatStoneSize: '<i class="fa fa-info-circle text-secondary text-xl mt-1 mr-4"></i><span>尺寸：高5.7公分，寬6.6公分，厚5.3公分。</span>',
+                // page 6
+                treasureTitle2: "人氣國寶・吉祥寓意", cabbageName: "翠玉白菜", cabbageName2: "翠玉白菜",
+                cabbageDesc1: '<i class="fa fa-history text-secondary text-2xl mt-1 mr-4"></i><span>清代光緒皇帝瑾妃的嫁妝之一，以其巧奪天工的技藝和生動的寓意而聞名。</span>',
+                cabbageDesc2: '<i class="fa fa-pagelines text-secondary text-2xl mt-1 mr-4"></i><span>工匠利用玉石本身的天然顏色，將白菜的綠葉白梗巧妙呈現，如同真實一般。</span>',
+                cabbageDesc3: '<i class="fa fa-bug text-secondary text-2xl mt-1 mr-4"></i><span>菜葉上雕有螽斯與蝗蟲，象徵「多子多孫」的美好祝福，寓意吉祥。</span>',
+                cabbageSize: '<i class="fa fa-info-circle text-secondary text-xl mt-1 mr-4"></i><span>尺寸：高18.7公分，寬9.1公分，厚5.07公分。</span>',
+                // page 7
+                treasureTitle3: "人氣國寶・史料重器", maoGongDingName: "毛公鼎", maoGongDingName2: "毛公鼎",
+                maoGongDingDesc1: '<i class="fa fa-history text-secondary text-2xl mt-1 mr-4"></i><span>西周晚期鑄造的青銅器，是現存銘文最長的青銅器，被譽為「青銅器之王」。</span>',
+                maoGongDingDesc2: '<i class="fa fa-file-text-o text-secondary text-2xl mt-1 mr-4"></i><span>內壁鑄有長達500字的銘文，記載了周宣王誥誡其臣子毛公的歷史事件。</span>',
+                maoGongDingDesc3: '<i class="fa fa-gavel text-secondary text-2xl mt-1 mr-4"></i><span>這件國寶不僅是藝術珍品，更是研究西周歷史、文化和制度的重要文獻。</span>',
+                maoGongDingSize: '<i class="fa fa-info-circle text-secondary text-xl mt-1 mr-4"></i><span>尺寸：高53.8公分，口徑47公分，重34.7公斤。</span>',
+                // page 8 (Fan Kuan)
+                treasureTitle4: "鎮院三寶・山水巨作", fanKuanName: "范寬〈谿山行旅圖〉", fanKuanName2: "谿山行旅圖",
+                fanKuanDesc1: '<i class="fa fa-image text-secondary text-2xl mt-1 mr-4"></i><span>以巍峨雄壯的主峰佔據畫面中心，氣勢磅礴。</span>',
+                fanKuanDesc2: '<i class="fa fa-sitemap text-secondary text-2xl mt-1 mr-4"></i><span>構圖雄偉，展現北宋山水畫的宏大氣魄。</span>',
+                fanKuanDesc3: '<i class="fa fa-paint-brush text-secondary text-2xl mt-1 mr-4"></i><span>筆法細膩，山石紋理清晰，如同斧劈刀鑿。</span>',
+                fanKuanDesc4: '<i class="fa fa-users text-secondary text-2xl mt-1 mr-4"></i><span>畫中可見行旅商隊，點綴出人間煙火，使畫面更添生動。</span>',
+                // page 9 (Guo Xi)
+                treasureTitle5: "鎮院三寶・早春詩意", guoXiName: "郭熙〈早春圖〉", guoXiName2: "早春圖",
+                guoXiDesc1: '<i class="fa fa-leaf text-secondary text-2xl mt-1 mr-4"></i><span>描繪早春時節，萬物復甦的景致。</span>',
+                guoXiDesc2: '<i class="fa fa-cloud text-secondary text-2xl mt-1 mr-4"></i><span>筆觸柔和，山勢連綿，雲霧繚繞，營造出朦朧而夢幻的氛圍。</span>',
+                guoXiDesc3: '<i class="fa fa-sitemap text-secondary text-2xl mt-1 mr-4"></i><span>採用「三遠」構圖法，使畫面空間感豐富，景物層次分明。</span>',
+                guoXiDesc4: '<i class="fa fa-search text-secondary text-2xl mt-1 mr-4"></i><span>畫中隱藏著生動的細節，如遠處的漁舟、近處的行人，充滿生機。</span>',
+                // page 10 (Li Tang)
+                treasureTitle6: "鎮院三寶・松壑風聲", liTangName: "李唐〈萬壑松風圖〉", liTangName2: "萬壑松風圖",
+                liTangDesc1: '<i class="fa fa-tree text-secondary text-2xl mt-1 mr-4"></i><span>展現蒼勁挺拔的松樹與深邃的幽谷，氣勢雄渾。</span>',
+                liTangDesc2: '<i class="fa fa-paint-brush text-secondary text-2xl mt-1 mr-4"></i><span>筆法剛健有力，墨色變化豐富，表現出松樹與山石的質感。</span>',
+                liTangDesc3: '<i class="fa fa-bolt text-secondary text-2xl mt-1 mr-4"></i><span>畫面動靜相宜，既有萬壑的深遠，又有松風的呼嘯，極富動感。</span>',
+                liTangDesc4: '<i class="fa fa-university text-secondary text-2xl mt-1 mr-4"></i><span>畫作充滿了藝術家對自然山水的深刻體悟，是南宋畫院的代表作。</span>',
+                // page 11 (Qingming) - NEW
+                treasureTitle7: "傳世經典・風俗畫卷", qingmingName: "傳張擇端〈清明上河圖〉", qingmingName2: "清明上河圖",
+                qingmingDesc1: '<i class="fa fa-map-o text-secondary text-2xl mt-1 mr-4"></i><span>描繪北宋都城汴京在清明節期間的繁華景象。</span>',
+                qingmingDesc2: '<i class="fa fa-video-camera text-secondary text-2xl mt-1 mr-4"></i><span>畫卷如同一部動態的歷史紀錄片，內容涵蓋市井百態、商販交易等。</span>',
+                qingmingDesc3: '<i class="fa fa-pencil text-secondary text-2xl mt-1 mr-4"></i><span>筆法細緻入微，人物表情與動作栩栩如生，展現出當時社會的風貌。</span>',
+                qingmingDesc4: '<i class="fa fa-book text-secondary text-2xl mt-1 mr-4"></i><span>不僅是藝術傑作，更是研究北宋風俗民情的珍貴史料。</span>',
+                // page 12 (Fuchun) - NEW
+                treasureTitle8: "傳世經典・水墨之宗", fuchunName: "黃公望〈富春山居圖〉", fuchunName2: "富春山居圖",
+                fuchunDesc1: '<i class="fa fa-image text-secondary text-2xl mt-1 mr-4"></i><span>描繪了富春江兩岸的初秋景色，山水層疊，意境深遠。</span>',
+                fuchunDesc2: '<i class="fa fa-tint text-secondary text-2xl mt-1 mr-4"></i><span>筆墨淡雅，運用乾筆皴擦與水墨渲染，呈現出山石的紋理與層次感。</span>',
+                fuchunDesc3: '<i class="fa fa-star text-secondary text-2xl mt-1 mr-4"></i><span>畫風簡潔平淡，被譽為「中國山水畫之母」，對後世影響深遠。</span>',
+                fuchunDesc4: '<i class="fa fa-fire text-secondary text-2xl mt-1 mr-4"></i><span>因被焚而分為兩段，其中一段「無用師卷」收藏於台北故宮。</span>',
+                // page 13 (Juran) - NEW
+                treasureTitle9: "傳世經典・江南氣韻", juranName: "巨然〈秋山問道圖〉", juranName2: "秋山問道圖",
+                juranDesc1: '<i class="fa fa-pagelines text-secondary text-2xl mt-1 mr-4"></i><span>描繪秋日山林間，高士隱居問道的情景，充滿禪意。</span>',
+                juranDesc2: '<i class="fa fa-image text-secondary text-2xl mt-1 mr-4"></i><span>構圖以層巒疊嶂為主，山勢渾厚圓潤，展現出江南山水的溫潤氣息。</span>',
+                juranDesc3: '<i class="fa fa-paint-brush text-secondary text-2xl mt-1 mr-4"></i><span>筆法用長披麻皴，線條綿密細長，營造出山石的體積感。</span>',
+                juranDesc4: '<i class="fa fa-user-circle-o text-secondary text-2xl mt-1 mr-4"></i><span>畫中點綴著人物與亭臺，使畫面更具人文氣息與故事性。</span>',
+                // page 14
+                visitorTitle: "參觀資訊與交通指南",
+                visitorHours: '<i class="fa fa-clock-o mr-4"></i>開放時間', visitorHoursDesc: '每日上午9:00至下午5:00（週一休館）',
+                visitorTickets: '<i class="fa fa-ticket mr-4"></i>票價資訊',
+                ticket1: '普通參觀券：新台幣 350 元', ticket2: '團體參觀券：新台幣 300 元（10人以上團體）', ticket3: '學生、兒童、長者、身心障礙者及陪伴者：免費入場',
+                visitorTransport: '<i class="fa fa-bus mr-4"></i>交通方式',
+                transport1: '<i class="fa fa-subway text-secondary mt-1 mr-3"></i><span><strong>捷運轉公車：</strong>搭乘淡水信義線至「士林站」，轉乘公車（紅30、255等）至故宮博物院站。</span>',
+                transport2: '<i class="fa fa-taxi text-secondary mt-1 mr-3"></i><span><strong>計程車：</strong>從士林捷運站搭乘約10-15分鐘即可抵達。</span>',
+                transport3: '<i class="fa fa-car text-secondary mt-1 mr-3"></i><span><strong>自行開車：</strong>可停放於故宮博物院地下停車場。</span>',
+                // page 15
+                digitalTitle: "數位典藏與互動學習",
+                digitalSub1: '<i class="fa fa-globe mr-3"></i>線上虛擬展廳', digitalDesc1: "透過高科技VR技術，讓您無需親臨現場，也能身歷其境般體驗故宮展廳的宏偉與文物的細節之美。", digitalBtn1: "立即體驗",
+                digitalSub2: '<i class="fa fa-book mr-3"></i>數位典藏資料庫', digitalDesc2: "故宮的數位典藏資料庫收錄海量高清文物圖片和詳細資訊，為學術研究和文化愛好者提供寶貴資源。", digitalBtn2: "探索資料庫",
+                digitalSub3: '<i class="fa fa-comments mr-3"></i>線上語音導覽', digitalDesc3: "使用我們的語音導覽服務，您可以更深入地了解每一件文物背後的故事與歷史。", digitalBtn3: "開始導覽",
+                alertDemoLink: "此為示範連結，請自行替換為實際網址",
+                alertVoiceGuide: "語音導覽：翠玉白菜，是清朝光緒皇帝的妃子，瑾妃，的嫁妝之一...",
+                // page 16
+                thankYouTitle: "感謝您的瀏覽",
+                thankYouDesc: "希望這趟虛擬旅程能讓您對台北故宮有更深的認識。期待您親自蒞臨，感受中華文化的博大精深。",
+                socialWebsite: "官方網站", socialFacebook: "Facebook", socialInstagram: "Instagram",
+                // control buttons
+                title_autoplay_pause: "暫停自動播放", title_autoplay_play: "開始自動播放", title_fullscreen_expand: "全螢幕", title_fullscreen_compress: "結束全螢幕", title_music_on: "關閉音樂", title_music_off: "播放音樂",
+            },
+            'en': {
+                // page 1
+                welcomeTitle: "National Palace Museum",
+                welcomeSubtitle: "A Treasure Trove of Eastern Civilization",
+                fact1: '<i class="fa fa-calendar-check-o text-secondary mr-2 w-5 text-center"></i> Established in 1965, one of the four major museums in the world.',
+                fact2: '<i class="fa fa-diamond text-secondary mr-2 w-5 text-center"></i> Over 700,000 artifacts covering thousands of years of Chinese culture.',
+                fact3: '<i class="fa fa-users text-secondary mr-2 w-5 text-center"></i> Attracts over 4 million visitors annually.',
+                fact4: '<i class="fa fa-map-marker text-secondary mr-2 w-5 text-center"></i> No. 221, Sec. 2, Zhishan Rd., Shilin Dist., Taipei City',
+                // page 2
+                historyTitle: "A Historical Journey of Preservation and Promotion",
+                historyYear1: "1925", historyDesc1: "The National Palace Museum was established in the Forbidden City, Beijing, marking a milestone in China's modern museum history.",
+                historyYear2: "1931-1949", historyDesc2: "Due to war, the collection was moved to Shanghai, Nanjing, and Sichuan. A selection of precious artifacts was eventually brought to Taiwan.",
+                historyYear3: "1965", historyDesc3: "The National Palace Museum in Taipei was officially inaugurated, becoming a vital center for preserving and displaying Chinese cultural treasures.",
+                historyYear4: "2000s", historyDesc4: "The digital archives project was launched to permanently preserve artifacts digitally and to promote international cultural exchange.",
+                historyYear5: "2020-Present", historyDesc5: "The 'New NPM' project focuses on modernization, enhancing visitor experience, and strengthening cultural education and international cooperation.",
+                // page 3
+                archTitle: "A Palace Aesthetic Blending Modernity and Tradition",
+                archSub1: "Architecture of Tang and Song Style", archDesc1_1: "The museum's design, with its green tiles and white walls, embodies the elegance and solemnity of Tang and Song dynasty palace architecture.", archDesc1_2: "Architects skillfully combined traditional elements with modern functional needs, creating a space that is both historical and functional.",
+                archSub2: "Structure and Space", archDesc2_1: "The main building has three floors with modern exhibition halls and storage. The spatial layout emphasizes flow, allowing for a comfortable viewing experience.", archDesc2_2: "The adjacent Zhishan Garden, a beautiful classical garden, showcases the essence of Eastern landscape art, offering a tranquil space for reflection.",
+                exhibitTitle: "Exhibitions & Collection Highlights",
+                exhibitSub1: '<i class="fa fa-building-o fa-fw mr-3"></i>Main Exhibition Halls', exhibitDesc1: "The main building features three floors of exhibition halls with rotating displays from the museum's rich collection.",
+                exhibitSub2: '<i class="fa fa-star-o fa-fw mr-3"></i>Special Exhibitions', exhibitDesc2: "The museum regularly holds special exhibitions on specific themes, such as 'Go and Go Players in Antiquity.'",
+                exhibitSub3: '<i class="fa fa-desktop fa-fw mr-3"></i>Digital Exhibitions', exhibitDesc3: "The museum also presents digital exhibitions, like 'The Descent of the Deities—NPM 3.0,' offering innovative immersive experiences.",
+                exhibitSub4: '<i class="fa fa-diamond fa-fw mr-3"></i>Collection Highlights',
+                exhibitDesc4_1: "<strong>Three Main Categories:</strong> The rich collection primarily includes ancient Chinese calligraphy and painting, artifacts, and rare books and documents.",
+                exhibitDesc4_2: "<strong>Three Treasures:</strong> Fan Kuan's 'Travelers among Mountains and Streams,' Guo Xi's 'Early Spring,' and Li Tang's 'Wind in Pines among a Myriad Valleys' are hailed as the 'Three Treasures of the NPM.'",
+                exhibitDesc4_3: "<strong>Popular Artifacts:</strong> The Jadeite Cabbage, Meat-shaped Stone, and Mao Gong Ding are among the most popular and celebrated items.",
+                // page 4
+                collectionTitle: "An Exquisite Collection of Millennial Culture",
+                collectionCat1: "Painting & Calligraphy", collectionDesc1: "The collection includes masterpieces from the Wei-Jin to the Ming-Qing dynasties, showcasing the evolution of Chinese art.",
+                collectionItem1_1: '<i class="fa fa-paint-brush text-secondary mt-1 mr-3"></i><span>Calligraphy by Wang Xizhi</span>', collectionItem1_2: '<i class="fa fa-paint-brush text-secondary mt-1 mr-3"></i><span>Paintings by Emperor Huizong of Song</span>', collectionItem1_3: '<i class="fa fa-paint-brush text-secondary mt-1 mr-3"></i><span>Works by Ming-Qing masters like Dong Qichang</span>',
+                collectionCat2: "Ceramics", collectionDesc2: "The ceramics collection is comprehensive, from proto-celadon to Ming and Qing polychrome porcelain, displaying the splendor of Chinese pottery.",
+                collectionItem2_1: '<i class="fa fa-flask text-secondary mt-1 mr-3"></i><span>Treasures from the Five Great Kilns of the Song dynasty</span>', collectionItem2_2: '<i class="fa fa-flask text-secondary mt-1 mr-3"></i><span>Yuan dynasty blue-and-white porcelain</span>', collectionItem2_3: '<i class="fa fa-flask text-secondary mt-1 mr-3"></i><span>Exquisite Ming and Qing polychrome wares</span>',
+                collectionCat3: "Antiquities", collectionDesc3: "This diverse category includes bronzes, jades, lacquerware, and Buddhist sculptures, witnessing the history of Chinese decorative arts.",
+                collectionItem3_1: '<i class="fa fa-diamond text-secondary mt-1 mr-3"></i><span>Shang and Zhou bronzes with historical value</span>', collectionItem3_2: '<i class="fa fa-diamond text-secondary mt-1 mr-3"></i><span>Intricately carved jades with profound symbolism</span>', collectionItem3_3: '<i class="fa fa-diamond text-secondary mt-1 mr-3"></i><span>Buddhist art treasures, including statues and sutras</span>',
+                // page 5
+                treasureTitle1: "Popular Treasure: Superb Craftsmanship", meatStoneName: "Meat-shaped Stone", meatStoneName2: "Meat-shaped Stone",
+                meatStoneDesc1: '<i class="fa fa-history text-secondary text-2xl mt-1 mr-4"></i><span>A masterpiece of trompe-l\'oeil jade carving from the late Qing dynasty, it is one of the most popular items in the collection.</span>',
+                meatStoneDesc2: '<i class="fa fa-paint-brush text-secondary text-2xl mt-1 mr-4"></i><span>The artisan used the stone\'s natural colors and texture to vividly render the skin, fat, and lean meat of a piece of stewed pork.</span>',
+                meatStoneDesc3: '<i class="fa fa-star text-secondary text-2xl mt-1 mr-4"></i><span>It not only shows exquisite skill but also reflects the close connection between food and art in Chinese culture.</span>',
+                meatStoneSize: '<i class="fa fa-info-circle text-secondary text-xl mt-1 mr-4"></i><span>Dimensions: H 5.7cm, W 6.6cm, T 5.3cm.</span>',
+                // page 6
+                treasureTitle2: "Popular Treasure: Auspicious Symbolism", cabbageName: "Jadeite Cabbage", cabbageName2: "Jadeite Cabbage",
+                cabbageDesc1: '<i class="fa fa-history text-secondary text-2xl mt-1 mr-4"></i><span>Part of the dowry of Consort Jin of the Qing Emperor Guangxu, it is famed for its masterful carving and vivid symbolism.</span>',
+                cabbageDesc2: '<i class="fa fa-pagelines text-secondary text-2xl mt-1 mr-4"></i><span>The artist cleverly used the jade\'s natural colors to create the green leaves and white stalk of the cabbage.</span>',
+                cabbageDesc3: '<i class="fa fa-bug text-secondary text-2xl mt-1 mr-4"></i><span>A katydid and a locust on the leaves symbolize fertility and auspicious blessings for many offspring.</span>',
+                cabbageSize: '<i class="fa fa-info-circle text-secondary text-xl mt-1 mr-4"></i><span>Dimensions: H 18.7cm, W 9.1cm, T 5.07cm.</span>',
+                // page 7
+                treasureTitle3: "Popular Treasure: Historical Significance", maoGongDingName: "Mao Gong Ding", maoGongDingName2: "Mao Gong Ding",
+                maoGongDingDesc1: '<i class="fa fa-history text-secondary text-2xl mt-1 mr-4"></i><span>A bronze vessel from the late Western Zhou dynasty, it holds the longest inscription of any existing bronze, earning it the title "King of Bronzes."</span>',
+                maoGongDingDesc2: '<i class="fa fa-file-text-o text-secondary text-2xl mt-1 mr-4"></i><span>Its interior is cast with a 500-character inscription recording the admonitions of King Xuan of Zhou to his minister, Duke Mao.</span>',
+                maoGongDingDesc3: '<i class="fa fa-gavel text-secondary text-2xl mt-1 mr-4"></i><span>This treasure is not only a work of art but also a vital document for studying the history and culture of the Western Zhou dynasty.</span>',
+                maoGongDingSize: '<i class="fa fa-info-circle text-secondary text-xl mt-1 mr-4"></i><span>Dimensions: H 53.8cm, D 47cm, Wt 34.7kg.</span>',
+                // page 8 (Fan Kuan)
+                treasureTitle4: "NPM Treasure: A Landscape Masterpiece", fanKuanName: "Fan Kuan, 'Travelers among Mountains and Streams'", fanKuanName2: "Travelers among Mountains",
+                fanKuanDesc1: '<i class="fa fa-image text-secondary text-2xl mt-1 mr-4"></i><span>A majestic central peak dominates the composition, creating a powerful and imposing atmosphere.</span>',
+                fanKuanDesc2: '<i class="fa fa-sitemap text-secondary text-2xl mt-1 mr-4"></i><span>The grand composition showcases the monumental spirit of Northern Song landscape painting.</span>',
+                fanKuanDesc3: '<i class="fa fa-paint-brush text-secondary text-2xl mt-1 mr-4"></i><span>The brushwork is detailed, with clear, ax-cut texture strokes on the rocks, as if chiseled.</span>',
+                fanKuanDesc4: '<i class="fa fa-users text-secondary text-2xl mt-1 mr-4"></i><span>A traveling caravan is visible in the painting, adding a human touch and enlivening the scene.</span>',
+                // page 9 (Guo Xi)
+                treasureTitle5: "NPM Treasure: The Poetry of Early Spring", guoXiName: "Guo Xi, 'Early Spring'", guoXiName2: "Early Spring",
+                guoXiDesc1: '<i class="fa fa-leaf text-secondary text-2xl mt-1 mr-4"></i><span>Depicts the scenery of early spring when all things begin to revive.</span>',
+                guoXiDesc2: '<i class="fa fa-cloud text-secondary text-2xl mt-1 mr-4"></i><span>The brushwork is gentle, with rolling mountains and swirling mists, creating a hazy, dreamlike atmosphere.</span>',
+                guoXiDesc3: '<i class="fa fa-sitemap text-secondary text-2xl mt-1 mr-4"></i><span>It employs the "three distances" perspective, enriching the spatial depth and creating clear layers.</span>',
+                guoXiDesc4: '<i class="fa fa-search text-secondary text-2xl mt-1 mr-4"></i><span>The painting is filled with vivid details, such as distant fishing boats and nearby pedestrians, full of life.</span>',
+                // page 10 (Li Tang)
+                treasureTitle6: "NPM Treasure: Wind in Pines and Valleys", liTangName: "Li Tang, 'Wind in Pines among a Myriad Valleys'", liTangName2: "Wind in Pines",
+                liTangDesc1: '<i class="fa fa-tree text-secondary text-2xl mt-1 mr-4"></i><span>Shows sturdy, towering pine trees and deep, secluded valleys, creating a majestic scene.</span>',
+                liTangDesc2: '<i class="fa fa-paint-brush text-secondary text-2xl mt-1 mr-4"></i><span>The brushwork is strong and vigorous, with rich variations in ink tones, expressing the texture of pines and rocks.</span>',
+                liTangDesc3: '<i class="fa fa-bolt text-secondary text-2xl mt-1 mr-4"></i><span>The composition balances motion and stillness, capturing both the depth of the valleys and the roar of the wind.</span>',
+                liTangDesc4: '<i class="fa fa-university text-secondary text-2xl mt-1 mr-4"></i><span>This work, a masterpiece of the Southern Song Painting Academy, reflects the artist\'s deep understanding of nature.</span>',
+                // page 11 (Qingming) - NEW
+                treasureTitle7: "Legendary Classic: A Scroll of Customs", qingmingName: "Attributed to Zhang Zeduan, 'Along the River During the Qingming Festival'", qingmingName2: "Qingming Festival Scroll",
+                qingmingDesc1: '<i class="fa fa-map-o text-secondary text-2xl mt-1 mr-4"></i><span>Depicts the bustling prosperity of the Northern Song capital, Bianjing, during the Qingming Festival.</span>',
+                qingmingDesc2: '<i class="fa fa-video-camera text-secondary text-2xl mt-1 mr-4"></i><span>The scroll is like a dynamic historical documentary, covering all aspects of city life and commerce.</span>',
+                qingmingDesc3: '<i class="fa fa-pencil text-secondary text-2xl mt-1 mr-4"></i><span>The brushwork is exquisitely detailed, with lifelike expressions and actions, capturing the social atmosphere.</span>',
+                qingmingDesc4: '<i class="fa fa-book text-secondary text-2xl mt-1 mr-4"></i><span>It is not only an artistic masterpiece but also a precious historical document for studying Northern Song society.</span>',
+                // page 12 (Fuchun) - NEW
+                treasureTitle8: "Legendary Classic: Master of Ink Wash", fuchunName: "Huang Gongwang, 'Dwelling in the Fuchun Mountains'", fuchunName2: "Fuchun Mountains",
+                fuchunDesc1: '<i class="fa fa-image text-secondary text-2xl mt-1 mr-4"></i><span>Depicts the early autumn scenery along the Fuchun River, with layered landscapes and profound artistic conception.</span>',
+                fuchunDesc2: '<i class="fa fa-tint text-secondary text-2xl mt-1 mr-4"></i><span>The ink is elegant, using dry brushstrokes and ink washes to render the texture and layers of the mountains.</span>',
+                fuchunDesc3: '<i class="fa fa-star text-secondary text-2xl mt-1 mr-4"></i><span>Hailed as the "mother of Chinese landscape painting," its simple and plain style had a profound influence on later generations.</span>',
+                fuchunDesc4: '<i class="fa fa-fire text-secondary text-2xl mt-1 mr-4"></i><span>The scroll was split in two after being burned; the "Wuyongshi" section is housed at the NPM in Taipei.</span>',
+                // page 13 (Juran) - NEW
+                treasureTitle9: "Legendary Classic: Charm of Jiangnan", juranName: "Juran, 'Seeking the Dao in the Autumn Mountains'", juranName2: "Autumn Mountains",
+                juranDesc1: '<i class="fa fa-pagelines text-secondary text-2xl mt-1 mr-4"></i><span>Depicts a scholar-hermit seeking enlightenment in an autumn forest, filled with a sense of Zen.</span>',
+                juranDesc2: '<i class="fa fa-image text-secondary text-2xl mt-1 mr-4"></i><span>The composition is dominated by layered peaks, with rounded, solid mountains conveying the moist air of Jiangnan.</span>',
+                juranDesc3: '<i class="fa fa-paint-brush text-secondary text-2xl mt-1 mr-4"></i><span>It uses long "hemp-fiber" texture strokes with dense, slender lines to create a sense of volume in the rocks.</span>',
+                juranDesc4: '<i class="fa fa-user-circle-o text-secondary text-2xl mt-1 mr-4"></i><span>Figures and pavilions are interspersed, adding a humanistic touch and narrative quality to the scene.</span>',
+                // page 14
+                visitorTitle: "Visitor Information & Transportation",
+                visitorHours: '<i class="fa fa-clock-o mr-4"></i>Opening Hours', visitorHoursDesc: '9:00 AM to 5:00 PM daily (Closed on Mondays)',
+                visitorTickets: '<i class="fa fa-ticket mr-4"></i>Admission',
+                ticket1: 'Regular: NT$350', ticket2: 'Group: NT$300 (for groups of 10 or more)', ticket3: 'Free for students, children, seniors, and disabled persons with one companion.',
+                visitorTransport: '<i class="fa fa-bus mr-4"></i>Transportation',
+                transport1: '<i class="fa fa-subway text-secondary mt-1 mr-3"></i><span><strong>MRT & Bus:</strong> Take the Tamsui-Xinyi Line to Shilin Station, then transfer to bus (R30, 255, etc.) to the museum stop.</span>',
+                transport2: '<i class="fa fa-taxi text-secondary mt-1 mr-3"></i><span><strong>Taxi:</strong> A 10-15 minute ride from Shilin MRT Station.</span>',
+                transport3: '<i class="fa fa-car text-secondary mt-1 mr-3"></i><span><strong>By Car:</strong> Parking is available in the museum\'s underground lot.</span>',
+                // page 15
+                digitalTitle: "Digital Archives & Interactive Learning",
+                digitalSub1: '<i class="fa fa-globe mr-3"></i>Online VR Exhibition', digitalDesc1: "Experience the grandeur of the museum halls and the intricate details of the artifacts from anywhere through high-tech VR.", digitalBtn1: "Experience Now",
+                digitalSub2: '<i class="fa fa-book mr-3"></i>Digital Archives Database', digitalDesc2: "The database contains a vast collection of high-resolution images and detailed information, a valuable resource for researchers and enthusiasts.", digitalBtn2: "Explore Database",
+                digitalSub3: '<i class="fa fa-comments mr-3"></i>Online Audio Guide', digitalDesc3: "Use our audio guide service to delve deeper into the stories and history behind each artifact.", digitalBtn3: "Start Guide",
+                alertDemoLink: "This is a demo link. Please replace it with the actual URL.",
+                alertVoiceGuide: "Audio Guide: The Jadeite Cabbage, part of the dowry of Consort Jin of the Qing Emperor Guangxu...",
+                // page 16
+                thankYouTitle: "Thank You for Visiting",
+                thankYouDesc: "We hope this virtual journey has deepened your appreciation for the National Palace Museum. We look forward to your visit to experience the vastness of Chinese culture in person.",
+                socialWebsite: "Official Website", socialFacebook: "Facebook", socialInstagram: "Instagram",
+                // control buttons
+                title_autoplay_pause: "Pause Autoplay", title_autoplay_play: "Start Autoplay", title_fullscreen_expand: "Fullscreen", title_fullscreen_compress: "Exit Fullscreen", title_music_on: "Mute Music", title_music_off: "Play Music",
+            }
+        };
+
+
+        document.addEventListener('DOMContentLoaded', () => {
+            const app = document.getElementById('app');
+            const slides = document.querySelectorAll('.slide');
+            const prevBtn = document.getElementById('prevBtn');
+            const nextBtn = document.getElementById('nextBtn');
+            const dotsContainer = document.getElementById('dotsContainer');
+            const autoPlayBtn = document.getElementById('autoPlayBtn');
+            const fullscreenBtn = document.getElementById('fullscreenBtn');
+            const musicBtn = document.getElementById('musicBtn');
+            const bgMusic = document.getElementById('bgMusic');
+            const voiceGuideBtn = document.getElementById('voiceGuideBtn');
+            const langToggleBtn = document.getElementById('langToggleBtn');
+
+            let currentIndex = 0;
+            let autoPlayInterval;
+            let isAutoPlaying = true;
+            let isMusicPlaying = false;
+            let currentLanguage = 'zh-Hant';
+
+            function adjustSlideHeight() {
+                slides.forEach(slide => { slide.style.height = `${window.innerHeight}px`; });
+            }
+
+            function goToSlide(index) {
+                slides.forEach((slide) => {
+                    slide.classList.remove('opacity-100', 'z-10');
+                    slide.classList.add('opacity-0', 'z-0');
+                    const scrollableContent = slide.querySelector('.overflow-y-auto');
+                    if (scrollableContent) scrollableContent.scrollTop = 0;
+                });
+                slides[index].classList.add('opacity-100', 'z-10');
+                slides[index].classList.remove('opacity-0', 'z-0');
+                currentIndex = index;
+                updateDots();
+            }
+
+            function nextSlide() { goToSlide((currentIndex + 1) % slides.length); }
+            function prevSlide() { goToSlide((currentIndex - 1 + slides.length) % slides.length); }
+
+            function updateDots() {
+                dotsContainer.innerHTML = '';
+                slides.forEach((_, i) => {
+                    const dot = document.createElement('button');
+                    dot.className = `w-3 h-3 rounded-full bg-white/50 transition-colors hover:bg-white shadow ${i === currentIndex ? 'bg-secondary w-4 h-4' : 'bg-white/50'}`;
+                    dot.addEventListener('click', () => { goToSlide(i); resetAutoPlay(); });
+                    dotsContainer.appendChild(dot);
+                });
+            }
+
+            function startAutoPlay() { if (isAutoPlaying) autoPlayInterval = setInterval(nextSlide, 7000); }
+            function stopAutoPlay() { clearInterval(autoPlayInterval); }
+            function toggleAutoPlay() {
+                isAutoPlaying = !isAutoPlaying;
+                if (isAutoPlaying) {
+                    startAutoPlay();
+                    autoPlayBtn.innerHTML = '<i class="fa fa-pause"></i>';
+                    autoPlayBtn.title = translations[currentLanguage].title_autoplay_pause;
+                } else {
+                    stopAutoPlay();
+                    autoPlayBtn.innerHTML = '<i class="fa fa-play"></i>';
+                    autoPlayBtn.title = translations[currentLanguage].title_autoplay_play;
+                }
+            }
+            function resetAutoPlay() { if (isAutoPlaying) { stopAutoPlay(); startAutoPlay(); } }
+
+            function toggleFullscreen() {
+                if (!document.fullscreenElement) { app.requestFullscreen().catch(err => alert(`Error: ${err.message}`)); } 
+                else { document.exitFullscreen(); }
+            }
+            document.addEventListener('fullscreenchange', () => {
+                const isFullscreen = !!document.fullscreenElement;
+                fullscreenBtn.innerHTML = `<i class="fa fa-${isFullscreen ? 'compress' : 'expand'}"></i>`;
+                fullscreenBtn.title = translations[currentLanguage][isFullscreen ? 'title_fullscreen_compress' : 'title_fullscreen_expand'];
+            });
+
+            function toggleMusic() {
+                isMusicPlaying = !isMusicPlaying;
+                if (isMusicPlaying) {
+                    bgMusic.play().catch(e => console.error("Music playback failed", e));
+                    musicBtn.innerHTML = '<i class="fa fa-volume-off"></i>';
+                    musicBtn.title = translations[currentLanguage].title_music_on;
+                } else {
+                    bgMusic.pause();
+                    musicBtn.innerHTML = '<i class="fa fa-music"></i>';
+                    musicBtn.title = translations[currentLanguage].title_music_off;
+                }
+            }
+
+            function updateLanguage(lang) {
+                currentLanguage = lang;
+                document.documentElement.lang = lang; 
+
+                document.querySelectorAll('[data-lang-key]').forEach(el => {
+                    const key = el.dataset.langKey;
+                    if (translations[lang][key]) {
+                        el.innerHTML = translations[lang][key];
+                    }
+                });
+                document.querySelectorAll('[data-lang-key-title]').forEach(el => {
+                    const key = el.dataset.langKeyTitle;
+                    if (translations[lang][key]) {
+                        el.title = translations[lang][key];
+                    }
+                });
+
+                autoPlayBtn.title = translations[lang][isAutoPlaying ? 'title_autoplay_pause' : 'title_autoplay_play'];
+                fullscreenBtn.title = translations[lang][document.fullscreenElement ? 'title_fullscreen_compress' : 'title_fullscreen_expand'];
+                musicBtn.title = translations[lang][isMusicPlaying ? 'title_music_on' : 'title_music_off'];
+            }
+
+            function toggleLanguage() {
+                const newLang = currentLanguage === 'zh-Hant' ? 'en' : 'zh-Hant';
+                updateLanguage(newLang);
+                langToggleBtn.textContent = newLang === 'zh-Hant' ? 'EN' : '中';
+            }
+            
+            window.getAlertText = (key) => {
+                return translations[currentLanguage][key] || 'Undefined text';
+            }
+
+            prevBtn.addEventListener('click', () => { prevSlide(); resetAutoPlay(); });
+            nextBtn.addEventListener('click', () => { nextSlide(); resetAutoPlay(); });
+            autoPlayBtn.addEventListener('click', toggleAutoPlay);
+            fullscreenBtn.addEventListener('click', toggleFullscreen);
+            musicBtn.addEventListener('click', toggleMusic);
+            langToggleBtn.addEventListener('click', toggleLanguage);
+            voiceGuideBtn.addEventListener('click', () => {
+                alert(getAlertText('alertVoiceGuide'));
+            });
+            
+            document.addEventListener('keydown', (e) => {
+                if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA') return;
+                if (e.key === 'ArrowLeft') { prevSlide(); resetAutoPlay(); } 
+                else if (e.key === 'ArrowRight') { nextSlide(); resetAutoPlay(); } 
+                else if (e.key === ' ') { e.preventDefault(); toggleAutoPlay(); } 
+                else if (e.key === 'f' || e.key === 'F') { toggleFullscreen(); } 
+                else if (e.key === 'm' || e.key === 'M') { toggleMusic(); }
+            });
+
+            document.querySelectorAll('img').forEach(img => {
+                img.addEventListener('load', () => img.classList.add('image-fade-in'));
+            });
+
+            window.addEventListener('resize', adjustSlideHeight);
+            
+            adjustSlideHeight();
+            goToSlide(0);
+            startAutoPlay();
+            autoPlayBtn.title = translations[currentLanguage].title_autoplay_pause;
+            fullscreenBtn.title = translations[currentLanguage].title_fullscreen_expand;
+            musicBtn.title = translations[currentLanguage].title_music_off;
+        });
+    </script>
+</body>
+</html>
