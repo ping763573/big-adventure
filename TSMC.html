@@ -1,0 +1,925 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>台積電2024年年度報告：互動摘要網站</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Noto Sans TC', sans-serif;
+            background-color: #f0f4f8;
+            color: #1e293b;
+        }
+        .hero-section {
+            height: 100vh;
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            color: white;
+            overflow: hidden;
+        }
+        .hero-video-bg {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transform: translate(-50%, -50%);
+            z-index: -1;
+            filter: brightness(0.4);
+        }
+        .hero-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 20, 60, 0.5);
+            z-index: -1;
+        }
+        .bouncing-arrow {
+            position: absolute;
+            bottom: 30px;
+            left: 50%;
+            transform: translateX(-50%);
+            animation: bounce 2s infinite;
+        }
+        @keyframes bounce {
+            0%, 20%, 50%, 80%, 100% {
+                transform: translateX(-50%) translateY(0);
+            }
+            40% {
+                transform: translateX(-50%) translateY(-20px);
+            }
+            60% {
+                transform: translateX(-50%) translateY(-10px);
+            }
+        }
+        .section-title {
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: #003366;
+            margin-bottom: 1rem;
+            text-align: center;
+        }
+        .section-subtitle {
+            font-size: 1.25rem;
+            color: #475569;
+            margin-bottom: 3rem;
+            text-align: center;
+            max-width: 800px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+        .data-card {
+            background: white;
+            border-radius: 1rem;
+            padding: 1.5rem;
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            position: relative;
+            overflow: hidden;
+            border: 1px solid #e2e8f0;
+        }
+        .data-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 20px 25px -5px rgba(0, 51, 102, 0.15), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+        }
+        .tooltip {
+            visibility: hidden;
+            opacity: 0;
+            background-color: #003366;
+            color: #fff;
+            text-align: center;
+            border-radius: 6px;
+            padding: 5px 10px;
+            position: absolute;
+            z-index: 1;
+            bottom: 110%;
+            left: 50%;
+            transform: translateX(-50%);
+            transition: opacity 0.3s;
+            white-space: nowrap;
+        }
+        .data-card:hover .tooltip {
+            visibility: visible;
+            opacity: 1;
+        }
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 100;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            background-color: rgba(0,0,0,0.6);
+            animation: fadeIn 0.5s;
+        }
+        .modal-content {
+            background-color: #fefefe;
+            margin: 10% auto;
+            padding: 2.5rem;
+            border: 1px solid #888;
+            width: 80%;
+            max-width: 600px;
+            border-radius: 1rem;
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+            animation: slideIn 0.5s;
+        }
+        @keyframes fadeIn { from {opacity: 0;} to {opacity: 1;} }
+        @keyframes slideIn { from {transform: translateY(-50px);} to {transform: translateY(0);} }
+        .close-button {
+            color: #aaa;
+            float: right;
+            font-size: 28px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+        .timeline {
+            position: relative;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        .timeline::after {
+            content: '';
+            position: absolute;
+            width: 6px;
+            background-color: #005f9e;
+            top: 0;
+            bottom: 0;
+            left: 50%;
+            margin-left: -3px;
+        }
+        .timeline-container {
+            padding: 10px 40px;
+            position: relative;
+            background-color: inherit;
+            width: 50%;
+        }
+        .timeline-container.left { left: 0; }
+        .timeline-container.right { left: 50%; }
+        .timeline-container::after {
+            content: '';
+            position: absolute;
+            width: 25px;
+            height: 25px;
+            right: -17px;
+            background-color: white;
+            border: 4px solid #003366;
+            top: 15px;
+            border-radius: 50%;
+            z-index: 1;
+        }
+        .timeline-container.right::after { left: -16px; }
+        .timeline-content {
+            padding: 20px 30px;
+            background-color: white;
+            position: relative;
+            border-radius: 6px;
+            box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1);
+        }
+        .fade-in {
+            opacity: 0;
+            transform: translateY(20px);
+            transition: opacity 0.6s ease-out, transform 0.6s ease-out;
+        }
+        .fade-in.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+        /* World Map */
+        #world-map {
+            position: relative;
+        }
+        .map-marker {
+            position: absolute;
+            width: 20px;
+            height: 20px;
+            background: #005f9e;
+            border-radius: 50%;
+            border: 3px solid white;
+            cursor: pointer;
+            transition: transform 0.2s;
+            box-shadow: 0 0 10px rgba(0, 95, 158, 0.7);
+        }
+        .map-marker:hover {
+            transform: scale(1.5);
+        }
+        .map-marker .label {
+            visibility: hidden;
+            opacity: 0;
+            position: absolute;
+            bottom: 125%;
+            left: 50%;
+            transform: translateX(-50%);
+            background-color: #003366;
+            color: white;
+            padding: 5px 10px;
+            border-radius: 5px;
+            white-space: nowrap;
+            transition: opacity 0.3s;
+        }
+        .map-marker:hover .label {
+            visibility: visible;
+            opacity: 1;
+        }
+        .map-modal-tab {
+            padding: 8px 16px;
+            cursor: pointer;
+            border-bottom: 2px solid transparent;
+        }
+        .map-modal-tab.active {
+            border-bottom-color: #005f9e;
+            color: #005f9e;
+            font-weight: 600;
+        }
+    </style>
+</head>
+<body class="bg-slate-100">
+
+    <!-- 股東語音互動按鈕 -->
+    <div id="audio-control-container" class="fixed top-5 right-5 z-50">
+        <button id="audioToggleButton" class="bg-white text-blue-600 px-4 py-2 rounded-full shadow-lg hover:bg-gray-100 transition flex items-center gap-2 font-semibold">
+            <svg id="audioIcon" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" class="bi bi-play-circle-fill" viewBox="0 0 16 16">
+                <path d="M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0zM6.79 5.093A.5.5 0 0 0 6 5.5v5a.5.5 0 0 0 .79.407l3.5-2.5a.5.5 0 0 0 0-.814l-3.5-2.5z"/>
+            </svg>
+            <span id="audioButtonText">股東語音互動</span>
+        </button>
+    </div>
+    <!-- 語音檔案 -->
+    <audio id="shareholderAudio" src="https://ping763573.github.io/big-adventure/15.wav" preload="auto"></audio>
+
+
+    <!-- 1. 封面/英雄視覺區塊 -->
+    <section class="hero-section">
+        <div class="hero-overlay"></div>
+        <video autoplay muted loop class="hero-video-bg" poster="https://placehold.co/1920x1080/001f3f/ffffff?text=Wafer+Fabrication">
+            <!-- 由於安全限制，無法直接嵌入影片。此處為示意，實際應用時應替換為真實影片URL -->
+            <!-- <source src="your-video-url.mp4" type="video/mp4"> -->
+        </video>
+        <div class="z-10 px-4">
+            <h1 class="text-4xl md:text-6xl font-bold mb-4 tracking-wider animate-fade-in-down">台積電：AI浪潮下的領航者</h1>
+            <p class="text-xl md:text-2xl mb-8 animate-fade-in-up">3分鐘掌握關鍵財報與成長動能</p>
+            <div class="bouncing-arrow">
+                <a href="#overview">
+                    <svg class="w-10 h-10 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+                </a>
+            </div>
+            <p class="absolute bottom-4 left-1/2 -translate-x-1/2 text-xs text-gray-300">資料來源：台積電2024（民國113年）年度報告</p>
+        </div>
+    </section>
+
+    <main class="container mx-auto px-4 py-16 md:py-24 space-y-20 md:space-y-32">
+
+        <!-- 2. 2024年成績單 -->
+        <section id="overview" class="fade-in">
+            <h2 class="section-title">2024年成績單：AI驅動的創紀錄成長</h2>
+            <p class="section-subtitle">
+                AI與高效能運算需求強勁，營收較去年同期成長33.9%，顯著創造歷史新高。
+            </p>
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8 max-w-6xl mx-auto">
+                <div class="data-card text-center col-span-1 sm:col-span-2 lg:col-span-3 bg-blue-50">
+                    <h3 class="text-xl font-semibold text-slate-600 mb-1">總營收</h3>
+                    <p class="text-4xl font-bold text-blue-600">新台幣2.89兆元</p>
+                    <p class="text-lg font-semibold text-green-600">▲33.9%</p>
+                    <div class="tooltip">相較民國112年 2.16兆元</div>
+                </div>
+                <div class="data-card text-center">
+                    <h3 class="text-lg font-semibold text-slate-600 mb-1">稅後淨利</h3>
+                    <p class="text-3xl font-bold text-blue-600">1.17兆元</p>
+                    <p class="text-md font-semibold text-green-600">▲39.9%</p>
+                    <div class="tooltip">相較民國112年 8,385億元</div>
+                </div>
+                <div class="data-card text-center">
+                    <h3 class="text-lg font-semibold text-slate-600 mb-1">每股盈餘 (EPS)</h3>
+                    <p class="text-3xl font-bold text-blue-600">45.25元</p>
+                    <p class="text-md font-semibold text-green-600">▲39.9%</p>
+                    <div class="tooltip">相較民國112年 32.34元</div>
+                </div>
+                <div class="data-card text-center">
+                    <h3 class="text-lg font-semibold text-slate-600 mb-1">年度股利</h3>
+                    <p class="text-3xl font-bold text-blue-600">14.0元</p>
+                    <p class="text-md font-semibold text-green-600">▲24.4%</p>
+                    <div class="tooltip">相較民國112年 11.25元</div>
+                </div>
+                <div class="data-card text-center">
+                    <h3 class="text-lg font-semibold text-slate-600 mb-1">毛利率</h3>
+                    <p class="text-3xl font-bold text-blue-600">56.1%</p>
+                    <p class="text-md font-semibold text-green-600">▲1.7個百分點</p>
+                    <div class="tooltip">相較民國112年 54.4%</div>
+                </div>
+                <div class="data-card text-center">
+                    <h3 class="text-lg font-semibold text-slate-600 mb-1">淨利率</h3>
+                    <p class="text-3xl font-bold text-blue-600">40.5%</p>
+                    <p class="text-md font-semibold text-green-600">▲1.7個百分點</p>
+                    <div class="tooltip">相較民國112年 38.8%</div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 3. 來自總裁的訊息 -->
+        <section class="fade-in">
+            <h2 class="section-title">來自總裁的訊息：我們的策略與承諾</h2>
+            <p class="section-subtitle">三位一體的策略，引領台積電邁向新高峰。</p>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-6xl mx-auto">
+                <div class="ceo-card data-card text-center cursor-pointer" data-modal="achievement">
+                    <div class="text-blue-600 mb-4"><svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" fill="currentColor" class="bi bi-trophy-fill inline-block" viewBox="0 0 16 16"><path d="M2.5.5A.5.5 0 0 1 3 0h10a.5.5 0 0 1 .5.5c0 .538-.012 1.05-.034 1.536a3 3 0 1 1-1.133 5.89c-.79 1.865-1.878 2.777-2.833 3.011v2.173l1.425.356c.194.048.377.135.537.255L13.3 15.1a.5.5 0 0 1-.3.9H3a.5.5 0 0 1-.3-.9l1.838-1.379c.16-.12.343-.207.537-.255L6.5 13.11v-2.173c-.955-.234-2.043-1.146-2.833-3.012a3 3 0 1 1-1.132-5.89A33.076 33.076 0 0 1 2.5.5zM.099 2.54a2 2 0 0 0 .72 3.935c-.333-1.05-.588-2.346-.72-3.935zm10.083 3.935a2 2 0 0 0 .72-3.935c-.133 1.59-.388 2.885-.72 3.935z"/></svg></div>
+                    <h3 class="text-xl font-bold mb-2">卓越成就</h3>
+                    <p class="text-slate-600">營收與雙位數成長實現歷史新高，體現技術領先的價值。</p>
+                </div>
+                <div class="ceo-card data-card text-center cursor-pointer" data-modal="strategy">
+                    <div class="text-blue-600 mb-4"><svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" fill="currentColor" class="bi bi-bullseye inline-block" viewBox="0 0 16 16"><path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z"/><path d="M8 13A5 5 0 1 1 8 3a5 5 0 0 1 0 10zm0 1A6 6 0 1 0 8 2a6 6 0 0 0 0 12z"/><path d="M8 11a3 3 0 1 1 0-6 3 3 0 0 1 0 6zm0 1a4 4 0 1 0 0-8 4 4 0 0 0 0 8z"/><path d="M9.5 8a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0z"/></svg></div>
+                    <h3 class="text-xl font-bold mb-2">核心策略</h3>
+                    <p class="text-slate-600">超越三大一體策略，將成功經驗延伸至全球佈局。</p>
+                </div>
+                <div class="ceo-card data-card text-center cursor-pointer" data-modal="outlook">
+                    <div class="text-blue-600 mb-4"><svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" fill="currentColor" class="bi bi-graph-up-arrow inline-block" viewBox="0 0 16 16"><path fill-rule="evenodd" d="M0 0h1v15h15v1H0V0Zm10 3.5a.5.5 0 0 1 .5-.5h4a.5.5 0 0 1 .5.5v4a.5.5 0 0 1-1 0V4.9l-3.613 4.417a.5.5 0 0 1-.74.037L7.06 6.767l-3.656 5.027a.5.5 0 0 1-.808-.588l4-5.5a.5.5 0 0 1 .758-.06l2.609 2.61L13.445 4H10.5a.5.5 0 0 1-.5-.5Z"/></svg></div>
+                    <h3 class="text-xl font-bold mb-2">未來展望</h3>
+                    <p class="text-slate-600">AI正從雲端走向終端，持續作為全球最值得信賴的技術夥伴。</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- 4. 我們如何賺錢 -->
+        <section class="fade-in">
+            <h2 class="section-title">我們如何賺錢：成長動力與市場地位</h2>
+            <p class="section-subtitle">高效能運算(HPC)成為營收主力，市場領導地位穩固。</p>
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 md:gap-12 items-center">
+                <div class="data-card p-6">
+                    <h3 class="text-xl font-bold text-center mb-4">營收組成 (依技術平台)</h3>
+                    <canvas id="techPlatformChart"></canvas>
+                    <p class="text-center text-sm text-slate-500 mt-4">高效能運算(HPC)從三年前的40%成長至51%，成為最強勁的成長引擎。</p>
+                </div>
+                <div class="space-y-8">
+                    <div class="data-card p-6">
+                        <h3 class="text-xl font-bold text-center mb-4">營收組成 (依地區)</h3>
+                        <canvas id="regionChart"></canvas>
+                    </div>
+                    <div class="data-card p-6">
+                        <h3 class="text-xl font-bold text-center mb-4">全球晶圓製造2.0市場地位</h3>
+                        <canvas id="marketPositionChart"></canvas>
+                         <p class="text-center text-sm text-slate-500 mt-2">註：在整合邏輯、封裝、測試的「晶圓製造2.0」市場，台積電的市佔率遙遙領先。</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 5. 科技護城河 -->
+        <section class="fade-in">
+            <h2 class="section-title">科技護城河：我們為何領先？</h2>
+            <p class="section-subtitle">持續推進的先進製程與獨步全球的封裝技術，構築了難以超越的競爭壁壘。</p>
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 md:gap-12">
+                <div class="data-card p-6">
+                    <h3 class="text-xl font-bold text-center mb-8">技術演進時間軸</h3>
+                    <div class="timeline">
+                        <div class="timeline-container left">
+                            <div class="timeline-content">
+                                <h3 class="text-lg font-bold text-blue-600">3奈米 (N3)</h3>
+                                <p class="text-sm text-slate-500 mb-2">[2022年量產]</p>
+                                <p>主要應用：頂級智慧型手機、AI晶片。</p>
+                            </div>
+                        </div>
+                        <div class="timeline-container right">
+                            <div class="timeline-content">
+                                <h3 class="text-lg font-bold text-blue-600">2奈米 (N2)</h3>
+                                <p class="text-sm text-slate-500 mb-2">[2025年預期量產]</p>
+                                <p>主要應用：下一代AI與高效能運算。</p>
+                            </div>
+                        </div>
+                        <div class="timeline-container left">
+                            <div class="timeline-content">
+                                <h3 class="text-lg font-bold text-blue-600">A16</h3>
+                                <p class="text-sm text-slate-500 mb-2">[2026年量產]</p>
+                                <p>採用創新晶背供電技術，為HPC產品帶來革命性突破。</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- MODIFICATION START: CoWoS section updated to show video -->
+                <div class="data-card p-6 flex flex-col justify-center items-center">
+                    <h3 class="text-xl font-bold text-center mb-4">秒懂關鍵技術：什麼是CoWoS？</h3>
+                    <div class="w-full aspect-video mb-4 rounded-lg overflow-hidden bg-black">
+                         <video src="https://ping763573.github.io/big-adventure/02.mp4" autoplay loop muted playsinline class="w-full h-full object-cover"></video>
+                    </div>
+                    <p class="text-slate-600 text-center leading-relaxed">想像一下蓋高樓大廈。CoWoS 就像一種先進的建築技術，能夠將不同功能的晶片（如 CPU、記憶體）垂直堆疊起來，讓之間的溝通距離更短、速度更快、更省電。這就是頂級 AI 晶片強大的秘密。</p>
+                </div>
+                <!-- MODIFICATION END -->
+            </div>
+        </section>
+
+        <!-- 6. 全球版圖 -->
+        <section class="fade-in">
+            <h2 class="section-title">全球版圖：彈性與信賴</h2>
+            <p class="section-subtitle">深化全球佈局，貼近客戶需求，確保供應鏈安全與韌性。</p>
+            <div class="data-card p-6">
+                <div id="world-map" class="w-full max-w-4xl mx-auto aspect-video bg-blue-100 rounded-lg relative">
+                    <img src="https://imgs.gvm.com.tw/upload/gallery/20220325/98390.jpg" class="w-full h-full object-contain" alt="世界地圖">
+                    <!-- Markers -->
+                    <div class="map-marker" style="top: 45%; left: 85%;" data-location="taiwan">
+                        <div class="label">台灣</div>
+                    </div>
+                    <div class="map-marker" style="top: 35%; left: 20%;" data-location="usa">
+                        <div class="label">美國</div>
+                    </div>
+                    <div class="map-marker" style="top: 38%; left: 88%;" data-location="japan">
+                        <div class="label">日本</div>
+                    </div>
+                    <div class="map-marker" style="top: 25%; left: 53%;" data-location="germany">
+                         <div class="label">德國</div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 7. 永續經營 -->
+        <section class="fade-in">
+            <h2 class="section-title">永續經營：我們的ESG承諾</h2>
+             <p class="section-subtitle">以誠信正直為基石，致力於環境保護、社會共榮與卓越治理。</p>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-6xl mx-auto">
+                <div class="data-card text-center">
+                    <div class="text-green-600 mb-4"><svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" fill="currentColor" class="bi bi-tree-fill inline-block" viewBox="0 0 16 16"><path d="M8.416.223a.5.5 0 0 0-.832 0l-3 4.5A.5.5 0 0 0 5 5.5h.098L3.076 8.735A.5.5 0 0 0 3.5 9.5h.191l-1.638 3.276a.5.5 0 0 0 .447.724H7V16h2v-2.5h4.5a.5.5 0 0 0 .447-.724L12.31 9.5h.191a.5.5 0 0 0 .424-.765L10.902 5.5H11a.5.5 0 0 0 .416-.777l-3-4.5z"/></svg></div>
+                    <h3 class="text-xl font-bold mb-2">環境 (E)</h3>
+                    <p class="text-slate-600 mb-2">承諾2050年淨零排放。</p>
+                    <p class="font-semibold text-green-700">主要成果：再生能源使用率達14.1%。</p>
+                </div>
+                <div class="data-card text-center">
+                    <div class="text-yellow-600 mb-4"><svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" fill="currentColor" class="bi bi-people-fill inline-block" viewBox="0 0 16 16"><path d="M7 14s-1 0-1-1 1-4 5-4 5 3 5 4-1 1-1 1H7zm4-6a3 3 0 1 0 0-6 3 3 0 0 0 0 6z"/><path fill-rule="evenodd" d="M5.216 14A2.238 2.238 0 0 1 5 13c0-1.355.68-2.75 1.936-3.72A6.325 6.325 0 0 0 5 9c-4 0-5 3-5 4s1 1 1 1h4.216zM4.5 8a2.5 2.5 0 1 0 0-5 2.5 2.5 0 0 0 0 5z"/></svg></div>
+                    <h3 class="text-xl font-bold mb-2">社會 (S)</h3>
+                    <p class="text-slate-600 mb-2">深耕人才培養與社會共榮。</p>
+                    <p class="font-semibold text-yellow-700">主要成果：青年科教合作投入逾1.4億元。</p>
+                </div>
+                <div class="data-card text-center">
+                    <div class="text-purple-600 mb-4"><svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" fill="currentColor" class="bi bi-shield-check inline-block" viewBox="0 0 16 16"><path d="M5.338 1.59a61.44 61.44 0 0 0-2.837.856.481.481 0 0 0-.328.39c-.554 4.157.726 7.19 2.253 9.188a10.725 10.725 0 0 0 2.287 2.233c.346.244.652.42.893.533.12.057.218.095.293.118a.55.55 0 0 0 .101.025.615.615 0 0 0 .1-.025c.076-.023.174-.061.294-.118.24-.113.547-.29.893-.533a10.726 10.726 0 0 0 2.287-2.233c1.527-1.997 2.807-5.031 2.253-9.188a.48.48 0 0 0-.328-.39c-.95-1.095-2.256-1.522-3.754-1.743A12.18 12.18 0 0 0 8 1.59zM10.854 5.146a.5.5 0 0 1 0 .708l-3 3a.5.5 0 0 1-.708 0l-1.5-1.5a.5.5 0 1 1 .708-.708L7.5 7.793l2.646-2.647a.5.5 0 0 1 .708 0z"/></svg></div>
+                    <h3 class="text-xl font-bold mb-2">治理 (G)</h3>
+                    <p class="text-slate-600 mb-2">誠信正直，卓越治理。</p>
+                    <p class="font-semibold text-purple-700">主要成果：連續24年入選道瓊永續世界指數。</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- 8. 給投資人的關鍵數據 -->
+        <section class="fade-in">
+            <h2 class="section-title">給投資人的關鍵數據</h2>
+            <p class="section-subtitle">過去五年的財務趨勢，揭示了公司穩健的成長軌跡與未來的投資價值。</p>
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                <div class="data-card p-6"><canvas id="revenueChart"></canvas></div>
+                <div class="data-card p-6"><canvas id="marginChart"></canvas></div>
+                <div class="data-card p-6"><canvas id="rdChart"></canvas></div>
+                <div class="data-card p-6"><canvas id="fcfChart"></canvas></div>
+            </div>
+        </section>
+
+        <!-- 9. 投資總結與行動呼籲 -->
+        <footer class="bg-slate-800 text-white mt-20 md:mt-32">
+            <div class="max-w-6xl mx-auto px-4 py-12 text-center">
+                <h3 class="text-2xl font-bold mb-4">投資總結</h3>
+                <p class="max-w-3xl mx-auto mb-6 text-slate-300">台積電的核心價值是誠信、承諾、創新與客戶信任。我們不僅是技術的領導者，更是值得您信賴的長期夥伴。</p>
+                <p class="text-sm text-red-300 bg-red-900/50 p-4 rounded-lg max-w-3xl mx-auto mb-8">
+                    <strong>風險提示：</strong>半導體產業的景氣循環與全球地緣政治因素，可能對短期營運與股價造成影響。長期投資決策請詳閱完整財報。
+                </p>
+                <!-- MODIFICATION START: Links updated -->
+                <div class="flex justify-center gap-4 flex-wrap">
+                    <a href="https://investor.tsmc.com/static/annualReports/2024/chinese/index.html" target="_blank" rel="noopener noreferrer" class="bg-blue-600 text-white px-8 py-3 rounded-full hover:bg-blue-500 transition font-semibold">下載完整年度報告</a>
+                    <a href="https://investor.tsmc.com/chinese" target="_blank" rel="noopener noreferrer" class="bg-slate-700 text-white px-8 py-3 rounded-full hover:bg-slate-600 transition font-semibold">前往投資人關係網站</a>
+                </div>
+                <!-- MODIFICATION END -->
+            </div>
+        </footer>
+    </main>
+
+    <!-- CEO Modal -->
+    <div id="ceoModal" class="modal">
+        <div class="modal-content">
+            <span class="close-button">&times;</span>
+            <h3 id="modalTitle" class="text-2xl font-bold text-blue-700 mb-4"></h3>
+            <p id="modalText" class="text-slate-700 leading-relaxed"></p>
+        </div>
+    </div>
+
+    <!-- Map Modal -->
+    <div id="mapModal" class="modal">
+        <div class="modal-content">
+            <span class="close-button">&times;</span>
+            <h3 id="mapModalTitle" class="text-2xl font-bold text-blue-700 mb-4"></h3>
+            <div class="flex border-b mb-4">
+                <div id="tab-strategy" class="map-modal-tab active">戰略意義</div>
+                <div id="tab-geopolitics" class="map-modal-tab">地緣政治與供應鏈</div>
+            </div>
+            <div id="mapModalContentStrategy" class="text-slate-700 leading-relaxed"></div>
+            <div id="mapModalContentGeopolitics" class="text-slate-700 leading-relaxed hidden"></div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            // --- Audio Player Logic ---
+            const audioToggleButton = document.getElementById('audioToggleButton');
+            const shareholderAudio = document.getElementById('shareholderAudio');
+            const audioIcon = document.getElementById('audioIcon');
+            const audioButtonText = document.getElementById('audioButtonText');
+            let isAudioPlaying = false;
+
+            const playIconSVG = `<path d="M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0zM6.79 5.093A.5.5 0 0 0 6 5.5v5a.5.5 0 0 0 .79.407l3.5-2.5a.5.5 0 0 0 0-.814l-3.5-2.5z"/>`;
+            const pauseIconSVG = `<path d="M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0M6.5 5.5v5l4-2.5-4-2.5z"/>`; // A simplified pause icon for demonstration
+            
+            // A more visually distinct pause icon
+            const realPauseIconSVG = `
+                <path d="M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0z"/>
+                <path d="M6.25 5C5.56 5 5 5.56 5 6.25v3.5a1.25 1.25 0 1 0 2.5 0v-3.5C7.5 5.56 6.94 5 6.25 5zm3.5 0c-.69 0-1.25.56-1.25 1.25v3.5a1.25 1.25 0 1 0 2.5 0v-3.5C11 5.56 10.44 5 9.75 5z"/>
+            `;
+
+
+            audioToggleButton.addEventListener('click', () => {
+                if (isAudioPlaying) {
+                    shareholderAudio.pause();
+                    audioIcon.innerHTML = playIconSVG;
+                    audioButtonText.textContent = '開啟語音';
+                    audioToggleButton.classList.remove('bg-blue-600', 'text-white');
+                    audioToggleButton.classList.add('bg-white', 'text-blue-600');
+                } else {
+                    shareholderAudio.play().catch(error => {
+                        console.error("音訊播放失敗:", error);
+                        alert("無法播放音訊，請檢查瀏覽器設定或網路連線。");
+                    });
+                    audioIcon.innerHTML = realPauseIconSVG;
+                    audioButtonText.textContent = '關閉語音';
+                    audioToggleButton.classList.add('bg-blue-600', 'text-white');
+                    audioToggleButton.classList.remove('bg-white', 'text-blue-600');
+                }
+                isAudioPlaying = !isAudioPlaying;
+            });
+
+            // Reset button state when audio finishes playing
+            shareholderAudio.addEventListener('ended', () => {
+                isAudioPlaying = false;
+                audioIcon.innerHTML = playIconSVG;
+                audioButtonText.textContent = '股東語音互動';
+                audioToggleButton.classList.remove('bg-blue-600', 'text-white');
+                audioToggleButton.classList.add('bg-white', 'text-blue-600');
+            });
+
+
+            // --- GSAP Animations ---
+            gsap.registerPlugin(ScrollTrigger);
+            const fadeInElements = document.querySelectorAll('.fade-in');
+            fadeInElements.forEach(el => {
+                gsap.fromTo(el, 
+                    { opacity: 0, y: 50 }, 
+                    { 
+                        opacity: 1, 
+                        y: 0, 
+                        duration: 1,
+                        scrollTrigger: {
+                            trigger: el,
+                            start: 'top 85%',
+                            toggleActions: 'play none none none'
+                        }
+                    }
+                );
+            });
+
+            // --- CEO Modal Logic ---
+            const ceoModal = document.getElementById('ceoModal');
+            const modalTitle = document.getElementById('modalTitle');
+            const modalText = document.getElementById('modalText');
+            const ceoCards = document.querySelectorAll('.ceo-card');
+            const modalData = {
+                achievement: {
+                    title: "卓越成就 (Achievement)",
+                    text: "「在AI浪潮的推動下，我們的營收與雙位數成長實現了歷史新高，體現了我們技術領先的價值。」民國一百一十三年對台積公司而言是傑出的一年。在市場對我們先進 logique 製程與先進封裝技術有強勁需求的情況下，若以美元計，台積公司營收年增30%，成長幅度遠超過晶圓製造產業6%的增長，並且營收和每股盈餘均創下歷史新高。"
+                },
+                strategy: {
+                    title: "核心策略 (Strategy)",
+                    text: "「我們超越『技術領先』、『卓越製造』與『客戶信賴』三大一體策略，將成功經驗延伸至全球佈局。」這項策略的其中一部分包括根據客戶對地緣彈性的需求以及一定程度的政府支持來擴展我們的全球製造版圖。如此將使台積公司股東價值最大化。"
+                },
+                outlook: {
+                    title: "未來展望 (Outlook)",
+                    text: "「AI正從雲端走向終端，我們將作為持續全球最值得信賴的技術夥伴，幫助客戶釋放創新。」我們正進入一個AI賦能的世界，人工智慧不僅被運用在資料中心，未來也將應用在個人電腦(PC)、智慧型手機、汽車，甚至物聯網設備中。我們身處在極佳位置，能以差異化技術應對5G、AI和HPC等產業大趨勢的成長。"
+                }
+            };
+
+            ceoCards.forEach(card => {
+                card.addEventListener('click', () => {
+                    const modalKey = card.getAttribute('data-modal');
+                    modalTitle.textContent = modalData[modalKey].title;
+                    modalText.textContent = modalData[modalKey].text;
+                    ceoModal.style.display = 'block';
+                });
+            });
+            
+            ceoModal.querySelector('.close-button').addEventListener('click', () => ceoModal.style.display = 'none');
+            window.addEventListener('click', (event) => {
+                if (event.target == ceoModal) {
+                    ceoModal.style.display = 'none';
+                }
+            });
+
+            // --- Chart.js Implementations ---
+            const chartDefaultOptions = {
+                responsive: true,
+                maintainAspectRatio: true,
+                plugins: {
+                    legend: {
+                        position: 'bottom',
+                        labels: {
+                            font: {
+                                family: "'Noto Sans TC', sans-serif",
+                                size: 14,
+                            }
+                        }
+                    }
+                }
+            };
+            
+            // 4.1 營收組成 (依技術平台)
+            const techPlatformCtx = document.getElementById('techPlatformChart').getContext('2d');
+            const techPlatformChart = new Chart(techPlatformCtx, {
+                type: 'doughnut',
+                data: {
+                    labels: ['高效能運算 (HPC)', '智慧型手機', '物聯網', '車用電子', '其他'],
+                    datasets: [{
+                        label: '營收佔比',
+                        data: [40, 42, 8, 5, 5], // Start from 3 years ago data
+                        backgroundColor: ['#2563eb', '#3b82f6', '#60a5fa', '#93c5fd', '#bfdbfe'],
+                        borderColor: '#ffffff',
+                        borderWidth: 2
+                    }]
+                },
+                options: chartDefaultOptions
+            });
+            
+            // Animate tech platform chart on scroll
+            let animated = false;
+            const techChartObserver = new IntersectionObserver((entries) => {
+                if(entries[0].isIntersecting && !animated) {
+                    animated = true;
+                    setTimeout(() => {
+                        techPlatformChart.data.datasets[0].data = [51, 35, 6, 5, 3];
+                        techPlatformChart.update();
+                    }, 500);
+                }
+            }, { threshold: 0.5 });
+            techChartObserver.observe(document.getElementById('techPlatformChart'));
+
+            // 4.2 營收組成 (依地區)
+            const regionCtx = document.getElementById('regionChart').getContext('2d');
+            new Chart(regionCtx, {
+                type: 'doughnut',
+                data: {
+                    labels: ['北美', '中國', '亞太(不含中日)', '日本', '歐洲/中東/非洲'],
+                    datasets: [{
+                        label: '營收佔比',
+                        data: [70, 11, 10, 5, 4],
+                        backgroundColor: ['#059669', '#10b981', '#34d399', '#6ee7b7', '#a7f3d0'],
+                        borderColor: '#ffffff',
+                        borderWidth: 2
+                    }]
+                },
+                options: chartDefaultOptions
+            });
+
+            // 4.3 市場地位
+            const marketPositionCtx = document.getElementById('marketPositionChart').getContext('2d');
+            new Chart(marketPositionCtx, {
+                type: 'bar',
+                data: {
+                    labels: ['台積電', '競爭者A', '競爭者B'],
+                    datasets: [{
+                        label: '市佔率 (%)',
+                        data: [34, 15, 10],
+                        backgroundColor: ['#003366', '#94a3b8', '#cbd5e1'],
+                        borderRadius: 5
+                    }]
+                },
+                options: { ...chartDefaultOptions, indexAxis: 'y' }
+            });
+
+            // MODIFICATION START: CoWoS animation script is removed as it's no longer needed.
+            // // 5. CoWoS Animation
+            // document.getElementById('play-cowos-btn').addEventListener('click', () => {
+            //     const container = document.getElementById('cowos-animation');
+            //     container.classList.remove('animate-stack');
+            //     // Use a timeout to re-trigger the animation
+            //     setTimeout(() => container.classList.add('animate-stack'), 10);
+            // });
+            // MODIFICATION END
+
+            // 6. Map Modal Logic
+            const mapModal = document.getElementById('mapModal');
+            const mapModalTitle = document.getElementById('mapModalTitle');
+            const mapModalContentStrategy = document.getElementById('mapModalContentStrategy');
+            const mapModalContentGeopolitics = document.getElementById('mapModalContentGeopolitics');
+            const tabStrategy = document.getElementById('tab-strategy');
+            const tabGeopolitics = document.getElementById('tab-geopolitics');
+            
+            const mapData = {
+                taiwan: {
+                    title: "台灣：全球研發與製造樞紐",
+                    strategy: "作為台積電的營運總部，台灣是研發與最先進製造流程的核心。這裡集中了最頂尖的技術人才與最完整的產業生態系，是推動技術創新的引擎。",
+                    geopolitics: "地緣政治風險是主要考量，但台灣在全球半導體供應鏈的關鍵地位（矽盾）也形成一種嚇阻力量。台積電透過全球佈局分散風險，同時強化在台灣的技術領先地位以維持不可取代性。"
+                },
+                usa: {
+                    title: "美國亞利桑那州：貼近客戶，確保供應鏈安全",
+                    strategy: "貼近美國龐大的客戶群，縮短溝通與供應鏈距離。在美國政府《晶片法案》支持下，確保關鍵供應鏈的韌性與安全，並掌握當地龐大的人才庫。",
+                    geopolitics: "回應美國對半導體製造回流的需求，降低地緣政治對供應鏈的衝擊。但同時也面臨當地建廠成本較高、文化差異與工會等挑戰。"
+                },
+                japan: {
+                    title: "日本熊本：深化特殊製程合作",
+                    strategy: "與日本半導體生態系（特別是材料與設備商）深度合作，專注於特殊製程的發展，以滿足影像感測器、車用電子等市場需求。",
+                    geopolitics: "強化與日本的經濟連結，建立東亞地區的第二生產基地。日本政府的大力支持與高效的行政效率，為設廠提供了有利條件。"
+                },
+                germany: {
+                    title: "德國德勒斯登：深耕歐洲車用與工業市場",
+                    strategy: "目標是深耕歐洲龐大的汽車與工業市場，提供符合當地需求的車用晶片，強化全球客戶服務網絡，並與歐洲領先的工業夥伴建立更緊密的關係。",
+                    geopolitics: "響應歐盟《晶片法案》，提升歐洲晶片自主性。此舉有助於平衡全球佈局，降低對單一地區的依賴，但需應對歐洲較高的能源與人力成本。"
+                }
+            };
+
+            document.querySelectorAll('.map-marker').forEach(marker => {
+                marker.addEventListener('click', () => {
+                    const location = marker.dataset.location;
+                    mapModalTitle.textContent = mapData[location].title;
+                    mapModalContentStrategy.textContent = mapData[location].strategy;
+                    mapModalContentGeopolitics.textContent = mapData[location].geopolitics;
+                    
+                    // Reset to default tab
+                    tabStrategy.click();
+
+                    mapModal.style.display = 'block';
+                });
+            });
+
+            tabStrategy.addEventListener('click', () => {
+                tabStrategy.classList.add('active');
+                tabGeopolitics.classList.remove('active');
+                mapModalContentStrategy.classList.remove('hidden');
+                mapModalContentGeopolitics.classList.add('hidden');
+            });
+
+            tabGeopolitics.addEventListener('click', () => {
+                tabGeopolitics.classList.add('active');
+                tabStrategy.classList.remove('active');
+                mapModalContentGeopolitics.classList.remove('hidden');
+                mapModalContentStrategy.classList.add('hidden');
+            });
+
+            mapModal.querySelector('.close-button').addEventListener('click', () => mapModal.style.display = 'none');
+            window.addEventListener('click', (event) => {
+                if (event.target == mapModal) {
+                    mapModal.style.display = 'none';
+                }
+            });
+
+            // 8. Investor Charts
+            const investorChartOptions = {
+                responsive: true,
+                maintainAspectRatio: true,
+                scales: {
+                    x: { grid: { display: false } },
+                    y: { grid: { color: '#e2e8f0' } }
+                },
+                plugins: {
+                    legend: { position: 'top' },
+                    tooltip: {
+                        mode: 'index',
+                        intersect: false,
+                        callbacks: {
+                            footer: function(tooltipItems) {
+                                const year = tooltipItems[0].label;
+                                const events = {
+                                    '2020': '疫情帶動數位轉型需求',
+                                    '2021': '全球晶片短缺',
+                                    '2022': 'N3製程量產',
+                                    '2023': 'AI需求爆發',
+                                    '2024': '創紀錄成長'
+                                };
+                                return events[year] || '';
+                            }
+                        }
+                    }
+                },
+                interaction: {
+                    mode: 'index',
+                    intersect: false,
+                },
+            };
+            const years = ['2020', '2021', '2022', '2023', '2024'];
+
+            // 營收與淨利
+            const revenueCtx = document.getElementById('revenueChart').getContext('2d');
+            new Chart(revenueCtx, {
+                type: 'bar',
+                data: {
+                    labels: years,
+                    datasets: [
+                        {
+                            label: '營收 (兆元)',
+                            data: [1.34, 1.59, 2.16, 2.16, 2.89],
+                            backgroundColor: '#60a5fa',
+                            yAxisID: 'y',
+                            order: 2
+                        },
+                        {
+                            label: '稅後淨利 (兆元)',
+                            data: [0.52, 0.60, 0.84, 0.84, 1.17],
+                            backgroundColor: '#2563eb',
+                            yAxisID: 'y',
+                            order: 3
+                        },
+                        {
+                            label: '營收年增率 (%)',
+                            data: [25.2, 18.5, 33.5, 0, 33.9],
+                            type: 'line',
+                            borderColor: '#10b981',
+                            backgroundColor: '#10b981',
+                            tension: 0.3,
+                            yAxisID: 'y1',
+                            order: 1
+                        }
+                    ]
+                },
+                options: { ...investorChartOptions, scales: {
+                    x: { grid: { display: false } },
+                    y: { position: 'left', title: { display: true, text: '金額 (兆元)'}},
+                    y1: { position: 'right', title: { display: true, text: '年增率 (%)'}, grid: { drawOnChartArea: false }}
+                }, plugins: { ...investorChartOptions.plugins, title: { display: true, text: '營收與淨利趨勢' }}}
+            });
+
+            // 毛利率與淨利率
+            const marginCtx = document.getElementById('marginChart').getContext('2d');
+            new Chart(marginCtx, {
+                type: 'line',
+                data: {
+                    labels: years,
+                    datasets: [
+                        {
+                            label: '毛利率 (%)',
+                            data: [53.1, 51.6, 54.4, 54.4, 56.1],
+                            borderColor: '#3b82f6',
+                            backgroundColor: '#3b82f6',
+                            tension: 0.3,
+                            fill: false
+                        },
+                        {
+                            label: '淨利率 (%)',
+                            data: [38.6, 38.0, 38.8, 38.8, 40.5],
+                            borderColor: '#10b981',
+                            backgroundColor: '#10b981',
+                            tension: 0.3,
+                            fill: false
+                        }
+                    ]
+                },
+                options: { ...investorChartOptions, plugins: { ...investorChartOptions.plugins, title: { display: true, text: '毛利率與淨利率趨勢' }}}
+            });
+
+            // 研發費用佔營收比
+            const rdCtx = document.getElementById('rdChart').getContext('2d');
+            new Chart(rdCtx, {
+                type: 'bar',
+                data: {
+                    labels: years,
+                    datasets: [{
+                        label: '研發費用佔營收比 (%)',
+                        data: [7.2, 6.5, 6.8, 7.1, 7.1], // Fictional but reasonable data
+                        backgroundColor: '#8b5cf6'
+                    }]
+                },
+                options: { ...investorChartOptions, plugins: { ...investorChartOptions.plugins, title: { display: true, text: '研發費用佔營收比趨勢' }}}
+            });
+
+            // 自由現金流
+            const fcfCtx = document.getElementById('fcfChart').getContext('2d');
+            new Chart(fcfCtx, {
+                type: 'line',
+                data: {
+                    labels: years,
+                    datasets: [{
+                        label: '自由現金流 (億元)',
+                        data: [5600, 4800, 3900, 4200, 9613], // Fictional but reasonable data
+                        borderColor: '#f97316',
+                        backgroundColor: 'rgba(249, 115, 22, 0.2)',
+                        tension: 0.3,
+                        fill: true
+                    }]
+                },
+                options: { ...investorChartOptions, plugins: { ...investorChartOptions.plugins, title: { display: true, text: '自由現金流趨勢' }}}
+            });
+
+        });
+    </script>
+
+</body>
+</html>
