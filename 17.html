@@ -1,0 +1,690 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>鴻海 (2317) 113年報互動視覺化網頁</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Noto+Sans+TC:wght@400;500;700&display=swap" rel="stylesheet">
+    <style>
+        html {
+            scroll-behavior: smooth;
+        }
+        body {
+            font-family: 'Inter', 'Noto Sans TC', sans-serif;
+            background-color: #f0f2f5;
+        }
+        .hero-card {
+            background: white;
+            border-radius: 1rem;
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        .hero-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+        }
+        .tooltip {
+            visibility: hidden;
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+        .has-tooltip:hover .tooltip {
+            visibility: visible;
+            opacity: 1;
+        }
+        .fade-in {
+            animation: fadeIn 0.8s ease-in-out;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .number-animate {
+            transition: all 1.5s ease-out;
+        }
+        .halo-effect {
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+        .halo-effect:hover, .halo-effect.active {
+            box-shadow: 0 0 25px rgba(0, 122, 255, 0.7);
+            transform: scale(1.05);
+        }
+        .strategy-grid-item {
+            transition: all 0.3s ease;
+        }
+        .strategy-grid-item:hover {
+            transform: scale(1.05);
+            background-color: #e0f2fe;
+        }
+        .modal-overlay {
+            transition: opacity 0.3s ease;
+        }
+        .modal-content {
+            transition: transform 0.3s ease, opacity 0.3s ease;
+        }
+        .accordion-content {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.5s ease-out, padding 0.5s ease-out;
+        }
+        .accordion-button.active + .accordion-content {
+            max-height: 500px; /* Adjust as needed */
+            padding-top: 1rem;
+            padding-bottom: 1rem;
+        }
+        .accordion-button .icon {
+            transition: transform 0.3s ease;
+        }
+        .accordion-button.active .icon {
+            transform: rotate(180deg);
+        }
+    </style>
+</head>
+<body class="bg-gray-50 text-gray-800">
+
+    <!-- Header -->
+    <header class="bg-white shadow-md sticky top-0 z-50">
+        <nav class="container mx-auto px-6 py-3 flex justify-between items-center">
+            <div class="flex items-center space-x-4">
+                <svg class="h-10 w-10 text-[#007aff]" viewBox="0 0 1024 1024" xmlns="http://www.w3.org/2000/svg"><path fill="currentColor" d="M312.9 512.5c0-9.2.3-18.4.8-27.5h-101v-97h94.8c12.2-38.1 32.1-72.2 58.3-100.4l-67.5-67.5 68.6-68.6 67.5 67.5c28.2-26.2 62.3-46.1 100.4-58.3V10.2h97v94.8c38.1 12.2 72.2 32.1 100.4 58.3l67.5-67.5 68.6 68.6-67.5 67.5c26.2 28.2 46.1 62.3 58.3 100.4h94.8v97h-101c-.5 9.1-.8 18.3-.8 27.5s.3 18.4.8 27.5h101v97h-94.8c-12.2 38.1-32.1 72.2-58.3 100.4l67.5 67.5-68.6 68.6-67.5-67.5c-28.2 26.2-62.3 46.1-100.4 58.3v94.8h-97v-94.8c-38.1-12.2-72.2-32.1-100.4-58.3l-67.5 67.5-68.6-68.6 67.5-67.5c-26.2-28.2-46.1-62.3-58.3-100.4H211.9v-97h101c-.5-9.1-.8-18.3-.8-27.5zm199.5 0c0-110.5 89.5-200 200-200s200 89.5 200 200-89.5 200-200 200-200-89.5-200-200zM10.2 512.5c0-9.2.3-18.4.8-27.5H0v-97h10.9c22.1-79.6 66.8-149.3 126.8-199.3L69.2 119.9 119.9 69.2l68.8 68.8C238 98.1 287.1 62.2 342.1 40.8V10.2h97v29.3c56.6 21.8 107.1 59.5 147.2 107.8l65.4-65.4 50.7 50.7-65.4 65.4c48.3 40.1 86 90.6 107.8 147.2h29.3v97h-30.6c-21.4 55-57.3 104.1-98.1 147.2l68.8 68.8-50.7 50.7-68.8-68.8c-40.1 48.3-90.6 86-147.2 107.8v29.3h-97v-30.6c-55-21.4-104.1-57.3-147.2-98.1l-68.8 68.8-50.7-50.7 68.8-68.8C77.1 661.8 32.4 592.1 10.2 512.5z"/></svg>
+                <span class="text-xl font-bold text-gray-800">鴻海精密 (2317)</span>
+            </div>
+             <div class="hidden md:flex items-center space-x-6 text-gray-600">
+                <a href="#hero" class="hover:text-[#007aff]">關鍵指標</a>
+                <a href="#chairman" class="hover:text-[#007aff]">董事長的話</a>
+                <a href="#financials" class="hover:text-[#007aff]">財務透視</a>
+                <a href="#strategy" class="hover:text-[#007aff]">未來藍圖</a>
+                <a href="#qna" class="hover:text-[#007aff]">投資人問答</a>
+            </div>
+            <div class="flex items-center space-x-4">
+                 <a href="https://ping763573.github.io/big-adventure/16.html" target="_blank" class="bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded-lg transition-colors">
+                    鴻海進階版分析
+                </a>
+                <button id="audio-toggle" class="p-2 rounded-full hover:bg-gray-100 transition-colors">
+                    <svg id="audio-icon-off" class="w-6 h-6 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5.586 15H4a1 1 0 01-1-1v-4a1 1 0 011-1h1.586l4.707-4.707C10.923 3.663 12 4.109 12 5v14c0 .891-1.077 1.337-1.707.707L5.586 15z" clip-rule="evenodd"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2"></path></svg>
+                    <svg id="audio-icon-on" class="w-6 h-6 text-blue-500 hidden" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.536 8.464a5 5 0 010 7.072M12 6v12m6.364-14.364a9 9 0 010 12.728M5.586 15H4a1 1 0 01-1-1v-4a1 1 0 011-1h1.586l4.707-4.707C10.923 3.663 12 4.109 12 5v14c0 .891-1.077 1.337-1.707.707L5.586 15z"></path></svg>
+                </button>
+            </div>
+        </nav>
+    </header>
+
+    <main class="container mx-auto px-4 md:px-6 py-8 md:py-12">
+
+        <!-- 區塊一：5秒決勝！關鍵數位儀表板 -->
+        <section id="hero" class="text-center mb-16 md:mb-24 fade-in">
+            <h1 class="text-3xl md:text-5xl font-bold text-gray-900 mb-4">AI與電動車驅動鴻海再創高峰</h1>
+            <p class="text-lg md:text-xl text-gray-600 mb-12 max-w-3xl mx-auto">113年營運成果斐然，關鍵數據儀表板讓您秒懂鴻海的核心競爭力與成長動能。</p>
+            
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6 md:gap-8">
+                <!-- 營收 -->
+                <div class="hero-card p-6 md:p-8 has-tooltip">
+                    <h3 class="text-lg font-semibold text-gray-500 mb-2">合併營收</h3>
+                    <p class="text-4xl md:text-5xl font-bold text-[#007aff] mb-2">
+                        <span id="revenue-val" data-val="6.86">0.00</span> 兆
+                    </p>
+                    <div class="relative">
+                        <div class="tooltip absolute bottom-full mb-2 w-64 bg-gray-800 text-white text-sm rounded-lg p-3 transform -translate-x-1/2 left-1/2">
+                            <span class="font-bold text-red-400">▲ 11.32%</span><br>
+                            <sub class="text-gray-300">AI伺服器需求強勁，貢獻卓著</sub>
+                            <svg class="absolute text-gray-800 h-2 w-full left-0 top-full" x="0px" y="0px" viewBox="0 0 255 255" xml:space="preserve"><polygon class="fill-current" points="0,0 127.5,127.5 255,0"/></svg>
+                        </div>
+                    </div>
+                </div>
+                <!-- 稅後淨利 -->
+                <div class="hero-card p-6 md:p-8 has-tooltip">
+                    <h3 class="text-lg font-semibold text-gray-500 mb-2">稅後淨利</h3>
+                    <p class="text-4xl md:text-5xl font-bold text-[#007aff] mb-2">
+                        <span id="profit-val" data-val="1527">0</span> 億
+                    </p>
+                     <div class="relative">
+                        <div class="tooltip absolute bottom-full mb-2 w-64 bg-gray-800 text-white text-sm rounded-lg p-3 transform -translate-x-1/2 left-1/2">
+                            <span class="font-bold text-red-400">▲ 7.5%</span><br>
+                             <sub class="text-gray-300">較前一年度成長約7%</sub>
+                            <svg class="absolute text-gray-800 h-2 w-full left-0 top-full" x="0px" y="0px" viewBox="0 0 255 255" xml:space="preserve"><polygon class="fill-current" points="0,0 127.5,127.5 255,0"/></svg>
+                        </div>
+                    </div>
+                </div>
+                <!-- EPS -->
+                <div class="hero-card p-6 md:p-8 has-tooltip">
+                    <h3 class="text-lg font-semibold text-gray-500 mb-2">每股盈餘 (EPS)</h3>
+                    <p class="text-4xl md:text-5xl font-bold text-[#007aff] mb-2">
+                        <span id="eps-val" data-val="11.01">0.00</span> 元
+                    </p>
+                     <div class="relative">
+                        <div class="tooltip absolute bottom-full mb-2 w-64 bg-gray-800 text-white text-sm rounded-lg p-3 transform -translate-x-1/2 left-1/2">
+                            <span class="font-bold text-green-400">★ 創16年新高</span><br>
+                            <sub class="text-gray-300">自民國97年以來的新高</sub>
+                            <svg class="absolute text-gray-800 h-2 w-full left-0 top-full" x="0px" y="0px" viewBox="0 0 255 255" xml:space="preserve"><polygon class="fill-current" points="0,0 127.5,127.5 255,0"/></svg>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 區塊二：董事長的內心話 -->
+        <section id="chairman" class="mb-16 md:mb-24 fade-in" style="animation-delay: 0.2s;">
+            <h2 class="text-3xl md:text-4xl font-bold text-center text-gray-900 mb-12">董事長的內心話：從策略到承諾</h2>
+            <div class="bg-white rounded-2xl shadow-lg overflow-hidden md:grid md:grid-cols-5 md:gap-8 items-center p-8">
+                <div class="md:col-span-2 mb-6 md:mb-0">
+                    <video autoplay loop muted playsinline class="rounded-lg object-cover w-full h-full">
+                        <source src="https://ping763573.github.io/big-adventure/36.mp4" type="video/mp4">
+                        您的瀏覽器不支援影片播放。
+                    </video>
+                </div>
+                <div class="md:col-span-3">
+                    <div class="flex flex-wrap gap-4 mb-6">
+                        <button data-target="content-ai" class="chairman-tab halo-effect bg-blue-100 text-blue-800 px-4 py-2 rounded-full font-semibold active">AI 伺服器</button>
+                        <button data-target="content-ev" class="chairman-tab halo-effect bg-gray-100 text-gray-800 px-4 py-2 rounded-full font-semibold">電動車 (EV)</button>
+                        <button data-target="content-3p3" class="chairman-tab halo-effect bg-gray-100 text-gray-800 px-4 py-2 rounded-full font-semibold">3+3 策略</button>
+                        <button data-target="content-finance" class="chairman-tab halo-effect bg-gray-100 text-gray-800 px-4 py-2 rounded-full font-semibold">財務展望</button>
+                    </div>
+                    <div id="chairman-content-container">
+                        <div id="content-ai" class="chairman-content-panel space-y-4">
+                            <h3 class="text-2xl font-bold text-gray-800">AI 伺服器：「不僅是供應，更是共創AI時代」</h3>
+                            <p class="text-gray-600 leading-relaxed">我們與客戶多年合作，成功打造一系列高性能AI伺服器，從上游模組到下游整機組裝，提供垂直整合的解決方案。AI伺服器營收年增1.5倍，佔比超過四成，是今年成長的主要動能。</p>
+                        </div>
+                         <div id="content-ev" class="chairman-content-panel hidden space-y-4">
+                            <h3 class="text-2xl font-bold text-gray-800">電動車 (EV)：「MIH平台加速，全球布局啟動」</h3>
+                            <p class="text-gray-600 leading-relaxed">透過MIH開放平台，我們加速了電動車的開發與製造。MODEL C將進軍北美，MODEL B預計量產。我們也積極參與台灣電巴國家隊，並拓展中東、中國市場，建構全球電動車產業鏈的影響力。</p>
+                        </div>
+                         <div id="content-3p3" class="chairman-content-panel hidden space-y-4">
+                            <h3 class="text-2xl font-bold text-gray-800">3+3策略：「三大未來產業 + 三大核心技術」</h3>
+                            <p class="text-gray-600 leading-relaxed">我們聚焦「電動車、數位健康、機器人」三大未來產業，並以「人工智慧、半導體、新世代通訊」為三大核心技術支撐。這項長期佈局的效益已逐漸浮現，將成為集團中長期的成長動能。</p>
+                        </div>
+                         <div id="content-finance" class="chairman-content-panel hidden space-y-4">
+                            <h3 class="text-2xl font-bold text-gray-800">財務展望：「重返營收成長軌道，結構更均衡」</h3>
+                            <p class="text-gray-600 leading-relaxed">受惠於生成式AI應用及CSP資本支出增加，我們預期今年營運將加速成長。透過BOL及CDMS模式，我們將靈活應對市場需求，確保營運穩健，為投資人創造長期價值。</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 區塊三：透視財務鏡 -->
+        <section id="financials" class="mb-16 md:mb-24 fade-in" style="animation-delay: 0.4s;">
+            <h2 class="text-3xl md:text-4xl font-bold text-center text-gray-900 mb-4">透視財務鏡</h2>
+            <p class="text-lg text-center text-gray-600 mb-12">錢從哪裡來，利潤怎麼變大？</p>
+            <div class="bg-white rounded-2xl shadow-lg p-6 md:p-8">
+                <div class="border-b border-gray-200 mb-6">
+                    <nav class="-mb-px flex space-x-6" aria-label="Tabs">
+                        <button class="tab-button whitespace-nowrap py-4 px-1 border-b-2 font-medium text-lg border-blue-500 text-blue-600" data-target="revenue-composition">營收結構</button>
+                        <button class="tab-button whitespace-nowrap py-4 px-1 border-b-2 font-medium text-lg border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300" data-target="profit-trend">獲利走勢</button>
+                        <button class="tab-button whitespace-nowrap py-4 px-1 border-b-2 font-medium text-lg border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300" data-target="shareholder-return">股東回饋</button>
+                    </nav>
+                </div>
+                <div id="tab-content">
+                    <div id="revenue-composition" class="tab-panel">
+                        <h3 class="text-xl font-bold text-center mb-4">雲端火車頭，四大產品齊發力</h3>
+                        <div class="w-full max-w-md mx-auto relative">
+                            <canvas id="revenueChart"></canvas>
+                             <div class="absolute inset-0 flex items-center justify-center text-center pointer-events-none">
+                                <div class="text-gray-700">
+                                    <p class="text-4xl font-bold">6.86</p>
+                                    <p class="text-lg">兆元</p>
+                                </div>
+                            </div>
+                        </div>
+                        <p class="text-center text-gray-500 mt-4">滑過圖表查看各產品類別營收佔比。雲端網路產品（含AI伺服器）是主要驅動力。</p>
+                    </div>
+                    <div id="profit-trend" class="tab-panel hidden">
+                        <h3 class="text-xl font-bold text-center mb-4">EPS連續三年站穩10元，再創新高</h3>
+                        <div class="w-full max-w-3xl mx-auto">
+                            <canvas id="epsChart"></canvas>
+                        </div>
+                    </div>
+                    <div id="shareholder-return" class="tab-panel hidden text-center">
+                        <h3 class="text-xl font-bold text-center mb-8">穩定回饋股東，共享成長成果</h3>
+                        <div class="bg-blue-50 border-2 border-blue-200 rounded-2xl p-8 max-w-sm mx-auto flex flex-col items-center justify-center space-y-4">
+                             <svg class="w-16 h-16 text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 10v-2m0-4h.01M17 10v.01M7 10v.01M12 21a9 9 0 110-18 9 9 0 010 18z"></path></svg>
+                            <p class="text-gray-600 text-lg">113年度現金股利</p>
+                            <p class="text-5xl font-bold text-blue-600">5.4 <span class="text-2xl font-medium">元</span></p>
+                            <p class="text-gray-500">連續五年現金股利殖利率超過4%</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 區塊四：鴻海的未來藍圖 -->
+        <section id="strategy" class="mb-16 md:mb-24 fade-in" style="animation-delay: 0.6s;">
+            <h2 class="text-3xl md:text-4xl font-bold text-center text-gray-900 mb-12">鴻海的未來藍圖：3+3策略探索</h2>
+            <div class="grid grid-cols-2 md:grid-cols-3 gap-4 md:gap-6">
+                <!-- Icons for 3+3 strategy -->
+                <div class="strategy-grid-item bg-white rounded-2xl p-6 text-center cursor-pointer shadow-lg" data-modal="ev">
+                    <div class="bg-green-100 rounded-full w-20 h-20 flex items-center justify-center mx-auto mb-4">
+                        <svg class="w-12 h-12 text-green-600" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M8.25 18.75a1.5 1.5 0 0 1-3 0m3 0a1.5 1.5 0 0 0-3 0m3 0h6m-9 0H3.375a1.125 1.125 0 0 1-1.125-1.125V14.25m17.25 4.5a1.5 1.5 0 0 1-3 0m3 0a1.5 1.5 0 0 0-3 0m3 0h1.125c.621 0 1.125-.504 1.125-1.125V14.25m-17.25 4.5v-1.875a3.375 3.375 0 0 0 .094-1.483l1.086-5.432a3.375 3.375 0 0 1 3.282-2.828h6.438a3.375 3.375 0 0 1 3.282 2.828l1.086 5.432a3.375 3.375 0 0 0 .094 1.483v1.875m-17.25 4.5h15.75m-15.75 0v-4.5a3.375 3.375 0 0 1 3.375-3.375h9a3.375 3.375 0 0 1 3.375 3.375v4.5" /></svg>
+                    </div>
+                    <h3 class="text-xl font-semibold">電動車</h3>
+                </div>
+                <div class="strategy-grid-item bg-white rounded-2xl p-6 text-center cursor-pointer shadow-lg" data-modal="health">
+                     <div class="bg-red-100 rounded-full w-20 h-20 flex items-center justify-center mx-auto mb-4">
+                        <svg class="w-12 h-12 text-red-600" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M21 8.25c0-2.485-2.099-4.5-4.688-4.5-1.935 0-3.597 1.126-4.312 2.733-.715-1.607-2.377-2.733-4.313-2.733C5.1 3.75 3 5.765 3 8.25c0 7.22 9 12 9 12s9-4.78 9-12Z" /></svg>
+                    </div>
+                    <h3 class="text-xl font-semibold">數位健康</h3>
+                </div>
+                <div class="strategy-grid-item bg-white rounded-2xl p-6 text-center cursor-pointer shadow-lg" data-modal="robot">
+                     <div class="bg-purple-100 rounded-full w-20 h-20 flex items-center justify-center mx-auto mb-4">
+                        <svg class="w-12 h-12 text-purple-600" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M8.25 3v1.5M4.5 8.25H3m18 0h-1.5M4.5 12H3m18 0h-1.5m-15 3.75H3m18 0h-1.5M8.25 19.5V21M12 3v1.5m0 15V21m3.75-18v1.5m0 15V21m-9-1.5h10.5a2.25 2.25 0 0 0 2.25-2.25V6.75a2.25 2.25 0 0 0-2.25-2.25H6.75A2.25 2.25 0 0 0 4.5 6.75v10.5a2.25 2.25 0 0 0 2.25 2.25Zm.75-12h9v9h-9v-9Z" /></svg>
+                    </div>
+                    <h3 class="text-xl font-semibold">機器人</h3>
+                </div>
+                <div class="strategy-grid-item bg-white rounded-2xl p-6 text-center cursor-pointer shadow-lg" data-modal="ai">
+                     <div class="bg-yellow-100 rounded-full w-20 h-20 flex items-center justify-center mx-auto mb-4">
+                        <svg class="w-12 h-12 text-yellow-600" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M8.25 3v1.5M4.5 8.25H3m18 0h-1.5M4.5 12H3m18 0h-1.5m-15 3.75H3m18 0h-1.5M8.25 19.5V21M12 3v1.5m0 15V21m3.75-18v1.5m0 15V21m-9-1.5h10.5a2.25 2.25 0 0 0 2.25-2.25V6.75a2.25 2.25 0 0 0-2.25-2.25H6.75A2.25 2.25 0 0 0 4.5 6.75v10.5a2.25 2.25 0 0 0 2.25 2.25Z" /></svg>
+                    </div>
+                    <h3 class="text-xl font-semibold">人工智慧</h3>
+                </div>
+                <div class="strategy-grid-item bg-white rounded-2xl p-6 text-center cursor-pointer shadow-lg" data-modal="semi">
+                     <div class="bg-indigo-100 rounded-full w-20 h-20 flex items-center justify-center mx-auto mb-4">
+                        <svg class="w-12 h-12 text-indigo-600" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M8.25 3v1.5M4.5 8.25H3m18 0h-1.5M4.5 12H3m18 0h-1.5m-15 3.75H3m18 0h-1.5M8.25 19.5V21M12 3v1.5m0 15V21m3.75-18v1.5m0 15V21m-9-1.5h10.5a2.25 2.25 0 0 0 2.25-2.25V6.75a2.25 2.25 0 0 0-2.25-2.25H6.75A2.25 2.25 0 0 0 4.5 6.75v10.5a2.25 2.25 0 0 0 2.25 2.25Z" /></svg>
+                    </div>
+                    <h3 class="text-xl font-semibold">半導體</h3>
+                </div>
+                <div class="strategy-grid-item bg-white rounded-2xl p-6 text-center cursor-pointer shadow-lg" data-modal="comm">
+                     <div class="bg-pink-100 rounded-full w-20 h-20 flex items-center justify-center mx-auto mb-4">
+                        <svg class="w-12 h-12 text-pink-600" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M8.28 9.002a2.25 2.25 0 1 0 0 4.5 2.25 2.25 0 0 0 0-4.5ZM12.75 12.75a2.25 2.25 0 1 1 4.5 0 2.25 2.25 0 0 1-4.5 0ZM8.28 15a2.25 2.25 0 1 0 0 4.5 2.25 2.25 0 0 0 0-4.5Z" /><path stroke-linecap="round" stroke-linejoin="round" d="M7.5 7.5h-.75A2.25 2.25 0 0 0 4.5 9.75v.75c0 .414.336.75.75.75h.75V9A1.5 1.5 0 0 1 7.5 7.5ZM7.5 15v1.5c0 .414.336.75.75.75h.75a2.25 2.25 0 0 0 2.25-2.25v-.75A1.5 1.5 0 0 1 9.75 12h-2.25Z" /></svg>
+                    </div>
+                    <h3 class="text-xl font-semibold">新世代通訊</h3>
+                </div>
+            </div>
+        </section>
+
+        <!-- 區塊五：您的投資顧問 -->
+        <section id="qna" class="mb-16 md:mb-24 fade-in" style="animation-delay: 0.8s;">
+            <h2 class="text-3xl md:text-4xl font-bold text-center text-gray-900 mb-12">您的投資顧問：快問快答</h2>
+            <div class="max-w-3xl mx-auto space-y-4">
+                <div class="bg-white rounded-xl shadow-md">
+                    <button class="accordion-button flex justify-between items-center w-full p-6 text-left text-lg font-semibold">
+                        <span>鴻海未來最大的成長機會是什麼？</span>
+                        <svg class="icon w-6 h-6 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+                    </button>
+                    <div class="accordion-content px-6 text-gray-600">
+                        <p><strong>顯然是AI。</strong>從雲端到邊緣的全方位AI伺服器解決方案是我們最強勁的成長引擎。隨著全球CSP業者持續擴大資本支出，我們憑藉垂直整合能力與技術優勢，將持續擴大市佔率。</p>
+                    </div>
+                </div>
+                 <div class="bg-white rounded-xl shadow-md">
+                    <button class="accordion-button flex justify-between items-center w-full p-6 text-left text-lg font-semibold">
+                        <span>公司面臨的潛在風險有哪些？</span>
+                        <svg class="icon w-6 h-6 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+                    </button>
+                    <div class="accordion-content px-6 text-gray-600">
+                        <p><strong>面臨三大挑戰：</strong><br>1. <strong>地緣政治的供應鏈管理：</strong>我們透過全球布局(BOL)分散風險。<br>2. <strong>市場競爭的價格壓力：</strong>持續技術創新與成本控制以維持領先。<br>3. <strong>全球景氣的消費需求變化：</strong>優化產品組合，提升自動化以靈活應對。</p>
+                    </div>
+                </div>
+                 <div class="bg-white rounded-xl shadow-md">
+                    <button class="accordion-button flex justify-between items-center w-full p-6 text-left text-lg font-semibold">
+                        <span>鴻海在ESG方面的表現如何？</span>
+                        <svg class="icon w-6 h-6 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+                    </button>
+                    <div class="accordion-content px-6 text-gray-600">
+                        <p><strong>成果豐碩。</strong>我們已加入RE100，承諾2050年淨零碳排。發布全台首本供應商責任報告書，並榮獲多項國內外ESG大獎，展現我們對永續經營的決心。</p>
+                    </div>
+                </div>
+                 <div class="bg-white rounded-xl shadow-md">
+                    <button class="accordion-button flex justify-between items-center w-full p-6 text-left text-lg font-semibold">
+                        <span>我想看更完整的財務資料，要去哪裡找？</span>
+                        <svg class="icon w-6 h-6 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+                    </button>
+                    <div class="accordion-content px-6 text-gray-600">
+                        <p>為您準備好了。您可以點擊頁尾的「深入研究」區塊，找到公開資訊觀測站的完整年報連結。</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+        
+    </main>
+
+    <!-- 區塊六：您的投資工具箱 -->
+    <footer class="bg-gray-800 text-white">
+        <div class="container mx-auto px-6 py-12">
+            <h2 class="text-2xl font-bold text-center mb-10">您的投資工具箱</h2>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8 text-center md:text-left">
+                <div>
+                    <h3 class="text-lg font-semibold mb-4 border-b-2 border-blue-400 pb-2 inline-block">深入研究</h3>
+                    <ul class="space-y-2">
+                        <li><a href="http://mops.twse.com.tw" target="_blank" class="text-gray-300 hover:text-white transition">公開資訊觀測站</a></li>
+                        <li><a href="https://www.honhai.com" target="_blank" class="text-gray-300 hover:text-white transition">鴻海官方網站</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h3 class="text-lg font-semibold mb-4 border-b-2 border-blue-400 pb-2 inline-block">保持聯絡</h3>
+                    <ul class="space-y-2 text-gray-300">
+                        <li>發言人: 巫俊毅</li>
+                        <li>電話: (02)2268-3466 #5010-10001</li>
+                        <li>電子郵件: ir@foxconn.com</li>
+                    </ul>
+                </div>
+                <div>
+                    <h3 class="text-lg font-semibold mb-4 border-b-2 border-blue-400 pb-2 inline-block">公司資訊</h3>
+                    <p class="text-gray-300">鴻海精密工業股份有限公司<br>新北市土城區中山路66號</p>
+                </div>
+            </div>
+            <div class="text-center text-gray-500 mt-12 border-t border-gray-700 pt-6">
+                <p>&copy; 2024 鴻海精密工業股份有限公司. All Rights Reserved. (此為模擬網頁)</p>
+            </div>
+        </div>
+    </footer>
+    
+    <!-- Modal for Strategy Section -->
+    <div id="strategy-modal" class="modal-overlay fixed inset-0 bg-black bg-opacity-60 flex items-center justify-center p-4 z-50 hidden opacity-0">
+        <div id="modal-content-card" class="modal-content bg-white rounded-2xl shadow-2xl w-full max-w-lg p-8 relative transform scale-95 opacity-0">
+            <button id="modal-close" class="absolute top-4 right-4 text-gray-500 hover:text-gray-800">
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+            </button>
+            <div id="modal-body">
+                <!-- Content will be injected by JS -->
+            </div>
+        </div>
+    </div>
+
+    <audio id="background-audio" src="https://ping763573.github.io/big-adventure/04.wav"></audio>
+
+    <script>
+    document.addEventListener('DOMContentLoaded', function () {
+        // Audio control
+        const audio = document.getElementById('background-audio');
+        const audioToggle = document.getElementById('audio-toggle');
+        const iconOn = document.getElementById('audio-icon-on');
+        const iconOff = document.getElementById('audio-icon-off');
+
+        audioToggle.addEventListener('click', () => {
+            if (audio.paused) {
+                audio.play();
+                iconOn.classList.remove('hidden');
+                iconOff.classList.add('hidden');
+            } else {
+                audio.pause();
+                iconOn.classList.add('hidden');
+                iconOff.classList.remove('hidden');
+            }
+        });
+        
+        // 區塊一：數字滾動動畫
+        const animateValue = (obj, start, end, duration, isFloat) => {
+            let startTimestamp = null;
+            const step = (timestamp) => {
+                if (!startTimestamp) startTimestamp = timestamp;
+                const progress = Math.min((timestamp - startTimestamp) / duration, 1);
+                let currentValue = progress * (end - start) + start;
+                if (isFloat) {
+                    obj.innerHTML = currentValue.toFixed(2);
+                } else {
+                    obj.innerHTML = Math.floor(currentValue).toLocaleString();
+                }
+                if (progress < 1) {
+                    window.requestAnimationFrame(step);
+                } else {
+                     if (isFloat) {
+                        obj.innerHTML = end.toFixed(2);
+                    } else {
+                        obj.innerHTML = end.toLocaleString();
+                    }
+                }
+            };
+            window.requestAnimationFrame(step);
+        };
+
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    const revenueEl = document.getElementById('revenue-val');
+                    const profitEl = document.getElementById('profit-val');
+                    const epsEl = document.getElementById('eps-val');
+                    
+                    animateValue(revenueEl, 0, parseFloat(revenueEl.dataset.val), 1500, true);
+                    animateValue(profitEl, 0, parseInt(profitEl.dataset.val), 1500, false);
+                    animateValue(epsEl, 0, parseFloat(epsEl.dataset.val), 1500, true);
+                    
+                    observer.unobserve(entry.target);
+                }
+            });
+        }, { threshold: 0.5 });
+
+        observer.observe(document.getElementById('hero'));
+
+
+        // 區塊二：董事長的話 Tab 互動
+        const chairmanTabs = document.querySelectorAll('.chairman-tab');
+        const chairmanContentPanels = document.querySelectorAll('.chairman-content-panel');
+
+        chairmanTabs.forEach(tab => {
+            tab.addEventListener('click', () => {
+                chairmanTabs.forEach(t => {
+                    t.classList.remove('active', 'bg-blue-100', 'text-blue-800');
+                    t.classList.add('bg-gray-100', 'text-gray-800');
+                });
+                tab.classList.add('active', 'bg-blue-100', 'text-blue-800');
+                tab.classList.remove('bg-gray-100', 'text-gray-800');
+
+                const targetId = tab.dataset.target;
+                chairmanContentPanels.forEach(panel => {
+                    if (panel.id === targetId) {
+                        panel.classList.remove('hidden');
+                        panel.classList.add('fade-in');
+                    } else {
+                        panel.classList.add('hidden');
+                        panel.classList.remove('fade-in');
+                    }
+                });
+            });
+        });
+
+        // 區塊三：財務透視 Tab 互動
+        const tabButtons = document.querySelectorAll('.tab-button');
+        const tabPanels = document.querySelectorAll('.tab-panel');
+
+        tabButtons.forEach(button => {
+            button.addEventListener('click', () => {
+                tabButtons.forEach(btn => {
+                    btn.classList.remove('border-blue-500', 'text-blue-600');
+                    btn.classList.add('border-transparent', 'text-gray-500', 'hover:text-gray-700', 'hover:border-gray-300');
+                });
+                button.classList.add('border-blue-500', 'text-blue-600');
+                button.classList.remove('border-transparent', 'text-gray-500', 'hover:text-gray-700', 'hover:border-gray-300');
+
+                const target = button.dataset.target;
+                tabPanels.forEach(panel => {
+                    if (panel.id === target) {
+                        panel.classList.remove('hidden');
+                    } else {
+                        panel.classList.add('hidden');
+                    }
+                });
+            });
+        });
+
+        // Chart.js - 營收結構圖
+        const revenueCtx = document.getElementById('revenueChart').getContext('2d');
+        new Chart(revenueCtx, {
+            type: 'doughnut',
+            data: {
+                labels: ['雲端網路產品', '電腦終端產品', '消費智能產品', '元件及其他'],
+                datasets: [{
+                    label: '營收佔比',
+                    data: [43, 25, 28, 4], // 假設比例，基於AI伺服器佔比超過四成
+                    backgroundColor: [
+                        'rgba(59, 130, 246, 0.8)',
+                        'rgba(16, 185, 129, 0.8)',
+                        'rgba(249, 115, 22, 0.8)',
+                        'rgba(107, 114, 128, 0.8)'
+                    ],
+                    borderColor: [
+                        'rgba(59, 130, 246, 1)',
+                        'rgba(16, 185, 129, 1)',
+                        'rgba(249, 115, 22, 1)',
+                        'rgba(107, 114, 128, 1)'
+                    ],
+                    borderWidth: 1,
+                    hoverOffset: 10
+                }]
+            },
+            options: {
+                responsive: true,
+                cutout: '70%',
+                plugins: {
+                    legend: {
+                        position: 'bottom',
+                    },
+                    tooltip: {
+                        callbacks: {
+                            label: function(context) {
+                                let label = context.label || '';
+                                if (label) {
+                                    label += ': ';
+                                }
+                                if (context.parsed !== null) {
+                                    label += context.parsed + '%';
+                                }
+                                return label;
+                            }
+                        }
+                    }
+                }
+            }
+        });
+
+        // Chart.js - EPS 走勢圖
+        const epsCtx = document.getElementById('epsChart').getContext('2d');
+        new Chart(epsCtx, {
+            type: 'bar',
+            data: {
+                labels: ['111年', '112年', '113年'],
+                datasets: [{
+                    label: '每股盈餘 (元)',
+                    data: [10.21, 10.25, 11.01],
+                    backgroundColor: 'rgba(59, 130, 246, 0.6)',
+                    borderColor: 'rgba(59, 130, 246, 1)',
+                    borderWidth: 1,
+                    borderRadius: 8
+                }]
+            },
+            options: {
+                responsive: true,
+                scales: {
+                    y: {
+                        beginAtZero: false,
+                        min: 9.5,
+                        title: {
+                            display: true,
+                            text: '元 (NTD)'
+                        }
+                    }
+                },
+                plugins: {
+                    legend: {
+                        display: false
+                    },
+                    tooltip: {
+                        enabled: true
+                    },
+                    annotation: {
+                        annotations: {
+                            line1: {
+                                type: 'line',
+                                yMin: 10,
+                                yMax: 10,
+                                borderColor: 'rgb(255, 99, 132)',
+                                borderWidth: 2,
+                                borderDash: [6, 6],
+                                label: {
+                                    content: '10元關卡',
+                                    enabled: true,
+                                    position: 'end'
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        });
+        
+        // 區塊四：策略 Modal 互動
+        const modal = document.getElementById('strategy-modal');
+        const modalContentCard = document.getElementById('modal-content-card');
+        const modalCloseBtn = document.getElementById('modal-close');
+        const modalBody = document.getElementById('modal-body');
+        const strategyItems = document.querySelectorAll('.strategy-grid-item');
+
+        const modalData = {
+            ev: {
+                title: '電動車 (EV)',
+                content: '<strong>目標：</strong>成為全球主要的電動車開發與製造服務商。<br><strong>進展：</strong>MODEL C、MODEL B 等車款陸續量產，高雄電池廠進入量產，並與國際車廠簽署CDMS合約，打造軟體定義汽車(SDV)生態系。'
+            },
+            health: {
+                title: '數位健康',
+                content: '<strong>目標：</strong>結合精準醫療、健康數據與智能設備，提供全方位的健康管理方案。<br><strong>進展：</strong>持續投入醫療級穿戴裝置、醫療影像AI分析等領域的研發，建構大健康生態圈。'
+            },
+            robot: {
+                title: '機器人',
+                content: '<strong>目標：</strong>發展應用於智慧製造、智慧物流與智慧城市的自主機器人。<br><strong>進展：</strong>將生成式AI應用於機器人平台，提升自動化程度，完善關燈工廠解決方案，並與Nvidia及Siemens合作打造數位孿生工廠。'
+            },
+            ai: {
+                title: '人工智慧',
+                content: '<strong>目標：</strong>從雲端到邊緣，AI全方位解決方案的領導者。<br><strong>進展：</strong>AI伺服器營收爆發性成長，CityGPT智慧城市方案獲政府支持，並將生成式AI導入三大智慧平台，提升核心競爭力。'
+            },
+            semi: {
+                title: '半導體',
+                content: '<strong>目標：</strong>成為全球最完整的半導體垂直整合公司。<br><strong>進展：</strong>晶圓廠獲歐美客戶關鍵產品驗證，積極發展矽光子晶片封裝技術，並跨足AI ASIC設計服務領域，完善從設計到封測的完整佈局。'
+            },
+            comm: {
+                title: '新世代通訊',
+                content: '<strong>目標：</strong>掌握B5G/6G、低軌衛星等關鍵通訊技術。<br><strong>進展：</strong>持續投入前瞻研發，與劍橋大學合作在量子通訊技術取得突破，確保在未來通訊領域的領先地位。'
+            }
+        };
+
+        const openModal = (key) => {
+            const data = modalData[key];
+            modalBody.innerHTML = `<h3 class="text-2xl font-bold mb-4">${data.title}</h3><p class="text-gray-600 leading-relaxed">${data.content}</p>`;
+            modal.classList.remove('hidden');
+            setTimeout(() => {
+                modal.classList.remove('opacity-0');
+                modalContentCard.classList.remove('scale-95', 'opacity-0');
+            }, 10);
+        };
+
+        const closeModal = () => {
+            modal.classList.add('opacity-0');
+            modalContentCard.classList.add('scale-95', 'opacity-0');
+            setTimeout(() => {
+                modal.classList.add('hidden');
+            }, 300);
+        };
+
+        strategyItems.forEach(item => {
+            item.addEventListener('click', () => {
+                openModal(item.dataset.modal);
+            });
+        });
+
+        modalCloseBtn.addEventListener('click', closeModal);
+        modal.addEventListener('click', (e) => {
+            if (e.target === modal) {
+                closeModal();
+            }
+        });
+
+        // 區塊五：Accordion 互動
+        const accordionButtons = document.querySelectorAll('.accordion-button');
+        accordionButtons.forEach(button => {
+            button.addEventListener('click', () => {
+                const isActive = button.classList.contains('active');
+                // Close all accordions
+                accordionButtons.forEach(btn => {
+                    btn.classList.remove('active');
+                });
+                // If the clicked one wasn't active, open it
+                if (!isActive) {
+                    button.classList.add('active');
+                }
+            });
+        });
+
+    });
+    </script>
+</body>
+</html>
