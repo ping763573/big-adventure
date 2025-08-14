@@ -1,0 +1,2003 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>鴻海 (Hon Hai) 分析中心 - 互動式網頁</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.3/dist/chart.umd.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/particles.js@2.0.0/particles.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <!-- Application Structure Plan: A single-page dashboard structure was chosen to provide a holistic, at-a-glance overview of Hon Hai's financial health and future outlook. This non-linear approach allows users to freely explore different facets of the report. The structure is organized into logical, thematic sections accessible via a prominent navigation bar: 1) Company Introduction, 2) Detailed Financial Analysis, 3) SWOT Analysis, 4) Performance Outlook, 5) Stock Price Valuation, 6) Additional Visualizations, and 7) Audio Summary placeholders. -->
+    <!-- Visualization & Content Choices:
+        - Report Info: Company overview, milestones, basic info. Goal: Informative background. Viz/Presentation: Text blocks, stat cards, timeline, image with caption.
+        - Report Info: Key financial metrics (Revenue, EPS, Margins). Goal: Show trends. Viz/Presentation: Dynamic stat cards, data tables, bar/line charts.
+        - Report Info: Strengths, Weaknesses, Opportunities, Threats. Goal: Strategic overview. Viz/Presentation: Dedicated cards for each SWOT element.
+        - Report Info: Future outlook (short, medium, long term). Goal: Future projections. Viz/Presentation: Thematic cards with key targets.
+        - Report Info: Stock Price Valuation (P/E, DCF, P/S). Goal: Interactive price estimation. Viz/Presentation: Input forms for parameters, real-time calculated results.
+        - Report Info: R&D, Capex, margin trends, ROE/ROA, revenue by application. Goal: Deeper data insights. Viz/Presentation: Dedicated charts.
+    -->
+    <style>
+        :root {
+            --primary: #0252a2; /* Hon Hai Blue */
+            --primary-light: #508cd3;
+            --secondary: #0ea5e9;
+            --success: #10b981;
+            --warning: #f59e0b;
+            --danger: #ef4444;
+            --dark: #1e293b;
+            --light: #f1f5f9;
+        }
+        body {
+            font-family: 'Noto Sans TC', sans-serif;
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+            position: relative;
+            background: linear-gradient(135deg, #f0f4ff 0%, #e6e9ff 100%);
+        }
+        .animate-fade-in {
+            animation: fadeIn 0.5s ease-out forwards;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .nav-button {
+            transition: all 0.3s ease;
+            transform: translateY(0);
+        }
+        .nav-button.active {
+            background-color: var(--primary);
+            color: white;
+            box-shadow: 0 4px 10px rgba(2, 82, 162, 0.3);
+        }
+        .chart-container {
+            position: relative;
+            width: 100%;
+            max-width: 800px;
+            margin-left: auto;
+            margin-right: auto;
+            height: 350px;
+            max-height: 400px;
+        }
+        @media (min-width: 768px) {
+            .chart-container {
+                height: 400px;
+            }
+        }
+        #particles-js {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            top: 0;
+            left: 0;
+            z-index: -1;
+        }
+        .card-hover {
+            transition: all 0.3s ease;
+            transform: translateY(0);
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+        }
+        .card-hover:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+        }
+        .swot-card {
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+        .swot-card:hover {
+            transform: scale(1.03);
+        }
+        .glow {
+            box-shadow: 0 0 15px rgba(2, 82, 162, 0.6);
+        }
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #f1f1f1;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #c7d2fe;
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #a5b4fc;
+        }
+        .tech-icon {
+            width: 60px;
+            height: 60px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: linear-gradient(135deg, var(--primary), var(--primary-light));
+            border-radius: 16px;
+            color: white;
+            font-size: 24px;
+            margin-bottom: 15px;
+        }
+        .section-title {
+            position: relative;
+            padding-bottom: 12px;
+            margin-bottom: 24px;
+        }
+        .section-title::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 60px;
+            height: 4px;
+            background: var(--primary);
+            border-radius: 2px;
+        }
+        .stat-card {
+            background: white;
+            border-radius: 12px;
+            padding: 20px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+            transition: all 0.3s ease;
+        }
+        .stat-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+        }
+        .valuation-card {
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+        }
+        .valuation-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+        .valuation-icon {
+            width: 50px;
+            height: 50px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: var(--primary);
+            border-radius: 12px;
+            color: white;
+            font-size: 24px;
+            margin-right: 15px;
+        }
+        .timeline-item {
+            position: relative;
+            padding-left: 30px;
+            margin-bottom: 30px;
+        }
+        .timeline-item::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 8px;
+            width: 16px;
+            height: 16px;
+            border-radius: 50%;
+            background: var(--primary);
+        }
+        .timeline-item::after {
+            content: '';
+            position: absolute;
+            left: 7px;
+            top: 24px;
+            width: 2px;
+            height: calc(100% + 15px);
+            background: var(--primary-light);
+        }
+        .timeline-item:last-child::after {
+            display: none;
+        }
+        .impact-badge {
+            display: inline-block;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+            margin-left: 10px;
+        }
+        .impact-high { background: rgba(239, 68, 68, 0.15); color: var(--danger); }
+        .impact-medium { background: rgba(245, 158, 11, 0.15); color: var(--warning); }
+        .impact-low { background: rgba(16, 185, 129, 0.15); color: var(--success); }
+        .tech-roadmap {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px;
+            margin-top: 20px;
+        }
+        .tech-node {
+            flex: 1;
+            min-width: 200px;
+            background: white;
+            border-radius: 16px;
+            padding: 20px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+            border-left: 4px solid var(--primary);
+        }
+        .swot-icon {
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            color: white;
+            font-weight: bold;
+            margin-right: 15px;
+        }
+        .strength { background: var(--success); }
+        .weakness { background: var(--warning); }
+        .opportunity { background: var(--secondary); }
+        .threat { background: var(--danger); }
+        
+        .company-img {
+            border-radius: 16px;
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease;
+            width: 100%;
+            height: 220px;
+            object-fit: cover;
+        }
+        .company-img:hover {
+            transform: scale(1.02);
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
+        }
+        .img-container {
+            margin-bottom: 24px;
+            position: relative;
+            overflow: hidden;
+            border-radius: 16px;
+        }
+        .img-caption {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: rgba(0, 0, 0, 0.6);
+            color: white;
+            padding: 8px 16px;
+            font-size: 14px;
+            text-align: center;
+        }
+    </style>
+</head>
+<body class="min-h-screen p-4 sm:p-6 lg:p-8">
+    <div id="particles-js"></div>
+    
+    <div class="relative z-10 max-w-6xl mx-auto">
+        <header class="bg-white p-6 rounded-2xl shadow-xl mb-8 card-hover">
+            <div class="flex flex-col md:flex-row items-center justify-between gap-6">
+                <div class="text-center md:text-left">
+                    <h1 class="text-3xl md:text-4xl font-extrabold text-gray-900 mb-2 bg-gradient-to-r from-blue-600 to-sky-500 bg-clip-text text-transparent">
+                        <i class="fas fa-industry mr-2"></i>鴻海 (Hon Hai) 分析中心
+                    </h1>
+                    <p class="text-lg text-gray-600">全球電子代工領導者 · 最新財報數據分析 · 未來展望</p>
+                    <div class="mt-4 text-sm text-gray-500">
+                        <p><i class="fas fa-sync-alt mr-2"></i>數據更新時間: 2025年7月14日</p>
+                        <p class="mt-1"><i class="fas fa-database mr-2"></i>來源: 鴻海財報、法說會資料、市場分析師預估</p>
+                    </div>
+                </div>
+                <div class="flex justify-center">
+                    <div class="tech-icon">
+                        <i class="fas fa-cogs"></i>
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <nav class="bg-white p-4 rounded-2xl shadow-lg mb-8 flex flex-wrap justify-center gap-3 card-hover">
+            <button id="nav-introduction" class="nav-button px-5 py-3 rounded-xl text-lg font-medium transition-all duration-300 ease-in-out bg-gradient-to-r from-gray-100 to-gray-200 text-gray-800 hover:from-blue-100 hover:to-sky-100 border border-gray-200 hover:border-blue-300 flex items-center">
+                <i class="fas fa-info-circle mr-2"></i>公司介紹
+            </button>
+            <button id="nav-financials" class="nav-button px-5 py-3 rounded-xl text-lg font-medium transition-all duration-300 ease-in-out bg-gradient-to-r from-gray-100 to-gray-200 text-gray-800 hover:from-blue-100 hover:to-sky-100 border border-gray-200 hover:border-blue-300 flex items-center">
+                <i class="fas fa-chart-line mr-2"></i>財務分析
+            </button>
+            <button id="nav-swot" class="nav-button px-5 py-3 rounded-xl text-lg font-medium transition-all duration-300 ease-in-out bg-gradient-to-r from-gray-100 to-gray-200 text-gray-800 hover:from-blue-100 hover:to-sky-100 border border-gray-200 hover:border-blue-300 flex items-center">
+                <i class="fas fa-clipboard-list mr-2"></i>SWOT分析
+            </button>
+            <button id="nav-outlook" class="nav-button px-5 py-3 rounded-xl text-lg font-medium transition-all duration-300 ease-in-out bg-gradient-to-r from-gray-100 to-gray-200 text-gray-800 hover:from-blue-100 hover:to-sky-100 border border-gray-200 hover:border-blue-300 flex items-center">
+                <i class="fas fa-binoculars mr-2"></i>業績展望
+            </button>
+            <button id="nav-valuation" class="nav-button px-5 py-3 rounded-xl text-lg font-medium transition-all duration-300 ease-in-out bg-gradient-to-r from-gray-100 to-gray-200 text-gray-800 hover:from-blue-100 hover:to-sky-100 border border-gray-200 hover:border-blue-300 flex items-center">
+                <i class="fas fa-calculator mr-2"></i>股價預測
+            </button>
+            <button id="nav-visualizations" class="nav-button px-5 py-3 rounded-xl text-lg font-medium transition-all duration-300 ease-in-out bg-gradient-to-r from-gray-100 to-gray-200 text-gray-800 hover:from-blue-100 hover:to-sky-100 border border-gray-200 hover:border-blue-300 flex items-center">
+                <i class="fas fa-chart-pie mr-2"></i>視覺化圖表
+            </button>
+            <button id="nav-audio-summary" class="nav-button px-5 py-3 rounded-xl text-lg font-medium transition-all duration-300 ease-in-out bg-gradient-to-r from-gray-100 to-gray-200 text-gray-800 hover:from-blue-100 hover:to-sky-100 border border-gray-200 hover:border-blue-300 flex items-center">
+                <i class="fas fa-volume-up mr-2"></i>語音摘要
+            </button>
+        </nav>
+
+        <main id="main-content" class="max-w-6xl mx-auto">
+            <!-- Sections will be loaded here by JavaScript -->
+        </main>
+        
+        <footer class="mt-12 text-center text-gray-600 text-sm py-6">
+            <div class="flex justify-center space-x-6 mb-4">
+                <a href="#" class="hover:text-blue-600"><i class="fab fa-facebook"></i></a>
+                <a href="#" class="hover:text-blue-600"><i class="fab fa-twitter"></i></a>
+                <a href="#" class="hover:text-blue-600"><i class="fab fa-linkedin"></i></a>
+                <a href="#" class="fab fa-github"></i></a>
+            </div>
+            <p>© 2025 鴻海(Hon Hai)分析中心 - 此為教育展示用途，非官方網站</p>
+            <p class="mt-2">資料來源：鴻海財報、法說會資料、市場分析師預估</p>
+        </footer>
+    </div>
+
+    <script>
+        particlesJS("particles-js", {
+            particles: {
+                number: { value: 40, density: { enable: true, value_area: 800 } },
+                color: { value: "#a5b4fc" },
+                shape: { type: "circle" },
+                opacity: { value: 0.5, random: true },
+                size: { value: 3, random: true },
+                line_linked: {
+                    enable: true,
+                    distance: 150,
+                    color: "#c7d2fe",
+                    opacity: 0.3,
+                    width: 1
+                },
+                move: {
+                    enable: true,
+                    speed: 1,
+                    direction: "none",
+                    random: true,
+                    straight: false,
+                    out_mode: "out",
+                    bounce: false
+                }
+            },
+            interactivity: {
+                detect_on: "canvas",
+                events: {
+                    onhover: { enable: true, mode: "grab" },
+                    onclick: { enable: true, mode: "push" },
+                    resize: true
+                }
+            },
+            retina_detect: true
+        });
+
+        // 財務數據 (單位: 百萬新台幣 / EPS為新台幣元) - 根據Yahoo股市更新
+        const financialData = [
+            { year: '2020', revenue: 5358019, operatingIncome: 115221, netIncome: 101795, eps: 7.34, grossMargin: 5.92, operatingMargin: 2.15, netProfitMargin: 1.90 },
+            { year: '2021', revenue: 5994174, operatingIncome: 153048, netIncome: 139321, eps: 10.05, grossMargin: 5.98, operatingMargin: 2.55, netProfitMargin: 2.32 },
+            { year: '2022', revenue: 6626997, operatingIncome: 173648, netIncome: 141484, eps: 10.21, grossMargin: 5.87, operatingMargin: 2.62, netProfitMargin: 2.13 },
+            { year: '2023', revenue: 6162221, operatingIncome: 166528, netIncome: 142098, eps: 10.25, grossMargin: 6.15, operatingMargin: 2.70, netProfitMargin: 2.31 },
+            { year: '2024E', revenue: 6450000, operatingIncome: 178000, netIncome: 158000, eps: 11.40, grossMargin: 6.30, operatingMargin: 2.76, netProfitMargin: 2.45 },
+        ];
+
+        // 季度財務數據 (單位: 百萬新台幣 / EPS為新台幣元) - 根據Yahoo股市更新
+        const quarterlyData = [
+            { quarter: '2023Q2', revenue: 1304548, netIncome: 33290, eps: 2.38 },
+            { quarter: '2023Q3', revenue: 1543164, netIncome: 43126, eps: 3.11 },
+            { quarter: '2023Q4', revenue: 1852072, netIncome: 53145, eps: 3.83 },
+            { quarter: '2024Q1', revenue: 1323992, netIncome: 22009, eps: 1.59 },
+            { quarter: '2024Q2', revenue: 1550551, netIncome: 38945, eps: 2.53 },
+            { quarter: '2024Q3E', revenue: 1650000, netIncome: 49200, eps: 3.55 }, // Corrected EPS based on market consensus
+            { quarter: '2024Q4E', revenue: 1900000, netIncome: 46300, eps: 3.34 }, // Corrected EPS based on market consensus
+            { quarter: '2025Q1E', revenue: 1450000, netIncome: 42000, eps: 3.03 },
+        ];
+
+        // 研發費用數據 (單位: 百萬新台幣 / 佔營收比重: %)
+        const rAndDData = [
+            { year: '2020', randD: 101500, randD_pct_revenue: 1.89 },
+            { year: '2021', randD: 115800, randD_pct_revenue: 1.93 },
+            { year: '2022', randD: 129000, randD_pct_revenue: 1.95 },
+            { year: '2023', randD: 135000, randD_pct_revenue: 2.19 },
+            { year: '2024E', randD: 140000, randD_pct_revenue: 2.17 },
+        ];
+
+        // 資本支出數據 (單位: 百萬新台幣)
+        const capexData = [
+            { year: '2020', capex: 80000 },
+            { year: '2021', capex: 95000 },
+            { year: '2022', capex: 110000 },
+            { year: '2023', capex: 120000 },
+            { year: '2024E', capex: 130000 },
+        ];
+
+        // 股東權益報酬率 (ROE) 與 資產報酬率 (ROA) 數據 (單位: %)
+        const roeRoaData = [
+            { year: '2020', roe: 8.6, roa: 2.7 },
+            { year: '2021', roe: 10.9, roa: 3.5 },
+            { year: '2022', roe: 10.3, roa: 3.2 },
+            { year: '2023', roe: 9.7, roa: 3.0 },
+            { year: '2024E', roe: 10.5, roa: 3.3 },
+        ];
+
+        function createSection(title, contentHtml) {
+            return `
+                <div class="bg-white p-6 rounded-2xl shadow-lg mb-6 animate-fade-in card-hover">
+                    <h2 class="text-2xl font-bold text-gray-800 section-title">${title}</h2>
+                    <div class="mt-4">${contentHtml}</div>
+                </div>
+            `;
+        }
+
+        const introductionContent = `
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div>
+                    <div class="img-container">
+                        <img src="https://image.honhai.com/factory_albums/A03.jpg" 
+                             alt="鴻海公司大樓" class="company-img">
+                        <div class="img-caption">鴻海土城總部大樓示意圖</div>
+                    </div>
+                    
+                    <div class="bg-gradient-to-br from-blue-50 to-sky-50 p-6 rounded-2xl mb-6">
+                        <div class="flex items-center mb-4">
+                            <div class="tech-icon">
+                                <i class="fas fa-industry"></i>
+                            </div>
+                            <h3 class="text-xl font-semibold text-gray-800">全球電子代工服務(EMS)龍頭</h3>
+                        </div>
+                        <p class="text-gray-700 leading-relaxed">
+                            鴻海精密工業股份有限公司（Hon Hai Precision Industry Co., Ltd.），以富士康（Foxconn）品牌聞名，成立於1974年，是全球最大的電子代工服務(EMS)企業。公司專精於電腦、通訊、消費性電子（3C）產品的研發製造，是蘋果公司iPhone的最大組裝廠。
+                        </p>
+                        <p class="text-gray-700 leading-relaxed mt-4">
+                            近年來，鴻海積極轉型，大力投入「3+3」新興產業，包括電動車、數位健康、機器人三大未來產業，以及人工智慧、半導體、新世代通訊技術三大核心技術。
+                            更多資訊請參閱 <a href="https://www.foxconn.com/zh-tw" target="_blank" class="text-blue-600 hover:text-blue-800 font-semibold underline">鴻海官方網站</a>。
+                        </p>
+                    </div>
+                    
+                    <div class="bg-gray-50 p-6 rounded-2xl">
+                        <h3 class="text-xl font-semibold text-gray-800 mb-4">公司里程碑</h3>
+                        <div class="space-y-4">
+                            <div class="timeline-item">
+                                <div class="font-bold text-gray-800">2020年</div>
+                                <p class="text-gray-700">成立MIH電動車開放平台</p>
+                            </div>
+                            <div class="timeline-item">
+                                <div class="font-bold text-gray-800">2022年</div>
+                                <p class="text-gray-700">電動巴士Model T開始交付，收購Lordstown俄亥俄州廠房</p>
+                            </div>
+                            <div class="timeline-item">
+                                <div class="font-bold text-gray-800">2024年</div>
+                                <p class="text-gray-700">AI伺服器業務強勁增長，成為Nvidia重要合作夥伴</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="space-y-6">
+                    <div class="bg-gradient-to-r from-blue-500 to-sky-600 p-6 rounded-2xl text-white">
+                        <h3 class="text-xl font-semibold mb-4">核心競爭力</h3>
+                        <p class="mb-4">鴻海憑藉其無與倫比的製造規模、供應鏈管理能力和成本控制，建立起強大的護城河。近年積極轉型，將核心製造能力延伸至新興領域。</p>
+                        
+                        <div class="tech-roadmap">
+                            <div class="tech-node">
+                                <div class="text-blue-600 font-bold mb-2">電動車 (EV)</div>
+                                <div class="text-gray-700">MIH開放平台</div>
+                                <div class="mt-2 text-sm text-gray-600">提供CDMS（委託設計製造服務）商業模式</div>
+                            </div>
+                            <div class="tech-node">
+                                <div class="text-blue-600 font-bold mb-2">AI伺服器</div>
+                                <div class="text-gray-700">從元件到系統整合</div>
+                                <div class="mt-2 text-sm text-gray-600">提供一站式AI硬體解決方案</div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="img-container">
+                        <img src="https://cdn2.ettoday.net/images/5946/e5946600.jpg" 
+                             alt="鴻海電動車" class="company-img">
+                        <div class="img-caption">鴻海Model C電動車示意圖</div>
+                    </div>
+                    
+                    <div class="bg-white p-6 rounded-2xl shadow-sm">
+                        <h3 class="text-xl font-semibold text-gray-800 mb-4">公司基本資料</h3>
+                        <div class="grid grid-cols-2 gap-4">
+                            <div class="stat-card">
+                                <div class="text-gray-600 text-sm">成立年份</div>
+                                <div class="font-bold text-lg">1974年</div>
+                            </div>
+                            <div class="stat-card">
+                                <div class="text-gray-600 text-sm">總部地點</div>
+                                <div class="font-bold text-lg">台灣新北</div>
+                            </div>
+                            <div class="stat-card">
+                                <div class="text-gray-600 text-sm">員工人數</div>
+                                <div class="font-bold text-lg">1,200,000+</div>
+                            </div>
+                            <div class="stat-card">
+                                <div class="text-gray-600 text-sm">全球市佔率</div>
+                                <div class="font-bold text-lg">EMS市佔率 > 40%</div>
+                            </div>
+                            <div class="stat-card col-span-2">
+                                <div class="text-gray-600 text-sm">主要客戶</div>
+                                <div class="font-bold text-lg">Apple, Dell, HP, Sony, Nvidia</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        `;
+
+        const financialAnalysisContent = `
+            <div class="mb-8">
+                <h3 class="text-xl font-semibold text-gray-700 mb-4">2024年第二季財務亮點</h3>
+                <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+                    <div class="stat-card">
+                        <div class="text-gray-600 text-sm flex items-center">
+                            <i class="fas fa-money-bill-wave mr-2"></i>季度營收
+                        </div>
+                        <div class="text-2xl font-bold text-blue-700 mt-2">1.55兆</div>
+                        <div class="text-gray-600 text-sm mt-1">新台幣</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="text-gray-600 text-sm flex items-center">
+                            <i class="fas fa-chart-line mr-2"></i>季度淨利
+                        </div>
+                        <div class="text-2xl font-bold text-green-600 mt-2">389億</div>
+                        <div class="text-gray-600 text-sm mt-1">新台幣</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="text-gray-600 text-sm flex items-center">
+                            <i class="fas fa-percent mr-2"></i>毛利率
+                        </div>
+                        <div class="text-2xl font-bold text-purple-700 mt-2">6.42%</div>
+                        <div class="text-gray-600 text-sm mt-1">持續改善</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="text-gray-600 text-sm flex items-center">
+                            <i class="fas fa-coins mr-2"></i>EPS
+                        </div>
+                        <div class="text-2xl font-bold text-amber-600 mt-2">2.53元</div>
+                        <div class="text-gray-600 text-sm mt-1">季增59%</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+                <div>
+                    <h3 class="text-xl font-semibold text-gray-700 mb-3">年度財務概覽</h3>
+                    <div class="overflow-x-auto">
+                        <table class="min-w-full bg-white rounded-xl shadow-sm">
+                            <thead>
+                                <tr class="bg-blue-500 text-white">
+                                    <th class="py-3 px-4 text-left rounded-tl-xl">年度</th>
+                                    <th class="py-3 px-4 text-left">營收 (兆)</th>
+                                    <th class="py-3 px-4 text-left">淨利 (億)</th>
+                                    <th class="py-3 px-4 text-left">EPS</th>
+                                    <th class="py-3 px-4 text-left">毛利率</th>
+                                    <th class="py-3 px-4 text-left rounded-tr-xl">營業利益率</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                ${financialData.map((data, index) => `
+                                    <tr class="${index % 2 === 0 ? 'bg-gray-50' : 'bg-white'} border-b border-gray-200 hover:bg-blue-50 transition-colors duration-200">
+                                        <td class="py-3 px-4 font-medium">${data.year}</td>
+                                        <td class="py-3 px-4">${(data.revenue/1000000).toFixed(2)}</td>
+                                        <td class="py-3 px-4">${(data.netIncome/1000).toFixed(2)}</td>
+                                        <td class="py-3 px-4">${data.eps.toFixed(2)}</td>
+                                        <td class="py-3 px-4">${data.grossMargin.toFixed(2)}%</td>
+                                        <td class="py-3 px-4">${data.operatingMargin.toFixed(2)}%</td>
+                                    </tr>
+                                `).join('')}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                
+                <div>
+                    <h3 class="text-xl font-semibold text-gray-700 mb-3">季對季財務概覽</h3>
+                    <div class="overflow-x-auto">
+                        <table class="min-w-full bg-white rounded-xl shadow-sm">
+                            <thead>
+                                <tr class="bg-blue-500 text-white">
+                                    <th class="py-3 px-4 text-left rounded-tl-xl">季度</th>
+                                    <th class="py-3 px-4 text-left">營收 (兆)</th>
+                                    <th class="py-3 px-4 text-left">淨利 (億)</th>
+                                    <th class="py-3 px-4 text-left rounded-tr-xl">EPS</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                ${quarterlyData.map((data, index) => `
+                                    <tr class="${index % 2 === 0 ? 'bg-gray-50' : 'bg-white'} border-b border-gray-200 hover:bg-blue-50 transition-colors duration-200">
+                                        <td class="py-3 px-4 font-medium">${data.quarter}</td>
+                                        <td class="py-3 px-4">${(data.revenue/1000000).toFixed(2)}</td>
+                                        <td class="py-3 px-4">${(data.netIncome/1000).toFixed(2)}</td>
+                                        <td class="py-3 px-4">${data.eps.toFixed(2)}</td>
+                                    </tr>
+                                `).join('')}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <h3 class="text-xl font-semibold text-gray-700 mb-4">主要財務指標趨勢</h3>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div class="bg-gradient-to-br from-blue-50 to-sky-50 p-4 rounded-2xl shadow-inner h-80 card-hover">
+                    <h4 class="text-lg font-medium text-gray-800 mb-2 flex items-center">
+                        <i class="fas fa-chart-bar mr-2"></i>年度營收與淨利
+                    </h4>
+                    <div class="chart-container">
+                        <canvas id="annualRevenueNetIncomeChart"></canvas>
+                    </div>
+                </div>
+
+                <div class="bg-gradient-to-br from-purple-50 to-pink-50 p-4 rounded-2xl shadow-inner h-80 card-hover">
+                    <h4 class="text-lg font-medium text-gray-800 mb-2 flex items-center">
+                        <i class="fas fa-chart-line mr-2"></i>年度EPS與毛利率
+                    </h4>
+                    <div class="chart-container">
+                        <canvas id="annualEpsGrossMarginChart"></canvas>
+                    </div>
+                </div>
+
+                <div class="bg-gradient-to-br from-teal-50 to-green-50 p-4 rounded-2xl shadow-inner col-span-full h-80 card-hover">
+                    <h4 class="text-lg font-medium text-gray-800 mb-2 flex items-center">
+                        <i class="fas fa-chart-area mr-2"></i>季度營收與淨利
+                    </h4>
+                    <div class="chart-container">
+                        <canvas id="quarterlyRevenueNetIncomeChart"></canvas>
+                    </div>
+                </div>
+            </div>
+
+            <div class="mt-8 bg-gradient-to-r from-blue-100 to-sky-100 p-6 rounded-2xl border border-blue-200">
+                <h3 class="text-xl font-semibold text-blue-800 mb-3 flex items-center">
+                    <i class="fas fa-download mr-2"></i>下載年度報告
+                </h3>
+                <ul class="list-disc list-inside space-y-2 text-gray-700">
+                    <li>
+                        <a href="https://www.foxconn.com/zh-tw" target="_blank" class="text-blue-600 hover:text-blue-800 font-medium underline">
+                            <i class="fas fa-file-pdf mr-1"></i> 鴻海官方網站
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        `;
+
+        const swotAnalysisContent = `
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6 text-gray-700">
+                <div class="swot-card bg-gradient-to-br from-green-50 to-teal-50 p-6 rounded-2xl shadow-inner border-l-4 border-green-500">
+                    <div class="flex items-center mb-3">
+                        <div class="swot-icon strength">
+                            S
+                        </div>
+                        <h3 class="text-xl font-semibold text-green-800">優勢 (Strengths)</h3>
+                    </div>
+                    <ul class="space-y-3">
+                        <li class="flex">
+                            <i class="fas fa-check-circle text-green-500 mt-1 mr-2"></i>
+                            <span>全球最大EMS廠，具備無可比擬的製造規模與效率<span class="impact-badge impact-high">關鍵</span></span>
+                        </li>
+                        <li class="flex">
+                            <i class="fas fa-check-circle text-green-500 mt-1 mr-2"></i>
+                            <span>卓越的供應鏈管理與成本控制能力</span>
+                        </li>
+                        <li class="flex">
+                            <i class="fas fa-check-circle text-green-500 mt-1 mr-2"></i>
+                            <span>與蘋果等頂級客戶建立的長期穩固合作關係</span>
+                        </li>
+                        <li class="flex">
+                            <i class="fas fa-check-circle text-green-500 mt-1 mr-2"></i>
+                            <span>全球化的生產佈局，具備彈性調整能力</span>
+                        </li>
+                    </ul>
+                </div>
+                
+                <div class="swot-card bg-gradient-to-br from-yellow-50 to-amber-50 p-6 rounded-2xl shadow-inner border-l-4 border-yellow-500">
+                    <div class="flex items-center mb-3">
+                        <div class="swot-icon weakness">
+                            W
+                        </div>
+                        <h3 class="text-xl font-semibold text-yellow-800">劣勢 (Weaknesses)</h3>
+                    </div>
+                    <ul class="space-y-3">
+                        <li class="flex">
+                            <i class="fas fa-exclamation-circle text-yellow-500 mt-1 mr-2"></i>
+                            <span>獲利率（毛利率、營業利益率）相對較低<span class="impact-badge impact-medium">中</span></span>
+                        </li>
+                        <li class="flex">
+                            <i class="fas fa-exclamation-circle text-yellow-500 mt-1 mr-2"></i>
+                            <span>高度依賴少數大客戶（如蘋果），營收集中度高</span>
+                        </li>
+                        <li class="flex">
+                            <i class="fas fa-exclamation-circle text-yellow-500 mt-1 mr-2"></i>
+                            <span>勞力密集型產業，面臨全球勞動成本上升壓力</span>
+                        </li>
+                    </ul>
+                </div>
+                
+                <div class="swot-card bg-gradient-to-br from-blue-50 to-sky-50 p-6 rounded-2xl shadow-inner border-l-4 border-blue-500">
+                    <div class="flex items-center mb-3">
+                        <div class="swot-icon opportunity">
+                            O
+                        </div>
+                        <h3 class="text-xl font-semibold text-blue-800">機會 (Opportunities)</h3>
+                    </div>
+                    <ul class="space-y-3">
+                        <li class="flex">
+                            <i class="fas fa-bolt text-blue-500 mt-1 mr-2"></i>
+                            <span>AI伺服器市場爆發性增長，帶來巨大商機<span class="impact-badge impact-high">關鍵</span></span>
+                        </li>
+                        <li class="flex">
+                            <i class="fas fa-bolt text-blue-500 mt-1 mr-2"></i>
+                            <span>電動車（EV）產業轉型，提供CDMS新商業模式</span>
+                        </li>
+                        <li class="flex">
+                            <i class="fas fa-bolt text-blue-500 mt-1 mr-2"></i>
+                            <span>半導體領域佈局，尋求垂直整合機會</span>
+                        </li>
+                        <li class="flex">
+                            <i class="fas fa-bolt text-blue-500 mt-1 mr-2"></i>
+                            <span>全球供應鏈重組，受惠於「中國+1」趨勢</span>
+                        </li>
+                    </ul>
+                </div>
+                
+                <div class="swot-card bg-gradient-to-br from-red-50 to-pink-50 p-6 rounded-2xl shadow-inner border-l-4 border-red-500">
+                    <div class="flex items-center mb-3">
+                        <div class="swot-icon threat">
+                            T
+                        </div>
+                        <h3 class="text-xl font-semibold text-red-800">威脅 (Threats)</h3>
+                    </div>
+                    <ul class="space-y-3">
+                        <li class="flex">
+                            <i class="fas fa-exclamation-triangle text-red-500 mt-1 mr-2"></i>
+                            <span>地緣政治風險（如美中貿易戰）影響全球佈局<span class="impact-badge impact-medium">中</span></span>
+                        </li>
+                        <li class="flex">
+                            <i class="fas fa-exclamation-triangle text-red-500 mt-1 mr-2"></i>
+                            <span>全球消費性電子產品需求波動</span>
+                        </li>
+                        <li class="flex">
+                            <i class="fas fa-exclamation-triangle text-red-500 mt-1 mr-2"></i>
+                            <span>紅色供應鏈（如立訊精密）的競爭加劇</span>
+                        </li>
+                        <li class="flex">
+                            <i class="fas fa-exclamation-triangle text-red-500 mt-1 mr-2"></i>
+                            <span>主要客戶尋求供應商多元化或自行生產</span>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+            
+            <div class="mt-8 bg-gradient-to-r from-blue-100 to-sky-100 p-6 rounded-2xl border border-blue-200">
+                <h3 class="text-xl font-semibold text-blue-800 mb-3">競爭優勢分析</h3>
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                    <div class="stat-card">
+                        <div class="flex items-center mb-2">
+                            <div class="w-10 h-10 bg-blue-100 rounded-full flex items-center justify-center text-blue-600 mr-3">
+                                <i class="fas fa-globe"></i>
+                            </div>
+                            <h4 class="font-semibold text-gray-800">製造規模</h4>
+                        </div>
+                        <p class="text-sm">全球最大的EMS廠，具備強大議價能力與規模經濟</p>
+                    </div>
+                    <div class="stat-card">
+                        <div class="flex items-center mb-2">
+                            <div class="w-10 h-10 bg-blue-100 rounded-full flex items-center justify-center text-blue-600 mr-3">
+                                <i class="fas fa-link"></i>
+                            </div>
+                            <h4 class="font-semibold text-gray-800">供應鏈整合</h4>
+                        </div>
+                        <p class="text-sm">從關鍵零組件到系統組裝的垂直整合能力</p>
+                    </div>
+                    <div class="stat-card">
+                        <div class="flex items-center mb-2">
+                            <div class="w-10 h-10 bg-blue-100 rounded-full flex items-center justify-center text-blue-600 mr-3">
+                                <i class="fas fa-car-battery"></i>
+                            </div>
+                            <h4 class="font-semibold text-gray-800">多元化轉型</h4>
+                        </div>
+                        <p class="text-sm">積極佈局電動車、半導體、AI伺服器等高增長領域</p>
+                    </div>
+                </div>
+            </div>
+        `;
+
+        const performanceOutlookContent = `
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+                <div class="bg-gradient-to-br from-blue-50 to-sky-50 p-6 rounded-2xl border-l-4 border-blue-500">
+                    <h3 class="text-xl font-semibold text-blue-700 mb-3 flex items-center">
+                        <span class="bg-blue-500 text-white rounded-full w-8 h-8 flex items-center justify-center mr-3">1</span>
+                        短期展望 (2025)
+                    </h3>
+                    <ul class="space-y-3">
+                        <li class="flex items-start">
+                            <span class="text-blue-500 mr-2">•</span>
+                            <span>AI伺服器業務持續強勁增長，成為主要動能</span>
+                        </li>
+                        <li class="flex items-start">
+                            <span class="text-blue-500 mr-2">•</span>
+                            <span>消費智能產品（手機）業務持平或小幅增長</span>
+                        </li>
+                        <li class="flex items-start">
+                            <span class="text-blue-500 mr-2">•</span>
+                            <span>毛利率、營業利益率、淨利率達成「三率三升」目標</span>
+                        </li>
+                    </ul>
+                    <div class="mt-4 p-4 bg-blue-100 rounded-xl">
+                        <div class="font-semibold text-blue-800 mb-2">2025全年預估</div>
+                        <div class="flex justify-between items-center">
+                            <div class="text-sm">營收</div>
+                            <div class="font-bold">7.0兆新台幣 <span class="text-green-600">+8%</span></div>
+                        </div>
+                        <div class="flex justify-between items-center mt-2">
+                            <div class="text-sm">EPS</div>
+                            <div class="font-bold">12.50元 <span class="text-green-600">+9.6%</span></div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="bg-gradient-to-br from-purple-50 to-pink-50 p-6 rounded-2xl border-l-4 border-purple-500">
+                    <h3 class="text-xl font-semibold text-purple-700 mb-3 flex items-center">
+                        <span class="bg-purple-500 text-white rounded-full w-8 h-8 flex items-center justify-center mr-3">2</span>
+                        中期展望 (2026-2027)
+                    </h3>
+                    <ul class="space-y-3">
+                        <li class="flex items-start">
+                            <span class="text-purple-500 mr-2">•</span>
+                            <span>電動車業務開始顯著貢獻營收與獲利</span>
+                        </li>
+                        <li class="flex items-start">
+                            <span class="text-purple-500 mr-2">•</span>
+                            <span>半導體佈局（特別是先進封裝、SiC）逐步發酵</span>
+                        </li>
+                        <li class="flex items-start">
+                            <span class="text-purple-500 mr-2">•</span>
+                            <span>AI伺服器從組裝擴展至關鍵零組件，提升價值</span>
+                        </li>
+                    </ul>
+                    <div class="mt-4 p-4 bg-purple-100 rounded-xl">
+                        <div class="font-semibold text-purple-800 mb-2">未來3年複合年增長率 (預估)</div>
+                        <div class="space-y-2">
+                            <div class="flex justify-between">
+                                <span>營收:</span>
+                                <span class="font-bold">5-7%</span>
+                            </div>
+                            <div class="flex justify-between">
+                                <span>淨利:</span>
+                                <span class="font-bold">10-12%</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="bg-gradient-to-br from-teal-50 to-green-50 p-6 rounded-2xl border-l-4 border-teal-500">
+                    <h3 class="text-xl font-semibold text-teal-700 mb-3 flex items-center">
+                        <span class="bg-teal-500 text-white rounded-full w-8 h-8 flex items-center justify-center mr-3">3</span>
+                        長期展望 (2028+)
+                    </h3>
+                    <ul class="space-y-3">
+                        <li class="flex items-start">
+                            <span class="text-teal-500 mr-2">•</span>
+                            <span>成為全球主要的電動車CDMS服務提供商</span>
+                        </li>
+                        <li class="flex items-start">
+                            <span class="text-teal-500 mr-2">•</span>
+                            <span>在機器人、數位健康領域建立新的增長曲線</span>
+                        </li>
+                        <li class="flex items-start">
+                            <span class="text-teal-500 mr-2">•</span>
+                            <span>轉型為「平台方案」公司，提升獲利能力</span>
+                        </li>
+                    </ul>
+                    <div class="mt-4 p-4 bg-teal-100 rounded-xl">
+                        <div class="font-semibold text-teal-800 mb-2">長期願景</div>
+                        <div class="text-center">
+                            <div class="font-bold text-xl">分享、合作、共榮</div>
+                            <div class="mt-2">打造以製造為核心的科技服務平台</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="bg-gradient-to-r from-blue-100 to-sky-100 p-6 rounded-2xl border border-blue-200">
+                <h3 class="text-xl font-semibold text-blue-800 mb-3">主要產品發展藍圖 ("3+3"策略)</h3>
+                <div class="overflow-x-auto">
+                    <table class="min-w-full bg-white rounded-lg">
+                        <thead>
+                            <tr class="bg-blue-500 text-white">
+                                <th class="py-3 px-4 text-left">產品線</th>
+                                <th class="py-3 px-4 text-left">關鍵技術</th>
+                                <th class="py-3 px-4 text-left">應用領域</th>
+                                <th class="py-3 px-4 text-left">未來重點</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr class="hover:bg-blue-50">
+                                <td class="py-3 px-4 font-medium">
+                                    <div class="flex items-center">
+                                        <div class="w-8 h-8 bg-blue-100 rounded-full flex items-center justify-center text-blue-600 mr-3">
+                                            <i class="fas fa-car"></i>
+                                        </div>
+                                        <span>電動車</span>
+                                    </div>
+                                </td>
+                                <td class="py-3 px-4">MIH平台、電池、電控</td>
+                                <td class="py-3 px-4">乘用車、商用巴士</td>
+                                <td class="py-3 px-4">整車設計製造、關鍵零組件</td>
+                            </tr>
+                            <tr class="bg-gray-50 hover:bg-blue-50">
+                                <td class="py-3 px-4 font-medium">
+                                    <div class="flex items-center">
+                                        <div class="w-8 h-8 bg-blue-100 rounded-full flex items-center justify-center text-blue-600 mr-3">
+                                            <i class="fas fa-server"></i>
+                                        </div>
+                                        <span>AI伺服器</span>
+                                    </div>
+                                </td>
+                                <td class="py-3 px-4">高速運算、液冷散熱</td>
+                                <td class="py-3 px-4">數據中心、雲計算</td>
+                                <td class="py-3 px-4">GB200伺服器、AI工廠</td>
+                            </tr>
+                            <tr class="hover:bg-blue-50">
+                                <td class="py-3 px-4 font-medium">
+                                    <div class="flex items-center">
+                                        <div class="w-8 h-8 bg-blue-100 rounded-full flex items-center justify-center text-blue-600 mr-3">
+                                            <i class="fas fa-microchip"></i>
+                                        </div>
+                                        <span>半導體</span>
+                                    </div>
+                                </td>
+                                <td class="py-3 px-4">先進封裝、SiC、車用MCU</td>
+                                <td class="py-3 px-4">電動車、AI、電源管理</td>
+                                <td class="py-3 px-4">提升自給率、拓展新業務</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        `;
+
+        const stockValuationContent = `
+            <p class="text-gray-700 mb-6 leading-relaxed">
+                以下提供三種股價評估模型：本益比法 (P/E Ratio)、現金流折現法 (DCF) 與市銷率法 (P/S)，讓您能透過調整參數來預測鴻海的合理股價。
+                請注意，這些模型僅為評估工具，實際股價受多種市場因素影響。
+            </p>
+
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <!-- P/E Ratio Valuation -->
+                <div class="valuation-card bg-gradient-to-br from-blue-50 to-sky-100 p-6 rounded-2xl shadow-inner">
+                    <div class="valuation-header">
+                        <div class="valuation-icon bg-blue-500">
+                            <i class="fas fa-calculator"></i>
+                        </div>
+                        <h3 class="text-xl font-semibold text-blue-800">本益比法</h3>
+                    </div>
+                    
+                    <div class="mb-4">
+                        <label for="pe-current-eps" class="block text-gray-700 text-sm font-bold mb-2">
+                            <i class="fas fa-coins mr-1"></i>當前EPS (元) (2024E):
+                        </label>
+                        <input
+                            id="pe-current-eps"
+                            type="number"
+                            step="0.01"
+                            value="11.40"
+                            class="w-full py-2 px-3 text-gray-700 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                        />
+                    </div>
+                    <div class="mb-4">
+                        <label for="pe-ratio" class="block text-gray-700 text-sm font-bold mb-2">
+                            <i class="fas fa-percent mr-1"></i>本益比 (倍):
+                        </label>
+                        <input
+                            id="pe-ratio"
+                            type="number"
+                            step="1"
+                            value="18"
+                            class="w-full py-2 px-3 text-gray-700 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                        />
+                    </div>
+                    <div class="bg-blue-100 p-4 rounded-lg text-center mt-auto">
+                        <p class="text-lg font-bold text-blue-700">自定義預估股價: <span id="pe-valuation-result" class="text-2xl text-blue-900"></span></p>
+                    </div>
+                    <div class="mt-4 bg-blue-50 p-3 rounded-lg text-left">
+                        <p class="text-sm text-blue-800 font-bold mb-2">基於預設參數的估價範圍</p>
+                        <div class="space-y-2">
+                            <div class="flex justify-between">
+                                <span class="text-blue-700">便宜價 (本益比 15x):</span>
+                                <span id="pe-cheap-price" class="font-bold"></span>
+                            </div>
+                            <div class="flex justify-between">
+                                <span class="text-blue-700">合理價 (本益比 18x):</span>
+                                <span id="pe-fair-price" class="font-bold"></span>
+                            </div>
+                            <div class="flex justify-between">
+                                <span class="text-blue-700">昂貴價 (本益比 22x):</span>
+                                <span id="pe-expensive-price" class="font-bold"></span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- DCF Valuation -->
+                <div class="valuation-card bg-gradient-to-br from-purple-50 to-pink-100 p-6 rounded-2xl shadow-inner">
+                    <div class="valuation-header">
+                        <div class="valuation-icon bg-purple-500">
+                            <i class="fas fa-money-bill-wave"></i>
+                        </div>
+                        <h3 class="text-xl font-semibold text-purple-800">現金流折現法</h3>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label for="dcf-current-eps" class="block text-gray-700 text-sm font-bold mb-2">
+                            <i class="fas fa-coins mr-1"></i>當前EPS (元) (2024E):
+                        </label>
+                        <input
+                            id="dcf-current-eps"
+                            type="number"
+                            step="0.01"
+                            value="11.40"
+                            class="w-full py-2 px-3 text-gray-700 border rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500"
+                        />
+                    </div>
+                    <div class="mb-3">
+                        <label for="dcf-growth-rate" class="block text-gray-700 text-sm font-bold mb-2">
+                            <i class="fas fa-chart-line mr-1"></i>預期成長率 (% - 前 5 年):
+                        </label>
+                        <input
+                            id="dcf-growth-rate"
+                            type="number"
+                            step="0.01"
+                            value="10"
+                            class="w-full py-2 px-3 text-gray-700 border rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500"
+                        />
+                    </div>
+                    <div class="mb-3">
+                        <label for="dcf-discount-rate" class="block text-gray-700 text-sm font-bold mb-2">
+                            <i class="fas fa-percent mr-1"></i>折現率 (%):
+                        </label>
+                        <input
+                            id="dcf-discount-rate"
+                            type="number"
+                            step="0.001"
+                            value="8.0"
+                            class="w-full py-2 px-3 text-gray-700 border rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500"
+                        />
+                    </div>
+                    <div class="mb-3">
+                        <label for="dcf-terminal-growth-rate" class="block text-gray-700 text-sm font-bold mb-2">
+                            <i class="fas fa-infinity mr-1"></i>永續成長率 (%):
+                        </label>
+                        <input
+                            id="dcf-terminal-growth-rate"
+                            type="number"
+                            step="0.001"
+                            value="2.0"
+                            class="w-full py-2 px-3 text-gray-700 border rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500"
+                        />
+                    </div>
+                    <div class="mb-4">
+                        <label for="dcf-years" class="block text-gray-700 text-sm font-bold mb-2">
+                            <i class="fas fa-calendar-alt mr-1"></i>預測年限:
+                        </label>
+                        <input
+                            id="dcf-years"
+                            type="number"
+                            step="1"
+                            value="5"
+                            class="w-full py-2 px-3 text-gray-700 border rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500"
+                        />
+                    </div>
+                    <div class="bg-purple-100 p-4 rounded-lg text-center mt-auto">
+                        <p class="text-lg font-bold text-purple-700">自定義預估股價: <span id="dcf-valuation-result" class="text-2xl text-purple-900"></span></p>
+                    </div>
+                    <div class="mt-4 bg-purple-50 p-3 rounded-lg text-left">
+                        <p class="text-sm text-purple-800 font-bold mb-2">基於預設參數的估價範圍</p>
+                        <div class="space-y-2">
+                            <div class="flex justify-between">
+                                <span class="text-purple-700">便宜價:</span>
+                                <span id="dcf-cheap-price" class="font-bold"></span>
+                            </div>
+                            <div class="flex justify-between">
+                                <span class="text-purple-700">合理價:</span>
+                                <span id="dcf-fair-price" class="font-bold"></span>
+                            </div>
+                            <div class="flex justify-between">
+                                <span class="text-purple-700">昂貴價:</span>
+                                <span id="dcf-expensive-price" class="font-bold"></span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- P/S Ratio Valuation -->
+                <div class="valuation-card bg-gradient-to-br from-teal-50 to-green-100 p-6 rounded-2xl shadow-inner">
+                    <div class="valuation-header">
+                        <div class="valuation-icon bg-teal-500">
+                            <i class="fas fa-chart-bar"></i>
+                        </div>
+                        <h3 class="text-xl font-semibold text-teal-800">市銷率法 (P/S)</h3>
+                    </div>
+                    
+                    <div class="mb-4">
+                        <label for="ps-current-sales" class="block text-gray-700 text-sm font-bold mb-2">
+                            <i class="fas fa-money-bill mr-1"></i>年營收 (百萬新台幣) (2024E):
+                        </label>
+                        <input
+                            id="ps-current-sales"
+                            type="number"
+                            step="1"
+                            value="6450000"
+                            class="w-full py-2 px-3 text-gray-700 border rounded-lg focus:outline-none focus:ring-2 focus:ring-teal-500"
+                        />
+                    </div>
+                    <div class="mb-4">
+                        <label for="ps-ratio" class="block text-gray-700 text-sm font-bold mb-2">
+                            <i class="fas fa-percent mr-1"></i>市銷率 (倍):
+                        </label>
+                        <input
+                            id="ps-ratio"
+                            type="number"
+                            step="0.01"
+                            value="0.45"
+                            class="w-full py-2 px-3 text-gray-700 border rounded-lg focus:outline-none focus:ring-2 focus:ring-teal-500"
+                        />
+                    </div>
+                    <div class="bg-teal-100 p-4 rounded-lg text-center mt-auto">
+                        <p class="text-lg font-bold text-teal-700">自定義預估股價: <span id="ps-valuation-result" class="text-2xl text-teal-900"></span></p>
+                    </div>
+                    <div class="mt-4 bg-teal-50 p-3 rounded-lg text-left">
+                        <p class="text-sm text-teal-800 font-bold mb-2">基於預設參數的估價範圍</p>
+                        <div class="space-y-2">
+                            <div class="flex justify-between">
+                                <span class="text-teal-700">便宜價 (市銷率 0.35x):</span>
+                                <span id="ps-cheap-price" class="font-bold"></span>
+                            </div>
+                            <div class="flex justify-between">
+                                <span class="text-teal-700">合理價 (市銷率 0.45x):</span>
+                                <span id="ps-fair-price" class="font-bold"></span>
+                            </div>
+                            <div class="flex justify-between">
+                                <span class="text-teal-700">昂貴價 (市銷率 0.55x):</span>
+                                <span id="ps-expensive-price" class="font-bold"></span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="mt-8 bg-gradient-to-r from-blue-100 to-sky-100 p-6 rounded-2xl border border-blue-200">
+                <h3 class="text-xl font-semibold text-blue-800 mb-3">市場共識評價 (未來6-12個月)</h3>
+                <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+                    <div class="stat-card">
+                        <div class="text-gray-600">目標價中位數</div>
+                        <div class="text-2xl font-bold text-blue-700 mt-2">220元</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="text-gray-600">最高目標價</div>
+                        <div class="text-2xl font-bold text-green-600 mt-2">250元</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="text-gray-600">最低目標價</div>
+                        <div class="text-2xl font-bold text-red-600 mt-2">180元</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="text-gray-600">分析師評級</div>
+                        <div class="text-2xl font-bold text-green-600 mt-2">強力買入</div>
+                    </div>
+                </div>
+                <div class="mt-6">
+                    <h4 class="font-semibold text-gray-800 mb-2">主要券商評價</h4>
+                    <div class="overflow-x-auto">
+                        <table class="min-w-full bg-white rounded-lg">
+                            <thead>
+                                <tr class="bg-blue-500 text-white">
+                                    <th class="py-2 px-4 text-left">券商</th>
+                                    <th class="py-2 px-4 text-left">評級</th>
+                                    <th class="py-2 px-4 text-left">目標價</th>
+                                    <th class="py-2 px-4 text-left">觀點</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr class="hover:bg-blue-50">
+                                    <td class="py-2 px-4 font-medium">大型美系外資</td>
+                                    <td class="py-2 px-4"><span class="bg-green-100 text-green-800 px-2 py-1 rounded">買入</span></td>
+                                    <td class="py-2 px-4 font-bold">240元</td>
+                                    <td class="py-2 px-4">AI伺服器動能強勁</td>
+                                </tr>
+                                <tr class="bg-gray-50 hover:bg-blue-50">
+                                    <td class="py-2 px-4 font-medium">大型歐系外資</td>
+                                    <td class="py-2 px-4"><span class="bg-green-100 text-green-800 px-2 py-1 rounded">買入</span></td>
+                                    <td class="py-2 px-4 font-bold">250元</td>
+                                    <td class="py-2 px-4">三率三升，EV業務具潛力</td>
+                                </tr>
+                                <tr class="hover:bg-blue-50">
+                                    <td class="py-2 px-4 font-medium">國內大型投顧</td>
+                                    <td class="py-2 px-4"><span class="bg-yellow-100 text-yellow-800 px-2 py-1 rounded">中性</span></td>
+                                    <td class="py-2 px-4 font-bold">210元</td>
+                                    <td class="py-2 px-4">估值已反映部分利多</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        `;
+
+        const otherVisualizationsContent = `
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div class="bg-gradient-to-br from-blue-50 to-sky-100 p-4 rounded-2xl shadow-inner h-80 card-hover">
+                    <h4 class="text-lg font-medium text-gray-800 mb-2 flex items-center">
+                        <i class="fas fa-flask mr-2"></i>研發費用與佔營收比重
+                    </h4>
+                    <div class="chart-container">
+                        <canvas id="randDChart"></canvas>
+                    </div>
+                </div>
+
+                <div class="bg-gradient-to-br from-purple-50 to-pink-100 p-4 rounded-2xl shadow-inner h-80 card-hover">
+                    <h4 class="text-lg font-medium text-gray-800 mb-2 flex items-center">
+                        <i class="fas fa-hard-hat mr-2"></i>資本支出
+                    </h4>
+                    <div class="chart-container">
+                        <canvas id="capexChart"></canvas>
+                    </div>
+                </div>
+
+                <div class="bg-gradient-to-br from-teal-50 to-green-100 p-4 rounded-2xl shadow-inner h-80 card-hover">
+                    <h4 class="text-lg font-medium text-gray-800 mb-2 flex items-center">
+                        <i class="fas fa-percent mr-2"></i>毛利率趨勢
+                    </h4>
+                    <div class="chart-container">
+                        <canvas id="grossMarginChart"></canvas>
+                    </div>
+                </div>
+
+                <div class="bg-gradient-to-br from-amber-50 to-orange-100 p-4 rounded-2xl shadow-inner h-80 card-hover">
+                    <h4 class="text-lg font-medium text-gray-800 mb-2 flex items-center">
+                        <i class="fas fa-chart-line mr-2"></i>營業利益率趨勢
+                    </h4>
+                    <div class="chart-container">
+                        <canvas id="operatingMarginChart"></canvas>
+                    </div>
+                </div>
+
+                <div class="bg-gradient-to-br from-red-50 to-pink-100 p-4 rounded-2xl shadow-inner h-80 card-hover">
+                    <h4 class="text-lg font-medium text-gray-800 mb-2 flex items-center">
+                        <i class="fas fa-money-bill-wave mr-2"></i>稅後淨利率趨勢
+                    </h4>
+                    <div class="chart-container">
+                        <canvas id="netProfitMarginChart"></canvas>
+                    </div>
+                </div>
+
+                <div class="bg-gradient-to-br from-blue-50 to-sky-100 p-4 rounded-2xl shadow-inner col-span-full h-80 card-hover">
+                    <h4 class="text-lg font-medium text-gray-800 mb-2 flex items-center">
+                        <i class="fas fa-chart-area mr-2"></i>股東權益報酬率 (ROE) 與 資產報酬率 (ROA)
+                    </h4>
+                    <div class="chart-container">
+                        <canvas id="roeRoaChart"></canvas>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="mt-8 grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div class="bg-gradient-to-br from-gray-50 to-gray-100 p-6 rounded-2xl shadow-inner border border-gray-200">
+                    <h3 class="text-xl font-semibold text-gray-800 mb-4 flex items-center">
+                        <i class="fas fa-mobile-alt mr-2"></i>終端應用營收佔比 (2024E)
+                    </h3>
+                    <div class="chart-container">
+                        <canvas id="revenueByApplicationChart"></canvas>
+                    </div>
+                </div>
+                <div class="bg-gradient-to-br from-blue-50 to-sky-100 p-6 rounded-2xl shadow-inner border border-blue-200">
+                    <h3 class="text-xl font-semibold text-gray-800 mb-4 flex items-center">
+                        <i class="fas fa-globe-asia mr-2"></i>區域營收佔比 (2024E)
+                    </h3>
+                    <div class="chart-container">
+                        <canvas id="revenueByRegionChart"></canvas>
+                    </div>
+                </div>
+            </div>
+        `;
+
+        const audioSummaryContent = `
+            <div class="bg-gradient-to-r from-blue-100 to-sky-100 p-6 rounded-2xl border border-blue-200">
+                <h3 class="text-xl font-semibold text-blue-800 mb-4 flex items-center">
+                    <i class="fas fa-headphones-alt mr-2"></i>精選語音摘要
+                </h3>
+                <ul class="list-disc list-inside space-y-3 text-gray-700">
+                    <li>
+                        <a href="https://drive.google.com/file/d/13xX3ms2qkmuQ36s-74sTaSi8WOIDcfYT/view?usp=sharing" target="_blank" class="text-blue-600 hover:text-blue-800 font-medium underline">
+                            <i class="fas fa-play-circle mr-1"></i> 113年鴻海年報精華.wav
+                        </a>
+                    </li>
+                    <li>
+                        <a href="https://drive.google.com/file/d/120F8d_0dEnhLYZaprLXXRpxTxo3mWs6M/view?usp=sharing" target="_blank" class="text-blue-600 hover:text-blue-800 font-medium underline">
+                            <i class="fas fa-play-circle mr-1"></i> 鴻海：代工巨象的轉型之路.wav
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        `;
+
+        const sections = {
+            'introduction': { title: '公司基本介紹', content: introductionContent },
+            'financials': { title: '財務分析', content: financialAnalysisContent },
+            'swot': { title: 'SWOT分析', content: swotAnalysisContent },
+            'outlook': { title: '業績展望', content: performanceOutlookContent },
+            'valuation': { title: '股價預測', content: stockValuationContent },
+            'visualizations': { title: '視覺化圖表', content: otherVisualizationsContent },
+            'audio-summary': { title: '語音摘要', content: audioSummaryContent },
+        };
+
+        let activeSectionId = 'introduction';
+        let charts = {};
+
+        const defaultValuationParams = {
+            pe: {
+                currentEps: financialData.find(d => d.year === '2024E').eps,
+                multiples: {
+                    cheap: 15,
+                    fair: 18,
+                    expensive: 22
+                }
+            },
+            dcf: {
+                currentEps: financialData.find(d => d.year === '2024E').eps,
+                growthRates: {
+                    cheap: 0.08,
+                    fair: 0.10,
+                    expensive: 0.12
+                },
+                discountRates: {
+                    cheap: 0.09,
+                    fair: 0.08,
+                    expensive: 0.07
+                },
+                terminalGrowthRates: {
+                    cheap: 0.015,
+                    fair: 0.020,
+                    expensive: 0.025
+                },
+                years: 5
+            },
+            ps: {
+                currentSales: financialData.find(d => d.year === '2024E').revenue, // In Million NTD
+                sharesOutstanding: 13863000000, // Approximately 13.863 billion shares outstanding
+                multiples: {
+                    cheap: 0.35,
+                    fair: 0.45,
+                    expensive: 0.55
+                }
+            }
+        };
+
+        function renderCharts() {
+            for (const chartId in charts) {
+                if (charts[chartId]) {
+                    charts[chartId].destroy();
+                }
+            }
+            charts = {};
+
+            const annualRevenueNetIncomeCtx = document.getElementById('annualRevenueNetIncomeChart');
+            if (annualRevenueNetIncomeCtx) {
+                charts.annualRevenueNetIncomeChart = new Chart(annualRevenueNetIncomeCtx, {
+                    type: 'bar',
+                    data: {
+                        labels: financialData.map(d => d.year),
+                        datasets: [
+                            {
+                                label: '營收 (百萬新台幣)',
+                                data: financialData.map(d => d.revenue),
+                                backgroundColor: 'rgba(2, 82, 162, 0.7)',
+                                borderColor: 'rgb(2, 82, 162)',
+                                borderWidth: 1,
+                                yAxisID: 'y',
+                            },
+                            {
+                                label: '淨利 (百萬新台幣)',
+                                data: financialData.map(d => d.netIncome),
+                                backgroundColor: 'rgba(14, 165, 233, 0.7)',
+                                borderColor: 'rgb(14, 165, 233)',
+                                borderWidth: 1,
+                                type: 'line',
+                                yAxisID: 'y1',
+                            }
+                        ]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: {
+                            legend: { position: 'top' },
+                            tooltip: {
+                                callbacks: {
+                                    label: function(context) {
+                                        return `${context.dataset.label}: ${context.raw.toLocaleString()}`;
+                                    }
+                                }
+                            }
+                        },
+                        scales: {
+                            x: {
+                                title: { display: true, text: '年度' }
+                            },
+                            y: {
+                                type: 'linear',
+                                display: true,
+                                position: 'left',
+                                title: { display: true, text: '營收 (百萬新台幣)' },
+                                ticks: { callback: function(value) { return (value / 1000000).toFixed(1) + 'T'; } }
+                            },
+                            y1: {
+                                type: 'linear',
+                                display: true,
+                                position: 'right',
+                                title: { display: true, text: '淨利 (百萬新台幣)' },
+                                ticks: { callback: function(value) { return (value / 1000).toFixed(0) + 'B'; } },
+                                grid: { drawOnChartArea: false }
+                            }
+                        }
+                    }
+                });
+            }
+
+            const annualEpsGrossMarginCtx = document.getElementById('annualEpsGrossMarginChart');
+            if (annualEpsGrossMarginCtx) {
+                charts.annualEpsGrossMarginChart = new Chart(annualEpsGrossMarginCtx, {
+                    type: 'line',
+                    data: {
+                        labels: financialData.map(d => d.year),
+                        datasets: [
+                            {
+                                label: 'EPS (新台幣元)',
+                                data: financialData.map(d => d.eps),
+                                borderColor: '#f59e0b',
+                                backgroundColor: 'rgba(245, 158, 11, 0.2)',
+                                fill: false,
+                                tension: 0.1,
+                                yAxisID: 'y',
+                            },
+                            {
+                                label: '毛利率 (%)',
+                                data: financialData.map(d => d.grossMargin),
+                                borderColor: '#8b5cf6',
+                                backgroundColor: 'rgba(139, 92, 246, 0.2)',
+                                fill: false,
+                                tension: 0.1,
+                                yAxisID: 'y1',
+                            }
+                        ]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: {
+                            legend: { position: 'top' },
+                            tooltip: {
+                                callbacks: {
+                                    label: function(context) {
+                                        let label = context.dataset.label || '';
+                                        if (label) {
+                                            label += ': ';
+                                        }
+                                        if (context.dataset.label === '毛利率 (%)') {
+                                            label += `${context.raw.toFixed(2)}%`;
+                                        } else {
+                                            label += context.raw.toFixed(2);
+                                        }
+                                        return label;
+                                    }
+                                }
+                            }
+                        },
+                        scales: {
+                            x: {
+                                title: { display: true, text: '年度' }
+                            },
+                            y: {
+                                type: 'linear',
+                                display: true,
+                                position: 'left',
+                                title: { display: true, text: 'EPS (新台幣元)' },
+                            },
+                            y1: {
+                                type: 'linear',
+                                display: true,
+                                position: 'right',
+                                title: { display: true, text: '毛利率 (%)' },
+                                min: 5,
+                                max: 8,
+                                ticks: { callback: function(value) { return `${value}%`; } },
+                                grid: { drawOnChartArea: false }
+                            }
+                        }
+                    }
+                });
+            }
+
+            const quarterlyRevenueNetIncomeCtx = document.getElementById('quarterlyRevenueNetIncomeChart');
+            if (quarterlyRevenueNetIncomeCtx) {
+                charts.quarterlyRevenueNetIncomeChart = new Chart(quarterlyRevenueNetIncomeCtx, {
+                    type: 'line',
+                    data: {
+                        labels: quarterlyData.map(d => d.quarter),
+                        datasets: [
+                            {
+                                label: '營收 (百萬新台幣)',
+                                data: quarterlyData.map(d => d.revenue),
+                                borderColor: '#0252a2',
+                                backgroundColor: 'rgba(2, 82, 162, 0.2)',
+                                fill: false,
+                                tension: 0.1,
+                                yAxisID: 'y',
+                            },
+                            {
+                                label: '淨利 (百萬新台幣)',
+                                data: quarterlyData.map(d => d.netIncome),
+                                borderColor: '#00796b',
+                                backgroundColor: 'rgba(0, 121, 107, 0.2)',
+                                fill: false,
+                                tension: 0.1,
+                                yAxisID: 'y1',
+                            }
+                        ]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: {
+                            legend: { position: 'top' },
+                            tooltip: {
+                                callbacks: {
+                                    label: function(context) {
+                                        return `${context.dataset.label}: ${context.raw.toLocaleString()}`;
+                                    }
+                                }
+                            }
+                        },
+                        scales: {
+                            x: {
+                                title: { display: true, text: '季度' }
+                            },
+                            y: {
+                                type: 'linear',
+                                display: true,
+                                position: 'left',
+                                title: { display: true, text: '營收 (百萬新台幣)' },
+                                ticks: { callback: function(value) { return (value / 1000000).toFixed(2) + 'T'; } }
+                            },
+                            y1: {
+                                type: 'linear',
+                                display: true,
+                                position: 'right',
+                                title: { display: true, text: '淨利 (百萬新台幣)' },
+                                ticks: { callback: function(value) { return (value / 1000).toFixed(0) + 'B'; } },
+                                grid: { drawOnChartArea: false }
+                            }
+                        }
+                    }
+                });
+            }
+
+            const randDChartCtx = document.getElementById('randDChart');
+            if (randDChartCtx) {
+                charts.randDChart = new Chart(randDChartCtx, {
+                    type: 'bar',
+                    data: {
+                        labels: rAndDData.map(d => d.year),
+                        datasets: [
+                            {
+                                label: '研發費用 (百萬新台幣)',
+                                data: rAndDData.map(d => d.randD),
+                                backgroundColor: 'rgba(59, 130, 246, 0.7)',
+                                borderColor: 'rgb(59, 130, 246)',
+                                borderWidth: 1,
+                                yAxisID: 'y',
+                            },
+                            {
+                                label: '研發費用佔營收比重 (%)',
+                                data: rAndDData.map(d => d.randD_pct_revenue),
+                                borderColor: '#10b981',
+                                backgroundColor: 'rgba(16, 185, 129, 0.2)',
+                                fill: false,
+                                type: 'line',
+                                tension: 0.1,
+                                yAxisID: 'y1',
+                            }
+                        ]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: {
+                            legend: { position: 'top' },
+                            tooltip: {
+                                callbacks: {
+                                    label: function(context) {
+                                        let label = context.dataset.label || '';
+                                        if (label) {
+                                            label += ': ';
+                                        }
+                                        if (context.dataset.label === '研發費用佔營收比重 (%)') {
+                                            label += `${context.raw.toFixed(2)}%`;
+                                        } else {
+                                            label += context.raw.toLocaleString();
+                                        }
+                                        return label;
+                                    }
+                                }
+                            }
+                        },
+                        scales: {
+                            x: { title: { display: true, text: '年度' } },
+                            y: {
+                                type: 'linear',
+                                display: true,
+                                position: 'left',
+                                title: { display: true, text: '研發費用 (百萬新台幣)' },
+                                ticks: { callback: function(value) { return value.toLocaleString(); } }
+                            },
+                            y1: {
+                                type: 'linear',
+                                display: true,
+                                position: 'right',
+                                title: { display: true, text: '佔營收比重 (%)' },
+                                min: 1.5,
+                                max: 2.5,
+                                grid: { drawOnChartArea: false }
+                            }
+                        }
+                    }
+                });
+            }
+
+            const capexChartCtx = document.getElementById('capexChart');
+            if (capexChartCtx) {
+                charts.capexChart = new Chart(capexChartCtx, {
+                    type: 'bar',
+                    data: {
+                        labels: capexData.map(d => d.year),
+                        datasets: [
+                            {
+                                label: '資本支出 (百萬新台幣)',
+                                data: capexData.map(d => d.capex),
+                                backgroundColor: 'rgba(239, 68, 68, 0.7)',
+                                borderColor: 'rgb(239, 68, 68)',
+                                borderWidth: 1
+                            }
+                        ]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: {
+                            legend: { position: 'top' },
+                            tooltip: {
+                                callbacks: {
+                                    label: function(context) {
+                                        return `${context.dataset.label}: ${context.raw.toLocaleString()}`;
+                                    }
+                                }
+                            }
+                        },
+                        scales: {
+                            x: { title: { display: true, text: '年度' } },
+                            y: {
+                                title: { display: true, text: '資本支出 (百萬新台幣)' },
+                                ticks: { callback: function(value) { return value.toLocaleString(); } }
+                            }
+                        }
+                    }
+                });
+            }
+
+            const createMarginChart = (id, label, data, color, min, max) => {
+                const ctx = document.getElementById(id);
+                if (ctx) {
+                    charts[id] = new Chart(ctx, {
+                        type: 'line',
+                        data: {
+                            labels: financialData.map(d => d.year),
+                            datasets: [{
+                                label: label,
+                                data: data,
+                                borderColor: color,
+                                backgroundColor: `${color.slice(0, -1)}, 0.2)`,
+                                fill: true,
+                                tension: 0.1
+                            }]
+                        },
+                        options: {
+                            responsive: true,
+                            maintainAspectRatio: false,
+                            plugins: {
+                                legend: { position: 'top' },
+                                tooltip: { callbacks: { label: (c) => `${c.dataset.label}: ${c.raw.toFixed(2)}%` } }
+                            },
+                            scales: {
+                                x: { title: { display: true, text: '年度' } },
+                                y: {
+                                    title: { display: true, text: '比率 (%)' },
+                                    min: min,
+                                    max: max,
+                                    ticks: { callback: (v) => `${v}%` }
+                                }
+                            }
+                        }
+                    });
+                }
+            };
+            
+            createMarginChart('grossMarginChart', '毛利率 (%)', financialData.map(d => d.grossMargin), 'rgb(14, 165, 233)', 5, 8);
+            createMarginChart('operatingMarginChart', '營業利益率 (%)', financialData.map(d => d.operatingMargin), 'rgb(245, 158, 11)', 1, 4);
+            createMarginChart('netProfitMarginChart', '稅後淨利率 (%)', financialData.map(d => d.netProfitMargin), 'rgb(236, 72, 153)', 1, 4);
+
+
+            const roeRoaChartCtx = document.getElementById('roeRoaChart');
+            if (roeRoaChartCtx) {
+                charts.roeRoaChart = new Chart(roeRoaChartCtx, {
+                    type: 'line',
+                    data: {
+                        labels: roeRoaData.map(d => d.year),
+                        datasets: [
+                            {
+                                label: '股東權益報酬率 (ROE) (%)',
+                                data: roeRoaData.map(d => d.roe),
+                                borderColor: '#f97316',
+                                backgroundColor: 'rgba(249, 115, 22, 0.2)',
+                                fill: true,
+                                tension: 0.1
+                            },
+                            {
+                                label: '資產報酬率 (ROA) (%)',
+                                data: roeRoaData.map(d => d.roa),
+                                borderColor: '#7e22ce',
+                                backgroundColor: 'rgba(126, 34, 206, 0.2)',
+                                fill: true,
+                                tension: 0.1
+                            }
+                        ]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: {
+                            legend: { position: 'top' },
+                            tooltip: {
+                                callbacks: {
+                                    label: function(context) {
+                                        return `${context.dataset.label}: ${context.raw.toFixed(1)}%`;
+                                    }
+                                }
+                            }
+                        },
+                        scales: {
+                            x: { title: { display: true, text: '年度' } },
+                            y: {
+                                title: { display: true, text: '比率 (%)' },
+                                min: 0,
+                                max: 15,
+                                ticks: { callback: function(value) { return `${value}%`; } }
+                            }
+                        }
+                    }
+                });
+            }
+            
+            const revenueByApplicationCtx = document.getElementById('revenueByApplicationChart');
+            if (revenueByApplicationCtx) {
+                charts.revenueByApplicationChart = new Chart(revenueByApplicationCtx, {
+                    type: 'doughnut',
+                    data: {
+                        labels: ['智慧消費電子', '雲端網路', '電腦終端', '元件及其他'],
+                        datasets: [{
+                            label: '營收佔比 (%)',
+                            data: [55, 25, 15, 5], // Approximate for Hon Hai
+                            backgroundColor: [
+                                'rgba(2, 82, 162, 0.8)',
+                                'rgba(14, 165, 233, 0.8)',
+                                'rgba(139, 92, 246, 0.8)',
+                                'rgba(20, 184, 166, 0.8)'
+                            ],
+                            borderColor: [
+                                'rgb(2, 82, 162)',
+                                'rgb(14, 165, 233)',
+                                'rgb(139, 92, 246)',
+                                'rgb(20, 184, 166)'
+                            ],
+                            borderWidth: 1
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: {
+                            legend: { position: 'right' },
+                            tooltip: { callbacks: { label: (c) => `${c.label}: ${c.raw}%` } }
+                        }
+                    }
+                });
+            }
+            
+            const revenueByRegionCtx = document.getElementById('revenueByRegionChart');
+            if (revenueByRegionCtx) {
+                charts.revenueByRegionChart = new Chart(revenueByRegionCtx, {
+                    type: 'pie',
+                    data: {
+                        labels: ['亞洲', '美洲', '歐洲', '其他'],
+                        datasets: [{
+                            label: '營收佔比 (%)',
+                            data: [50, 30, 15, 5], // Approximate for Hon Hai
+                            backgroundColor: [
+                                'rgba(79, 70, 229, 0.8)',
+                                'rgba(99, 102, 241, 0.8)',
+                                'rgba(129, 140, 248, 0.8)',
+                                'rgba(165, 180, 252, 0.8)'
+                            ],
+                            borderColor: [
+                                'rgb(79, 70, 229)',
+                                'rgb(99, 102, 241)',
+                                'rgb(129, 140, 248)',
+                                'rgb(165, 180, 252)'
+                            ],
+                            borderWidth: 1
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: {
+                            legend: { position: 'right' },
+                            tooltip: { callbacks: { label: (c) => `${c.label}: ${c.raw}%` } }
+                        }
+                    }
+                });
+            }
+        }
+
+        function calculateDcf(baseEps, growthRate, discountRate, terminalGrowthRate, years) {
+            let sumPresentValue = 0;
+            let projectedEps = baseEps;
+            for (let i = 1; i <= years; i++) {
+                projectedEps *= (1 + growthRate);
+                sumPresentValue += projectedEps / Math.pow(1 + discountRate, i);
+            }
+
+            if (discountRate > terminalGrowthRate) {
+                const terminalEps = projectedEps * (1 + terminalGrowthRate);
+                const terminalValue = terminalEps / (discountRate - terminalGrowthRate);
+                sumPresentValue += terminalValue / Math.pow(1 + discountRate, years);
+                return sumPresentValue;
+            } else {
+                return Infinity;
+            }
+        }
+
+        function updateValuationResults() {
+            const peEpsInput = parseFloat(document.getElementById('pe-current-eps').value);
+            const peRatioInput = parseInt(document.getElementById('pe-ratio').value);
+
+            if (!isNaN(peEpsInput) && !isNaN(peRatioInput)) {
+                const peValuation = peEpsInput * peRatioInput;
+                document.getElementById('pe-valuation-result').textContent = `${peValuation.toFixed(2)} 元`;
+            } else {
+                document.getElementById('pe-valuation-result').textContent = '無效輸入';
+            }
+
+            const currentPeEpsForDefaults = defaultValuationParams.pe.currentEps;
+            const peCheapPrice = currentPeEpsForDefaults * defaultValuationParams.pe.multiples.cheap;
+            const peFairPrice = currentPeEpsForDefaults * defaultValuationParams.pe.multiples.fair;
+            const peExpensivePrice = currentPeEpsForDefaults * defaultValuationParams.pe.multiples.expensive;
+
+            document.getElementById('pe-cheap-price').textContent = `${peCheapPrice.toFixed(2)} 元`;
+            document.getElementById('pe-fair-price').textContent = `${peFairPrice.toFixed(2)} 元`;
+            document.getElementById('pe-expensive-price').textContent = `${peExpensivePrice.toFixed(2)} 元`;
+
+            const dcfEpsInput = parseFloat(document.getElementById('dcf-current-eps').value);
+            const dcfGrowthRateInput = parseFloat(document.getElementById('dcf-growth-rate').value) / 100;
+            const dcfDiscountRateInput = parseFloat(document.getElementById('dcf-discount-rate').value) / 100;
+            const dcfTerminalGrowthRateInput = parseFloat(document.getElementById('dcf-terminal-growth-rate').value) / 100;
+            const dcfYears = parseInt(document.getElementById('dcf-years').value);
+
+            if (!isNaN(dcfEpsInput) && !isNaN(dcfGrowthRateInput) && !isNaN(dcfDiscountRateInput) && !isNaN(dcfTerminalGrowthRateInput) && !isNaN(dcfYears)) {
+                const dcfValuation = calculateDcf(dcfEpsInput, dcfGrowthRateInput, dcfDiscountRateInput, dcfTerminalGrowthRateInput, dcfYears);
+                document.getElementById('dcf-valuation-result').textContent = `${dcfValuation.toFixed(2)} 元`;
+            } else {
+                document.getElementById('dcf-valuation-result').textContent = '無效輸入';
+            }
+
+            const dcfBaseEpsForDefaults = defaultValuationParams.dcf.currentEps;
+            const dcfYearsForDefaults = defaultValuationParams.dcf.years;
+
+            const dcfCheapPrice = calculateDcf(dcfBaseEpsForDefaults, defaultValuationParams.dcf.growthRates.cheap, defaultValuationParams.dcf.discountRates.cheap, defaultValuationParams.dcf.terminalGrowthRates.cheap, dcfYearsForDefaults);
+            const dcfFairPrice = calculateDcf(dcfBaseEpsForDefaults, defaultValuationParams.dcf.growthRates.fair, defaultValuationParams.dcf.discountRates.fair, defaultValuationParams.dcf.terminalGrowthRates.fair, dcfYearsForDefaults);
+            const dcfExpensivePrice = calculateDcf(dcfBaseEpsForDefaults, defaultValuationParams.dcf.growthRates.expensive, defaultValuationParams.dcf.discountRates.expensive, defaultValuationParams.dcf.terminalGrowthRates.expensive, dcfYearsForDefaults);
+
+            document.getElementById('dcf-cheap-price').textContent = `${dcfCheapPrice.toFixed(2)} 元`;
+            document.getElementById('dcf-fair-price').textContent = `${dcfFairPrice.toFixed(2)} 元`;
+            document.getElementById('dcf-expensive-price').textContent = `${dcfExpensivePrice.toFixed(2)} 元`;
+
+            const psSalesInput = parseFloat(document.getElementById('ps-current-sales').value); // In Million NTD
+            const psRatioInput = parseFloat(document.getElementById('ps-ratio').value);
+            const sharesOutstanding = defaultValuationParams.ps.sharesOutstanding;
+
+            if (!isNaN(psSalesInput) && !isNaN(psRatioInput)) {
+                const totalSalesNTD = psSalesInput * 1000000; 
+                const marketCap = totalSalesNTD * psRatioInput;
+                const psValuation = marketCap / sharesOutstanding;
+                document.getElementById('ps-valuation-result').textContent = `${psValuation.toFixed(2)} 元`;
+            } else {
+                document.getElementById('ps-valuation-result').textContent = '無效輸入';
+            }
+
+            const currentPsSalesForDefaults = defaultValuationParams.ps.currentSales; // In Million NTD
+            const totalSalesNTDForDefaults = currentPsSalesForDefaults * 1000000;
+
+            const psCheapPrice = (totalSalesNTDForDefaults * defaultValuationParams.ps.multiples.cheap) / sharesOutstanding;
+            const psFairPrice = (totalSalesNTDForDefaults * defaultValuationParams.ps.multiples.fair) / sharesOutstanding;
+            const psExpensivePrice = (totalSalesNTDForDefaults * defaultValuationParams.ps.multiples.expensive) / sharesOutstanding;
+
+            document.getElementById('ps-cheap-price').textContent = `${psCheapPrice.toFixed(2)} 元`;
+            document.getElementById('ps-fair-price').textContent = `${psFairPrice.toFixed(2)} 元`;
+            document.getElementById('ps-expensive-price').textContent = `${psExpensivePrice.toFixed(2)} 元`;
+        }
+
+        function showSection(sectionId) {
+            const mainContent = document.getElementById('main-content');
+            const sectionData = sections[sectionId];
+            mainContent.innerHTML = createSection(sectionData.title, sectionData.content);
+
+            document.querySelectorAll('.nav-button').forEach(button => {
+                button.classList.remove('active', 'bg-blue-600', 'text-white', 'shadow-lg', 'glow');
+                button.classList.add('bg-gradient-to-r', 'from-gray-100', 'to-gray-200', 'text-gray-800', 'hover:from-blue-100', 'hover:to-sky-100', 'border', 'border-gray-200', 'hover:border-blue-300');
+            });
+            const activeButton = document.getElementById(`nav-${sectionId}`);
+            activeButton.classList.add('active', 'bg-blue-600', 'text-white', 'shadow-lg', 'glow');
+            activeButton.classList.remove('bg-gradient-to-r', 'from-gray-100', 'to-gray-200', 'text-gray-800', 'hover:from-blue-100', 'hover:to-sky-100', 'border', 'border-gray-200', 'hover:border-blue-300');
+
+            if (sectionId === 'financials' || sectionId === 'visualizations') {
+                setTimeout(renderCharts, 50); // Add a small delay to ensure DOM is ready
+            }
+            if (sectionId === 'valuation') {
+                setTimeout(() => {
+                    const peInputs = ['pe-current-eps', 'pe-ratio'];
+                    peInputs.forEach(id => {
+                        const element = document.getElementById(id);
+                        if (element) element.addEventListener('input', updateValuationResults);
+                    });
+
+                    const dcfInputs = ['dcf-current-eps', 'dcf-growth-rate', 'dcf-discount-rate', 'dcf-terminal-growth-rate', 'dcf-years'];
+                    dcfInputs.forEach(id => {
+                        const element = document.getElementById(id);
+                        if (element) element.addEventListener('input', updateValuationResults);
+                    });
+                    
+                    const psInputs = ['ps-current-sales', 'ps-ratio'];
+                    psInputs.forEach(id => {
+                        const element = document.getElementById(id);
+                        if (element) element.addEventListener('input', updateValuationResults);
+                    });
+                    
+                    updateValuationResults();
+                }, 50);
+            }
+
+            activeSectionId = sectionId;
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            document.getElementById('nav-introduction').addEventListener('click', () => showSection('introduction'));
+            document.getElementById('nav-financials').addEventListener('click', () => showSection('financials'));
+            document.getElementById('nav-swot').addEventListener('click', () => showSection('swot'));
+            document.getElementById('nav-outlook').addEventListener('click', () => showSection('outlook'));
+            document.getElementById('nav-valuation').addEventListener('click', () => showSection('valuation'));
+            document.getElementById('nav-visualizations').addEventListener('click', () => showSection('visualizations'));
+            document.getElementById('nav-audio-summary').addEventListener('click', () => showSection('audio-summary'));
+
+            showSection('introduction');
+        });
+    </script>
+</body>
+</html>
